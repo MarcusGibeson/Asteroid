@@ -1,11 +1,17 @@
 package com.asteroid.game;
 
+import static com.asteroid.game.Bullet.BULLET_RADIUS;
+import static com.asteroid.game.Bullet.BULLET_SPEED;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerShip {
     private Vector2 position;
@@ -15,16 +21,27 @@ public class PlayerShip {
     private static final float MAX_SPEED = 5f;
     private static final float ROTATION_SPEED = 3f;
 
+    private float shotCooldownTimer = 0f;
+    private static final float SHOT_COOLDOWN = 0.5f;
+
+    private List<Bullet> bullets;
+
     public PlayerShip(float x, float y) {
         position = new Vector2(x, y);
         rotation = 0;
         System.out.println("PlayerShip rotation is: " + rotation);
+        bullets = new ArrayList<>();
+
     }
 
-    public void update() {
+    public void update(float delta) {
+
+
         // Add logic here to update ship position based on user input or game mechanics
         handleInput();
         loopOffScreenMovement();
+        updateBullets(delta);
+        updateCooldownTimer(delta);
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -70,6 +87,14 @@ public class PlayerShip {
             //rotate right
             rotation -= ROTATION_SPEED;
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            if (canShoot()) {
+                //shoot bullet
+                shoot();
+                resetCooldownTimer();
+            }
+
+        }
     }
 
     public void loopOffScreenMovement() {
@@ -85,5 +110,41 @@ public class PlayerShip {
             position.y = 0; //moves ship to bottom of screen if exits top
         }
     }
-    // Getter and setter methods for position and rotation can be added as needed
+
+    private void updateBullets(float delta) {
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
+            bullet.update(delta);
+            if (bullet.getPosition().x < 0 || bullet.getPosition().x > Gdx.graphics.getWidth() || bullet.getPosition().y < 0 || bullet.getPosition().y > Gdx.graphics.getHeight()) {
+                //remove bullets that go out of bounds
+                bullets.remove(i);
+            }
+        }
+    }
+
+    public void drawBullets(ShapeRenderer shapeRenderer) {
+        for(Bullet bullet: bullets) {
+            bullet.draw(shapeRenderer);
+        }
+    }
+
+    public void shoot() {
+        Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
+        bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+    }
+
+    private boolean canShoot() {
+        return shotCooldownTimer <= 0;
+    }
+
+    private void resetCooldownTimer() {
+        shotCooldownTimer = SHOT_COOLDOWN;
+    }
+
+    private void updateCooldownTimer(float delta) {
+        shotCooldownTimer -= delta;
+        if (shotCooldownTimer < 0) {
+            shotCooldownTimer = 0;
+        }
+    }
 }

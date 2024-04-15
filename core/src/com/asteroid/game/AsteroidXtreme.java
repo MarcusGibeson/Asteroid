@@ -8,9 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.List;
+
 public class AsteroidXtreme extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 	PlayerShip ship;
+
 
 	@Override
 	public void create() {
@@ -22,15 +25,17 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	public void render() {
 		// Clear screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		float delta = Gdx.graphics.getDeltaTime();
 
 		// Update ship logic
-		ship.update();
+		ship.update(delta);
 
 		// Begin shape rendering
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
 		// Draw ship
 		ship.draw(shapeRenderer);
+		ship.drawBullets(shapeRenderer);
 
 		// End shape rendering
 		shapeRenderer.end();
