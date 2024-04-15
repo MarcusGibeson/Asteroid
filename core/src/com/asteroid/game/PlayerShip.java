@@ -24,6 +24,7 @@ public class PlayerShip {
     public void update() {
         // Add logic here to update ship position based on user input or game mechanics
         handleInput();
+        loopOffScreenMovement();
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -71,5 +72,18 @@ public class PlayerShip {
         }
     }
 
+    public void loopOffScreenMovement() {
+        //changes position based on location so ship remains on screen
+        if (position.x < 0) {
+            position.x = Gdx.graphics.getWidth(); //moves ship to right side of screen if exits left
+        } else if (position.x > Gdx.graphics.getWidth()) {
+            position.x = 0; //moves ship to left side of screen if exits right
+        }
+        if (position.y < 0) {
+            position.y = Gdx.graphics.getHeight(); //moves ship to top side of screen if exits bottom
+        } else if (position.y > Gdx.graphics.getHeight()) {
+            position.y = 0; //moves ship to bottom of screen if exits top
+        }
+    }
     // Getter and setter methods for position and rotation can be added as needed
 }
