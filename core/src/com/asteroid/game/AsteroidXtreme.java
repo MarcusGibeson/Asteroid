@@ -1,31 +1,39 @@
 package com.asteroid.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class AsteroidXtreme extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
+	private ShapeRenderer shapeRenderer;
+	PlayerShip ship;
+
 	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+	public void create() {
+		shapeRenderer = new ShapeRenderer();
+		ship = new PlayerShip(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 	}
 
 	@Override
-	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+	public void render() {
+		// Clear screen
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// Update ship logic
+		ship.update();
+
+		// Begin shape rendering
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+		// Draw ship
+		ship.draw(shapeRenderer);
+
+		// End shape rendering
+		shapeRenderer.end();
 	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
-	}
+
 }
