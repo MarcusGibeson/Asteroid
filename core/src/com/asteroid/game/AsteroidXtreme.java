@@ -30,9 +30,6 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		// Update ship logic
 		ship.update(delta);
 
-		// Begin shape rendering
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-
 		// Draw ship
 		ship.draw(shapeRenderer);
 		ship.drawBullets(shapeRenderer);

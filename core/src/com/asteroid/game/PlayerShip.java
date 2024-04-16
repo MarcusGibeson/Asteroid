@@ -32,6 +32,7 @@ public class PlayerShip {
     private List<Bullet> bullets;
     private Sound shootingSound;
     private Sound movingForwardSound;
+    private JetFireEffect jetFireEffect;
 
 
 
@@ -41,6 +42,7 @@ public class PlayerShip {
         rotation = 0;
         System.out.println("PlayerShip rotation is: " + rotation);
         bullets = new ArrayList<>();
+        jetFireEffect = new JetFireEffect(Color.ORANGE);
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_single.mp3"));
         movingForwardSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Ship_Thrusters.mp3"));
     }
@@ -50,6 +52,9 @@ public class PlayerShip {
         position.x += velocity.x;
         position.y += velocity.y;
 
+        if (isAccelerating) {
+            jetFireEffect.update(delta);
+        }
         // Add logic here to update ship position based on user input or game mechanics
         handleInput();
         loopOffScreenMovement();
@@ -58,6 +63,7 @@ public class PlayerShip {
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.identity();
         shapeRenderer.translate(position.x, position.y, 0);
@@ -82,6 +88,14 @@ public class PlayerShip {
 
         // Reset transformation matrix
         shapeRenderer.identity();
+        shapeRenderer.end();
+        if (isAccelerating) {
+            //Draw the jet fire effect while accelerating
+            float offsetX = -MathUtils.cosDeg(rotation) * 20;
+            float offsetY = -MathUtils.sinDeg(rotation) * 20;
+            Vector2 firePosition = new Vector2(position.x + offsetX, position.y + offsetY);
+            jetFireEffect.draw(shapeRenderer, firePosition, rotation);
+        }
     }
 
     //boolean flag to keep track of whether the key is pressed

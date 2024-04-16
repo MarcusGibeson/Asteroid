@@ -31,7 +31,9 @@ public class Bullet {
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(color);
         shapeRenderer.circle(position.x, position.y, radius);
+        shapeRenderer.end();
     }
 }
