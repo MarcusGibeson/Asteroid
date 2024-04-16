@@ -24,7 +24,7 @@ public class PlayerShip {
     private static final float ACCELERATION = 0.1f;
     private static final float DECELERATION = 0.05f;
     private static final float ROTATION_SPEED = 3f;
-    private static final float FRICTION = 0.02f;
+    private static final float FRICTION = 0.01f;
 
     private float shotCooldownTimer = 0f;
     private static final float SHOT_COOLDOWN = 0.25f;

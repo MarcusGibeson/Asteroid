@@ -19,6 +19,7 @@ public class JetFireEffect {
         this.alpha = 1f; //Start with full opacity
     }
 
+    //pretty much just drawing each segment of the fire effect, and then makes it fade off. Rotation keeps it aligned with ship while turning
     public void draw(ShapeRenderer shapeRenderer, Vector2 position, float rotation) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(color.r, color.g, color.b, alpha);
