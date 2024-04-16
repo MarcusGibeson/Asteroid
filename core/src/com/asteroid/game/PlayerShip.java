@@ -97,6 +97,9 @@ public class PlayerShip {
         }
     }
 
+    public Vector2 getPosition() {
+        return position;
+    }
     //boolean flag to keep track of whether the key is pressed
     private boolean isAccelerating = false;
     public void handleInput() {

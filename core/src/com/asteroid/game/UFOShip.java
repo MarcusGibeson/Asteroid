@@ -7,6 +7,9 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UFOShip {
 
     private Vector2 position;
@@ -29,12 +32,20 @@ public class UFOShip {
     //respawn variables and constant
     private float respawnTimer = 0;
     private boolean isWaitingToRespawn = false;
-    private final float RESPAWN_DELAY = 5;
+    private static final float RESPAWN_DELAY = 5;
+    private PlayerShip playerShip;
 
-    public UFOShip(float x, float y) {
+    //shooting variables and constant
+    private float shootTimer = 0;
+    private static final float SHOOT_INTERVAL = 1;
+    private final List<Bullet> bullets;
+
+    public UFOShip(float x, float y, PlayerShip playerShip) {
         this.position = new Vector2(x, y);
         this.rotation = 0;
         this.velocity = new Vector2(0,0);
+        this.playerShip = playerShip;
+        bullets = new ArrayList<>();
         spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
@@ -42,9 +53,18 @@ public class UFOShip {
         //Update position of the UFO based on its velocity
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
-
+        updateBullets(delta);
         if(isOutOfBounds()) {
             respawn(delta);
+        } else {
+            shootTimer += delta;
+
+            if (shootTimer >= SHOOT_INTERVAL) {
+
+                shoot();
+
+                shootTimer = 0;
+            }
         }
     }
 
@@ -84,6 +104,33 @@ public class UFOShip {
         //Reset transformation matrix
         shapeRenderer.identity();
         shapeRenderer.end();
+    }
+
+
+    private void updateBullets(float delta) {
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
+            bullet.update(delta);
+            if (bullet.getPosition().x < 0 || bullet.getPosition().x > Gdx.graphics.getWidth() || bullet.getPosition().y < 0 || bullet.getPosition().y > Gdx.graphics.getHeight()) {
+                //remove bullets that go out of bounds
+                bullets.remove(i);
+            }
+        }
+    }
+
+    public void drawBullets(ShapeRenderer shapeRenderer) {
+        for(Bullet bullet: bullets) {
+            bullet.draw(shapeRenderer);
+        }
+    }
+
+    private void shoot() {
+        //Calculate direction towards player ship
+        Vector2 direction = new Vector2(playerShip.getPosition()).sub(position).nor();
+        // Create a new bullet
+        Bullet bullet = new Bullet(new Vector2(position), direction, Bullet.BULLET_SPEED, Bullet.BULLET_RADIUS, Color.RED);
+        bullets.add(bullet);
+
     }
 
     //Movement function

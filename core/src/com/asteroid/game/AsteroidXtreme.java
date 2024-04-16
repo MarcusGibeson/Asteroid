@@ -16,7 +16,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	public void create() {
 		shapeRenderer = new ShapeRenderer();
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
-		ufo = new UFOShip(200, 200);
+		ufo = new UFOShip(200, 200, ship);
 	}
 
 	@Override
@@ -35,6 +35,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 		//Draw ufo
 		ufo.draw(shapeRenderer);
+		ufo.drawBullets(shapeRenderer);
 
 	}
 
