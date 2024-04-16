@@ -12,5 +12,6 @@ public class Asteroid {
     public Asteroid(Vector2 position, Vector2 velocity) {
         this.position = position;
         this.velocity = velocity;
+        //test
     }
 }
