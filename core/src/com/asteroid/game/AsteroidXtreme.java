@@ -41,4 +41,5 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		shapeRenderer.end();
 	}
 
+
 }

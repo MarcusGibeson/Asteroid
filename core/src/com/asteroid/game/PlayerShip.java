@@ -5,6 +5,7 @@ import static com.asteroid.game.Bullet.BULLET_SPEED;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -15,27 +16,36 @@ import java.util.List;
 
 public class PlayerShip {
     private Vector2 position;
+    private Vector2 velocity;
     private float rotation;
     private final float width = 20; // Adjust as needed
     private final float height = 30; // Adjust as needed
     private static final float MAX_SPEED = 5f;
+    private static final float ACCELERATION = 0.1f;
+    private static final float DECELERATION = 0.05f;
     private static final float ROTATION_SPEED = 3f;
 
     private float shotCooldownTimer = 0f;
     private static final float SHOT_COOLDOWN = 0.5f;
 
     private List<Bullet> bullets;
+    private Sound shootingSound;
+
+
 
     public PlayerShip(float x, float y) {
         position = new Vector2(x, y);
+        velocity = new Vector2();
         rotation = 0;
         System.out.println("PlayerShip rotation is: " + rotation);
         bullets = new ArrayList<>();
-
+        shootingSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_single.mp3"));
     }
 
     public void update(float delta) {
-
+        //Update ship's position based on velocity
+        position.x += velocity.x;
+        position.y += velocity.y;
 
         // Add logic here to update ship position based on user input or game mechanics
         handleInput();
@@ -74,10 +84,9 @@ public class PlayerShip {
     public void handleInput() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             // Move forward in the direction the ship is facing (upwards)
-            float xSpeed = MAX_SPEED * MathUtils.cosDeg(rotation); // Use cos for x component
-            float ySpeed = MAX_SPEED * MathUtils.sinDeg(rotation); // Use sin for y component
-            position.x += xSpeed;
-            position.y += ySpeed;
+            accelerate();
+        } else {
+            decelerate();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             //Rotate left
@@ -95,6 +104,24 @@ public class PlayerShip {
             }
 
         }
+    }
+
+    private void accelerate() {
+        //Calculate acceleration based on ship's rotation
+        float accelerationX = ACCELERATION * MathUtils.cosDeg(rotation);
+        float accelerationY = ACCELERATION * MathUtils.sinDeg(rotation);
+
+        //Apply acceleration to velocity
+        velocity.x += accelerationX;
+        velocity.y += accelerationY;
+
+        //Limit velocity to maximum speed
+        velocity.limit(MAX_SPEED);
+    }
+
+    private void decelerate() {
+        //Gradually reduce velocity (simulate deceleration)
+        velocity.scl(1 - DECELERATION);
     }
 
     public void loopOffScreenMovement() {
@@ -131,6 +158,8 @@ public class PlayerShip {
     public void shoot() {
         Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
         bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+
+        shootingSound.play();
     }
 
     private boolean canShoot() {
