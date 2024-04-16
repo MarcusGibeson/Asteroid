@@ -32,6 +32,7 @@ public class PlayerShip {
     private final Sound shootingSound;
     private final Sound movingForwardSound;
     private final JetFireEffect jetFireEffect;
+    private float volume = 0.25f;
 
 
 
@@ -107,7 +108,7 @@ public class PlayerShip {
             if(!isAccelerating) {
                 // Move forward in the direction the ship is facing (upwards)
                 isAccelerating = true;
-                movingForwardSound.loop();
+                movingForwardSound.loop(volume);
 
             }
             accelerate();
