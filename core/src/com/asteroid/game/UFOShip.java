@@ -38,7 +38,7 @@ public class UFOShip {
 
     //shooting variables and constant
     private float shootTimer = 0;
-    private static final float SHOOT_INTERVAL = 2;
+    private static final float SHOOT_INTERVAL = 1f; //adjust how many seconds between shots
     private final List<Bullet> bullets;
     private final Sound bulletUFO;
 
