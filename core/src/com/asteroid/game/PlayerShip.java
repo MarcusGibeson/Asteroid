@@ -24,12 +24,14 @@ public class PlayerShip {
     private static final float ACCELERATION = 0.1f;
     private static final float DECELERATION = 0.05f;
     private static final float ROTATION_SPEED = 3f;
+    private static final float FRICTION = 0.02f;
 
     private float shotCooldownTimer = 0f;
-    private static final float SHOT_COOLDOWN = 0.5f;
+    private static final float SHOT_COOLDOWN = 0.25f;
 
     private List<Bullet> bullets;
     private Sound shootingSound;
+    private Sound movingForwardSound;
 
 
 
@@ -40,6 +42,7 @@ public class PlayerShip {
         System.out.println("PlayerShip rotation is: " + rotation);
         bullets = new ArrayList<>();
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_single.mp3"));
+        movingForwardSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Ship_Thrusters.mp3"));
     }
 
     public void update(float delta) {
@@ -81,11 +84,24 @@ public class PlayerShip {
         shapeRenderer.identity();
     }
 
+    //boolean flag to keep track of whether the key is pressed
+    private boolean isAccelerating = false;
     public void handleInput() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            // Move forward in the direction the ship is facing (upwards)
+            if(!isAccelerating) {
+                // Move forward in the direction the ship is facing (upwards)
+                isAccelerating = true;
+                movingForwardSound.loop();
+
+            }
             accelerate();
+
         } else {
+            //Key is not pressed
+            if (isAccelerating) {
+                isAccelerating = false;
+                movingForwardSound.stop();
+            }
             decelerate();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -121,7 +137,12 @@ public class PlayerShip {
 
     private void decelerate() {
         //Gradually reduce velocity (simulate deceleration)
-        velocity.scl(1 - DECELERATION);
+        velocity.scl(1 - FRICTION);
+
+        //Clamp velocity to zero if it becomes too small
+        if (velocity.len2() < 0.1f) {
+            velocity.setZero();
+        }
     }
 
     public void loopOffScreenMovement() {
