@@ -1,6 +1,7 @@
 package com.asteroid.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -37,8 +38,9 @@ public class UFOShip {
 
     //shooting variables and constant
     private float shootTimer = 0;
-    private static final float SHOOT_INTERVAL = 1;
+    private static final float SHOOT_INTERVAL = 2;
     private final List<Bullet> bullets;
+    private final Sound bulletUFO;
 
     public UFOShip(float x, float y, PlayerShip playerShip) {
         this.position = new Vector2(x, y);
@@ -47,6 +49,7 @@ public class UFOShip {
         this.playerShip = playerShip;
         bullets = new ArrayList<>();
         spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        bulletUFO = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_UFO.mp3"));
     }
 
     public void update(float delta) {
@@ -62,7 +65,7 @@ public class UFOShip {
             if (shootTimer >= SHOOT_INTERVAL) {
 
                 shoot();
-
+                bulletUFO.play();
                 shootTimer = 0;
             }
         }
