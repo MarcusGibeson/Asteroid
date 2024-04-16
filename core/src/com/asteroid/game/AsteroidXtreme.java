@@ -34,9 +34,12 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		ship.draw(shapeRenderer);
 		ship.drawBullets(shapeRenderer);
 
-		// End shape rendering
-		shapeRenderer.end();
+
 	}
 
+	@Override
+	public void dispose() {
+		shapeRenderer.dispose();
+	}
 
 }
