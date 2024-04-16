@@ -1,8 +1,10 @@
 package com.asteroid.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class UFOShip {
@@ -10,6 +12,7 @@ public class UFOShip {
     private Vector2 position;
     private Vector2 velocity;
     private float rotation;
+
 
 
     //shaperenderer variables
@@ -23,10 +26,16 @@ public class UFOShip {
     private final float wingWidth = 15;
     private final float wingHeight = 5;
 
+    //respawn variables and constant
+    private float respawnTimer = 0;
+    private boolean isWaitingToRespawn = false;
+    private final float RESPAWN_DELAY = 5;
+
     public UFOShip(float x, float y) {
         this.position = new Vector2(x, y);
         this.rotation = 0;
         this.velocity = new Vector2(0,0);
+        spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     public void update(float delta) {
@@ -34,6 +43,9 @@ public class UFOShip {
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
 
+        if(isOutOfBounds()) {
+            respawn(delta);
+        }
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -74,6 +86,68 @@ public class UFOShip {
         shapeRenderer.end();
     }
 
+    //Movement function
+
+    float speed = 100;
+
+    private boolean isOutOfBounds() {
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        return position.x < 0 || position.x > screenWidth || position.y < 0 || position.y > screenHeight;
+    }
+
+    public void spawnOffScreen(float screenWidth, float screenHeight) {
+        //Randomly select a side of the screen to spawn the UFO
+        int side = MathUtils.random(4); //0 top, 1 bottom, 2 left, 3 right
+
+        //Initialize UFO position off-screen
+        float spawnX = 0, spawnY = 0;
+        switch(side) {
+            case 0: //Top
+                spawnX = MathUtils.random(0, screenWidth);
+                spawnY = screenHeight;
+                break;
+            case 1: //Bottom
+                spawnX = MathUtils.random(0, screenWidth);
+                spawnY = 0;
+                break;
+            case 2: //Left
+                spawnX = 0;
+                spawnY = MathUtils.random(0, screenHeight);
+                break;
+            case 3: //Right
+                spawnX = screenWidth;
+                spawnY = MathUtils.random(0, screenHeight);
+                break;
+        }
+
+        //Set UFO position
+        position.set(spawnX, spawnY);
+
+        //Calculate velocity towards the center of the screen
+        float centerX = screenWidth /2;
+        float centerY = screenHeight /2;
+        velocity.set(centerX - spawnX, centerY - spawnY).nor().scl(speed);
+    }
+
+    public void respawn(float delta) {
+        if (!isWaitingToRespawn) {
+            //Start the respawn timer
+            respawnTimer = RESPAWN_DELAY;
+            isWaitingToRespawn = true;
+        } else {
+            //Update the respawn timer
+            respawnTimer -= delta;
+            if (respawnTimer <= 0) {
+                //Respawn ufo off-screen
+                spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                isWaitingToRespawn = false;
+            }
+        }
+    }
+
+
+    //getters and setters
     public Vector2 getPosition() {
         return position;
     }
@@ -94,4 +168,6 @@ public class UFOShip {
     public void setRotation(float rotation) {
         this.rotation = rotation;
     }
+
+
 }
