@@ -3,12 +3,8 @@ package com.asteroid.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.ScreenUtils;
 
-import java.util.List;
 
 public class AsteroidXtreme extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
@@ -18,7 +14,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	@Override
 	public void create() {
 		shapeRenderer = new ShapeRenderer();
-		ship = new PlayerShip(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
 	}
 
 	@Override
