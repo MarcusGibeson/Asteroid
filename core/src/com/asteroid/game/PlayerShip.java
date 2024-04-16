@@ -15,24 +15,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerShip {
-    private Vector2 position;
-    private Vector2 velocity;
+    private final Vector2 position;
+    private final Vector2 velocity;
     private float rotation;
     private final float width = 20; // Adjust as needed
     private final float height = 30; // Adjust as needed
     private static final float MAX_SPEED = 5f;
     private static final float ACCELERATION = 0.1f;
-    private static final float DECELERATION = 0.05f;
     private static final float ROTATION_SPEED = 3f;
     private static final float FRICTION = 0.01f;
 
     private float shotCooldownTimer = 0f;
     private static final float SHOT_COOLDOWN = 0.25f;
 
-    private List<Bullet> bullets;
-    private Sound shootingSound;
-    private Sound movingForwardSound;
-    private JetFireEffect jetFireEffect;
+    private final List<Bullet> bullets;
+    private final Sound shootingSound;
+    private final Sound movingForwardSound;
+    private final JetFireEffect jetFireEffect;
 
 
 
@@ -76,7 +75,7 @@ public class PlayerShip {
                 height / 2, 0             // Right-middle point
         );
 
-        // draw additional details like lines for wings, etc.
+        // draw lines for wings
         //right wing
         shapeRenderer.line(-width / 2, 0, -height / 2, -width);
         shapeRenderer.line(-width / 2, -height / 2, width / 2, -height / 2);
