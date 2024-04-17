@@ -51,20 +51,20 @@ public class PlayerShip {
     }
 
     public void update(float delta) {
-        //Update ship's position based on velocity
-        position.x += velocity.x;
-        position.y += velocity.y;
+        if (!isDestroyed) {
+            //Update ship's position based on velocity
+            position.x += velocity.x;
+            position.y += velocity.y;
 
-        if (isAccelerating) {
-            jetFireEffect.update(delta);
+            if (isAccelerating) {
+                jetFireEffect.update(delta);
+            }
+            // Add logic here to update ship position based on user input or game mechanics
+            handleInput();
+            loopOffScreenMovement();
+            updateCooldownTimer(delta);
         }
-        // Add logic here to update ship position based on user input or game mechanics
-        handleInput();
-        loopOffScreenMovement();
         updateBullets(delta);
-        updateCooldownTimer(delta);
-
-
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -122,38 +122,40 @@ public class PlayerShip {
     //boolean flag to keep track of whether the key is pressed
     private boolean isAccelerating = false;
     public void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            if(!isAccelerating) {
-                // Move forward in the direction the ship is facing (upwards)
-                isAccelerating = true;
-                movingForwardSound.loop(volume);
-
+        if (!isDestroyed) {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+                if(!isAccelerating) {
+                    // Move forward in the direction the ship is facing (upwards)
+                    isAccelerating = true;
+                    movingForwardSound.loop(volume);
+                }
+                accelerate();
+            } else {
+                //Key is not pressed
+                if (isAccelerating) {
+                    isAccelerating = false;
+                    movingForwardSound.stop();
+                }
+                decelerate();
             }
-            accelerate();
-
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+                //Rotate left
+                rotation += ROTATION_SPEED;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+                //rotate right
+                rotation -= ROTATION_SPEED;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                if (canShoot()) {
+                    //shoot bullet
+                    shoot();
+                    resetCooldownTimer();
+                }
+            }
         } else {
-            //Key is not pressed
-            if (isAccelerating) {
-                isAccelerating = false;
-                movingForwardSound.stop();
-            }
-            decelerate();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            //Rotate left
-            rotation += ROTATION_SPEED;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            //rotate right
-            rotation -= ROTATION_SPEED;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            if (canShoot()) {
-                //shoot bullet
-                shoot();
-                resetCooldownTimer();
-            }
-
+            isAccelerating = false;
+            movingForwardSound.stop();
         }
     }
 

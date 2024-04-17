@@ -56,22 +56,25 @@ public class UFOShip {
     }
 
     public void update(float delta) {
+        if (!isDestroyed) {
+            //Update position of the UFO based on its velocity
+            position.x += velocity.x * delta;
+            position.y += velocity.y * delta;
 
-        //Update position of the UFO based on its velocity
-        position.x += velocity.x * delta;
-        position.y += velocity.y * delta;
-        updateBullets(delta);
-        if(isOutOfBounds()) {
-            respawn(delta);
-        } else {
-            shootTimer += delta;
-
-            if (shootTimer >= SHOOT_INTERVAL) {
-
-                shoot();
-                bulletUFO.play();
-                shootTimer = 0;
+            if(isOutOfBounds()) {
+                respawn(delta);
+            } else {
+                shootTimer += delta;
+                if (shootTimer >= SHOOT_INTERVAL) {
+                    shoot();
+                    bulletUFO.play();
+                    shootTimer = 0;
+                }
             }
+        }
+        updateBullets(delta);
+        if (isDestroyed) {
+            respawn(delta);
         }
     }
 
@@ -193,10 +196,12 @@ public class UFOShip {
     }
 
     public void respawn(float delta) {
+
         if (!isWaitingToRespawn) {
             //Start the respawn timer
             respawnTimer = RESPAWN_DELAY;
             isWaitingToRespawn = true;
+            isDestroyed = false;
         } else {
             //Update the respawn timer
             respawnTimer -= delta;
