@@ -108,6 +108,7 @@ public class PlayerShip {
 
     public void destroy() {
         isDestroyed = true;
+        movingForwardSound.stop();
     }
     public Vector2 getPosition() {
         return position;
@@ -153,9 +154,6 @@ public class PlayerShip {
                     resetCooldownTimer();
                 }
             }
-        } else {
-            isAccelerating = false;
-            movingForwardSound.stop();
         }
     }
 

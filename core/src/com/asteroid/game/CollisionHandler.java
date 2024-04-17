@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.List;
+
 public class CollisionHandler {
 
 
@@ -23,8 +25,32 @@ public class CollisionHandler {
 
         if(checkUFOBulletPlayerShipCollision(ufo, playerShip)) {
             playerShip.destroy();
-            //trigger respawn logic
+            //trigger respawn logic - i lied, respawn logic is in boolean inside classes
 
+        }
+
+
+        //not functional yet
+        if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
+            //remove player bullet
+            List<Bullet> playerShipBullets = playerShip.getBullets();
+            for (int i = 0; i < playerShipBullets.size(); i++) {
+                Bullet playerBullet = playerShipBullets.get(i);
+                if(checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
+                    playerShipBullets.remove(playerBullet);
+                    i--;
+                }
+            }
+
+            //Remove ufo bullet
+            List<Bullet> ufoBullets = ufo.getBullets();
+            for (int i = 0; i < ufoBullets.size(); i++) {
+                Bullet ufoBullet = ufoBullets.get(i);
+                if(checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
+                    ufoBullets.remove(ufoBullet);
+                    i--;
+                }
+            }
         }
     }
 
@@ -63,5 +89,19 @@ public class CollisionHandler {
             return true;
         }
         return false;
+    }
+
+    public static boolean checkPlayerShipBulletUFOBulletCollision(PlayerShip playerShip, UFOShip ufo) {
+        for (Bullet playerBullet : playerShip.getBullets()) {
+            Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+            for (Bullet ufoBullet : ufo.getBullets()) {
+                Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
+                if (Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
+                    // collision detected
+                    return true;
+                }
+            }
+        }
+        return false; // no collision detected
     }
 }
