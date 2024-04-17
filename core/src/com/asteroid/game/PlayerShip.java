@@ -35,6 +35,7 @@ public class PlayerShip {
     private final JetFireEffect jetFireEffect;
     private float volume = 0.25f;
 
+    private boolean isDestroyed;
 
 
     public PlayerShip(float x, float y) {
@@ -46,6 +47,7 @@ public class PlayerShip {
         jetFireEffect = new JetFireEffect(Color.ORANGE);
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_single.mp3"));
         movingForwardSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Ship_Thrusters.mp3"));
+        isDestroyed = false;
     }
 
     public void update(float delta) {
@@ -61,44 +63,52 @@ public class PlayerShip {
         loopOffScreenMovement();
         updateBullets(delta);
         updateCooldownTimer(delta);
+
+
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.identity();
-        shapeRenderer.translate(position.x, position.y, 0);
-        shapeRenderer.rotate(0, 0, 1, rotation);
+        if (!isDestroyed) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.identity();
+            shapeRenderer.translate(position.x, position.y, 0);
+            shapeRenderer.rotate(0, 0, 1, rotation);
 
-        // Draw ship body (triangle)
-        shapeRenderer.triangle(
-                -height / 2, -width / 2,  // Bottom-left corner
-                -height / 2, width / 2,   // Top-left corner
-                height / 2, 0             // Right-middle point
-        );
+            // Draw ship body (triangle)
+            shapeRenderer.triangle(
+                    -height / 2, -width / 2,  // Bottom-left corner
+                    -height / 2, width / 2,   // Top-left corner
+                    height / 2, 0             // Right-middle point
+            );
 
-        // draw lines for wings
-        //right wing
-        shapeRenderer.line(-width / 2, 0, -height / 2, -width);
-        shapeRenderer.line(-width / 2, -height / 2, width / 2, -height / 2);
+            // draw lines for wings
+            //right wing
+            shapeRenderer.line(-width / 2, 0, -height / 2, -width);
+            shapeRenderer.line(-width / 2, -height / 2, width / 2, -height / 2);
 
-        //left wing
-        shapeRenderer.line(-width / 2, 0, -height / 2, width);
-        shapeRenderer.line(-width / 2, height / 2, width / 2, height / 2);
+            //left wing
+            shapeRenderer.line(-width / 2, 0, -height / 2, width);
+            shapeRenderer.line(-width / 2, height / 2, width / 2, height / 2);
 
 
-        // Reset transformation matrix
-        shapeRenderer.identity();
-        shapeRenderer.end();
-        if (isAccelerating) {
-            //Draw the jet fire effect while accelerating
-            float offsetX = -MathUtils.cosDeg(rotation) * 20;
-            float offsetY = -MathUtils.sinDeg(rotation) * 20;
-            Vector2 firePosition = new Vector2(position.x + offsetX, position.y + offsetY);
-            jetFireEffect.draw(shapeRenderer, firePosition, rotation);
+            // Reset transformation matrix
+            shapeRenderer.identity();
+            shapeRenderer.end();
+            if (isAccelerating) {
+                //Draw the jet fire effect while accelerating
+                float offsetX = -MathUtils.cosDeg(rotation) * 20;
+                float offsetY = -MathUtils.sinDeg(rotation) * 20;
+                Vector2 firePosition = new Vector2(position.x + offsetX, position.y + offsetY);
+                jetFireEffect.draw(shapeRenderer, firePosition, rotation);
+            }
         }
+
     }
 
+    public void destroy() {
+        isDestroyed = true;
+    }
     public Vector2 getPosition() {
         return position;
     }

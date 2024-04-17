@@ -10,6 +10,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 	PlayerShip ship;
 	UFOShip ufo;
+	CollisionHandler collisionHandler;
 
 
 	@Override
@@ -17,6 +18,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		shapeRenderer = new ShapeRenderer();
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
 		ufo = new UFOShip(200, 200, ship);
+		collisionHandler = new CollisionHandler();
 	}
 
 	@Override
@@ -24,6 +26,9 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		// Clear screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		float delta = Gdx.graphics.getDeltaTime();
+
+		//Update collision handler
+		collisionHandler.update(ship, ufo);
 
 		// Update ship logic
 		ship.update(delta);

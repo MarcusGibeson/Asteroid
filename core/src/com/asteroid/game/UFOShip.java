@@ -42,6 +42,7 @@ public class UFOShip {
     private static final float SHOOT_INTERVAL = 1f; //adjust how many seconds between shots
     private final List<Bullet> bullets;
     private final Sound bulletUFO;
+    private boolean isDestroyed;
 
     public UFOShip(float x, float y, PlayerShip playerShip) {
         this.position = new Vector2(x, y);
@@ -51,9 +52,11 @@ public class UFOShip {
         bullets = new ArrayList<>();
         spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         bulletUFO = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_UFO.mp3"));
+        isDestroyed = false;
     }
 
     public void update(float delta) {
+
         //Update position of the UFO based on its velocity
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
@@ -73,41 +76,44 @@ public class UFOShip {
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        //Draw UFO body
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.identity();
-        shapeRenderer.translate(position.x, position.y, 0);
-        shapeRenderer.rotate(0,0,1, rotation );
-        shapeRenderer.rect(-bodyWidth /2, -bodyHeight /2,
-                            bodyWidth, bodyHeight);
+        if(!isDestroyed) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            //Draw UFO body
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.identity();
+            shapeRenderer.translate(position.x, position.y, 0);
+            shapeRenderer.rotate(0,0,1, rotation );
+            shapeRenderer.rect(-bodyWidth /2, -bodyHeight /2,
+                    bodyWidth, bodyHeight);
 
-        //Draw UFO cockpit
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.arc(0, bodyHeight /2, cockpitRadius, 0, 180);
+            //Draw UFO cockpit
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.arc(0, bodyHeight /2, cockpitRadius, 0, 180);
 
-        //Draw UFO wings
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.rect(-wingWidth /2, -bodyHeight /2, wingWidth, wingHeight);
+            //Draw UFO wings
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.rect(-wingWidth /2, -bodyHeight /2, wingWidth, wingHeight);
 
-        //Draw triangular shapes on each side
-        float triangleBase = bodyWidth * 0.2f;
+            //Draw triangular shapes on each side
+            float triangleBase = bodyWidth * 0.2f;
 
-        // Left triangle
-        shapeRenderer.triangle(-bodyWidth / 2, bodyHeight / 2,
-                -bodyWidth / 2, -bodyHeight / 2,
-                -bodyWidth / 2 - triangleBase, -bodyHeight / 2);
+            // Left triangle
+            shapeRenderer.triangle(-bodyWidth / 2, bodyHeight / 2,
+                    -bodyWidth / 2, -bodyHeight / 2,
+                    -bodyWidth / 2 - triangleBase, -bodyHeight / 2);
 
-        // Right triangle
-        shapeRenderer.triangle(bodyWidth / 2, bodyHeight / 2,
-                bodyWidth / 2, -bodyHeight / 2,
-                bodyWidth / 2 + triangleBase, -bodyHeight / 2);
+            // Right triangle
+            shapeRenderer.triangle(bodyWidth / 2, bodyHeight / 2,
+                    bodyWidth / 2, -bodyHeight / 2,
+                    bodyWidth / 2 + triangleBase, -bodyHeight / 2);
 
 
 
-        //Reset transformation matrix
-        shapeRenderer.identity();
-        shapeRenderer.end();
+            //Reset transformation matrix
+            shapeRenderer.identity();
+            shapeRenderer.end();
+        }
+
     }
 
 
@@ -135,6 +141,11 @@ public class UFOShip {
         Bullet bullet = new Bullet(new Vector2(position), direction, Bullet.BULLET_SPEED, Bullet.BULLET_RADIUS, Color.RED);
         bullets.add(bullet);
 
+    }
+
+    //destroy flag
+    public void destroy() {
+        isDestroyed = true;
     }
 
     //Movement function

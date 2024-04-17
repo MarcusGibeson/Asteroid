@@ -6,6 +6,28 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class CollisionHandler {
 
+
+    public void update(PlayerShip playerShip, UFOShip ufo) {
+        if(checkPlayerShipUFOCollision(playerShip, ufo)) {
+            playerShip.destroy();
+            ufo.destroy();
+
+            //trigger respawn logic of playership here
+
+        }
+
+        if(checkPlayerBulletUFOCollision(playerShip, ufo)) {
+            ufo.destroy();
+            //add point logic here
+        }
+
+        if(checkUFOBulletPlayerShipCollision(ufo, playerShip)) {
+            playerShip.destroy();
+            //trigger respawn logic
+
+        }
+    }
+
     //Method to check collision between UFO bullets and player ship
     public static boolean checkUFOBulletPlayerShipCollision(UFOShip ufo, PlayerShip playerShip) {
         for (Bullet bullet : ufo.getBullets()) {
