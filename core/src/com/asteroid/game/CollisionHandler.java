@@ -92,16 +92,21 @@ public class CollisionHandler {
     }
 
     public static boolean checkPlayerShipBulletUFOBulletCollision(PlayerShip playerShip, UFOShip ufo) {
-        for (Bullet playerBullet : playerShip.getBullets()) {
+        List<Bullet> playerShipBullets = playerShip.getBullets();
+        List<Bullet> ufoBullets = ufo.getBullets();
+
+        for (Bullet playerBullet : playerShipBullets) {
             Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
-            for (Bullet ufoBullet : ufo.getBullets()) {
+
+            for (Bullet ufoBullet : ufoBullets) {
                 Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
-                if (Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
-                    // collision detected
+
+                if(Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
+                    //collision detected
                     return true;
                 }
             }
         }
-        return false; // no collision detected
+        return false;
     }
 }
