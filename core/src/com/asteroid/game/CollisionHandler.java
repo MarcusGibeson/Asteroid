@@ -32,4 +32,14 @@ public class CollisionHandler {
         return false;
     }
 
+    //Method to check collision between Player ship and UFO
+    public static boolean checkPlayerShipUFOCollision(PlayerShip playerShip, UFOShip ufo) {
+        Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+        Rectangle ufoRectangle = ufo.getCollisionRectangle();
+        if (Intersector.overlaps(playerShipRectangle, ufoRectangle)) {
+            //collision detected
+            return true;
+        }
+        return false;
+    }
 }
