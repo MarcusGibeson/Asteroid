@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -217,6 +218,13 @@ public class UFOShip {
     }
     public void setRotation(float rotation) {
         this.rotation = rotation;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+    public Rectangle getCollisionRectangle() {
+        return new Rectangle(position.x, position.y, width, height);
     }
 
 
