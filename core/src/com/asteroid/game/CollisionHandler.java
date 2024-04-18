@@ -1,5 +1,7 @@
 package com.asteroid.game;
 
+import static com.asteroid.game.Bullet.BULLET_RADIUS;
+
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
@@ -30,34 +32,34 @@ public class CollisionHandler {
         }
 
 
-        //not functional yet
-        if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
-            //remove player bullet
-            List<Bullet> playerShipBullets = playerShip.getBullets();
-            for (int i = 0; i < playerShipBullets.size(); i++) {
-                Bullet playerBullet = playerShipBullets.get(i);
-                if(checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
-                    playerShipBullets.remove(playerBullet);
-                    i--;
-                }
-            }
 
-            //Remove ufo bullet
-            List<Bullet> ufoBullets = ufo.getBullets();
-            for (int i = 0; i < ufoBullets.size(); i++) {
-                Bullet ufoBullet = ufoBullets.get(i);
-                if(checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
-                    ufoBullets.remove(ufoBullet);
-                    i--;
-                }
-            }
-        }
+       if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
+           List<Bullet> playerShipBullets = playerShip.getBullets();
+           List<Bullet> ufoBullets = ufo.getBullets();
+
+           for (int i = 0; i < playerShipBullets.size(); i++) {
+               Bullet playerBullet = playerShipBullets.get(i);
+               Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+
+               for (int j = 0; j < ufoBullets.size(); j++) {
+                   Bullet ufoBullet = ufoBullets.get(j);
+                   Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
+
+                   if (Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
+                       playerShipBullets.remove(playerBullet);
+                       ufoBullets.remove(ufoBullet);
+                       i--;
+                       break;
+                   }
+               }
+           }
+       }
     }
 
     //Method to check collision between UFO bullets and player ship
     public static boolean checkUFOBulletPlayerShipCollision(UFOShip ufo, PlayerShip playerShip) {
         for (Bullet bullet : ufo.getBullets()) {
-            Circle bulletCircle = new Circle(bullet.getPosition(), Bullet.BULLET_RADIUS);
+            Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
             Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
             if (Intersector.overlaps(bulletCircle, playerShipRectangle)) {
                 //collision detected
@@ -70,7 +72,7 @@ public class CollisionHandler {
     //Method to check collision between Player ship bullets and UFO
     public static boolean checkPlayerBulletUFOCollision(PlayerShip playerShip, UFOShip ufo) {
         for (Bullet bullet : playerShip.getBullets()) {
-            Circle bulletCircle = new Circle(bullet.getPosition(), Bullet.BULLET_RADIUS);
+            Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
             Rectangle ufoRectangle = ufo.getCollisionRectangle();
             if (Intersector.overlaps(bulletCircle, ufoRectangle)) {
                 //collision detected
@@ -96,10 +98,10 @@ public class CollisionHandler {
         List<Bullet> ufoBullets = ufo.getBullets();
 
         for (Bullet playerBullet : playerShipBullets) {
-            Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+            Circle playerBulletCircle = new Circle(playerBullet.getPosition(), BULLET_RADIUS);
 
             for (Bullet ufoBullet : ufoBullets) {
-                Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
+                Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), BULLET_RADIUS);
 
                 if(Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
                     //collision detected
