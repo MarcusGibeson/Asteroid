@@ -107,11 +107,11 @@ public class PlayerShip {
 
             // draw lines for wings
             //right wing
-            shapeRenderer.line(-width / 2, 0, -height / 2, -width);
+            shapeRenderer.line(-width / 2, 0, -height / 2, -width );
             shapeRenderer.line(-width / 2, -height / 2, width / 2, -height / 2);
 
             //left wing
-            shapeRenderer.line(-width / 2, 0, -height / 2, width);
+            shapeRenderer.line(-width / 2, 0, -height / 2, width );
             shapeRenderer.line(-width / 2, height / 2, width / 2, height / 2);
 
 

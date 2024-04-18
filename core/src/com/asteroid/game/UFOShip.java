@@ -157,7 +157,9 @@ public class UFOShip {
         isDestroyed = true;
 
     }
-
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
     //Movement function
 
     float speed = 100;
