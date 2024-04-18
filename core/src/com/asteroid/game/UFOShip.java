@@ -65,11 +65,14 @@ public class UFOShip {
                 respawn(delta);
             } else {
                 shootTimer += delta;
-                if (shootTimer >= SHOOT_INTERVAL) {
-                    shoot();
-                    bulletUFO.play();
-                    shootTimer = 0;
+                if (!playerShip.isPlayerDead()) {
+                    if (shootTimer >= SHOOT_INTERVAL) {
+                        shoot();
+                        bulletUFO.play();
+                        shootTimer = 0;
+                    }
                 }
+
             }
         }
         updateBullets(delta);
@@ -190,8 +193,8 @@ public class UFOShip {
         position.set(spawnX, spawnY);
 
         //Calculate velocity towards the center of the screen
-        float centerX = screenWidth /2;
-        float centerY = screenHeight /2;
+        float centerX = MathUtils.random(0, screenWidth);
+        float centerY = MathUtils.random(0, screenHeight);
         velocity.set(centerX - spawnX, centerY - spawnY).nor().scl(speed);
     }
 

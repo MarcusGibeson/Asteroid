@@ -7,6 +7,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -41,7 +44,11 @@ public class PlayerShip {
 
     private int health;
     private int lives;
+    private boolean isPlayerDead = false;
     private Vector2 respawnPosition;
+    private boolean respawnRequested = false;
+    private boolean isRespawning = false;
+
 
 
     public PlayerShip(float x, float y,int initialHealth, int initialLives) {
@@ -51,7 +58,6 @@ public class PlayerShip {
         this.respawnPosition = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
         velocity = new Vector2();
         rotation = 0;
-        System.out.println("PlayerShip rotation is: " + rotation);
         bullets = new ArrayList<>();
         jetFireEffect = new JetFireEffect(Color.ORANGE);
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_single.mp3"));
@@ -60,6 +66,12 @@ public class PlayerShip {
     }
 
     public void update(float delta) {
+        if (isPlayerDead && Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+            respawnRequested = true;
+        }
+        if (respawnRequested && !isRespawning) {
+            respawn();
+        }
         if (!isDestroyed) {
             //Update ship's position based on velocity
             position.x += velocity.x;
@@ -119,21 +131,35 @@ public class PlayerShip {
         health--;
         if (health <= 0) {
             destroy();
-            respawn();
+            isPlayerDead = true;
+
         }
     }
 
-    private void respawn() {
+    public boolean isPlayerDead() {
+        return isPlayerDead;
+    }
+
+    public void respawn() {
         lives--;
         if (lives > 0) {
             setPosition(respawnPosition);
             isDestroyed = false;
             health = getMaxHealth();
+            isPlayerDead = false;
+            respawnRequested = false;
+            isRespawning = false;
+
         } else {
             //game over logic
         }
     }
 
+    public void drawRespawnMessage(SpriteBatch spriteBatch, BitmapFont font) {
+        if (isPlayerDead) {
+            font.draw(spriteBatch, "You have died, press Enter to continue. You have " + lives + " lives remaining.", Gdx.graphics.getWidth() / 2 -150, Gdx.graphics.getHeight() /2 );
+        }
+    }
     private int getMaxHealth() {
         return MAX_HEALTH;
     }
