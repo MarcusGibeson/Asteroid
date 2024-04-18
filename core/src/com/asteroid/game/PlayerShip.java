@@ -37,6 +37,7 @@ public class PlayerShip {
     private final List<Bullet> bullets;
     private final Sound shootingSound;
     private final Sound movingForwardSound;
+    private final Sound shipExplosion;
     private final JetFireEffect jetFireEffect;
     private float volume = 0.25f;
 
@@ -62,6 +63,7 @@ public class PlayerShip {
         jetFireEffect = new JetFireEffect(Color.ORANGE);
         shootingSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_single.mp3"));
         movingForwardSound = Gdx.audio.newSound(Gdx.files.internal("Audio/Ship_Thrusters.mp3"));
+        shipExplosion = Gdx.audio.newSound(Gdx.files.internal("Audio/ship_explosion.mp3"));
         isDestroyed = false;
     }
 
@@ -165,8 +167,10 @@ public class PlayerShip {
     }
 
     public void destroy() {
+
         isDestroyed = true;
         movingForwardSound.stop();
+        shipExplosion.play();
     }
 
     public int getHealth() {

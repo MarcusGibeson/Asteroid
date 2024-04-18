@@ -42,6 +42,7 @@ public class UFOShip {
     private static final float SHOOT_INTERVAL = 1f; //adjust how many seconds between shots
     private final List<Bullet> bullets;
     private final Sound bulletUFO;
+    private final Sound ufoExplosion;
     private boolean isDestroyed;
 
     public UFOShip(float x, float y, PlayerShip playerShip) {
@@ -52,6 +53,7 @@ public class UFOShip {
         bullets = new ArrayList<>();
         spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         bulletUFO = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_UFO.mp3"));
+        ufoExplosion = Gdx.audio.newSound(Gdx.files.internal("Audio/ufo_explosion.mp3"));
         isDestroyed = false;
     }
 
@@ -151,7 +153,9 @@ public class UFOShip {
 
     //destroy flag
     public void destroy() {
+        ufoExplosion.play();
         isDestroyed = true;
+
     }
 
     //Movement function
