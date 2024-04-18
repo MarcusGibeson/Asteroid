@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerShip {
-    private final Vector2 position;
+    private Vector2 position;
     private final Vector2 velocity;
     private float rotation;
     private final float width = 20; // Adjust as needed
@@ -25,6 +25,8 @@ public class PlayerShip {
     private static final float ACCELERATION = 0.1f;
     private static final float ROTATION_SPEED = 3f;
     private static final float FRICTION = 0.01f;
+
+    private static final int MAX_HEALTH = 1;
 
     private float shotCooldownTimer = 0f;
     private static final float SHOT_COOLDOWN = 0.25f;
@@ -37,9 +39,16 @@ public class PlayerShip {
 
     private boolean isDestroyed;
 
+    private int health;
+    private int lives;
+    private Vector2 respawnPosition;
 
-    public PlayerShip(float x, float y) {
+
+    public PlayerShip(float x, float y,int initialHealth, int initialLives) {
         position = new Vector2(x, y);
+        this.health = initialHealth;
+        this.lives = initialLives;
+        this.respawnPosition = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
         velocity = new Vector2();
         rotation = 0;
         System.out.println("PlayerShip rotation is: " + rotation);
@@ -106,9 +115,42 @@ public class PlayerShip {
 
     }
 
+    public void handleCollision() {
+        health--;
+        if (health <= 0) {
+            destroy();
+            respawn();
+        }
+    }
+
+    private void respawn() {
+        lives--;
+        if (lives > 0) {
+            setPosition(respawnPosition);
+            isDestroyed = false;
+            health = getMaxHealth();
+        } else {
+            //game over logic
+        }
+    }
+
+    private int getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
     public void destroy() {
         isDestroyed = true;
         movingForwardSound.stop();
+    }
+
+    public int getHealth() {
+        return health;
+    }
+    public int getLives() {
+        return lives;
+    }
+    public void setPosition(Vector2 position) {
+        this.position = position;
     }
     public Vector2 getPosition() {
         return position;

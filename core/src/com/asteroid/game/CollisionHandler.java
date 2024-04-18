@@ -13,10 +13,8 @@ public class CollisionHandler {
 
     public void update(PlayerShip playerShip, UFOShip ufo) {
         if(checkPlayerShipUFOCollision(playerShip, ufo)) {
-            playerShip.destroy();
+            playerShip.handleCollision();
             ufo.destroy();
-
-            //trigger respawn logic of playership here
 
         }
 
@@ -26,8 +24,7 @@ public class CollisionHandler {
         }
 
         if(checkUFOBulletPlayerShipCollision(ufo, playerShip)) {
-            playerShip.destroy();
-            //trigger respawn logic - i lied, respawn logic is in boolean inside classes
+            playerShip.handleCollision();
 
         }
 
@@ -64,6 +61,7 @@ public class CollisionHandler {
             if (Intersector.overlaps(bulletCircle, playerShipRectangle)) {
                 //collision detected
                 return true;
+
             }
         }
         return false;

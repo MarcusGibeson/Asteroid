@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 
 public class AsteroidXtreme extends ApplicationAdapter {
@@ -16,7 +17,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	@Override
 	public void create() {
 		shapeRenderer = new ShapeRenderer();
-		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
+		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
 		ufo = new UFOShip(200, 200, ship);
 		collisionHandler = new CollisionHandler();
 	}
