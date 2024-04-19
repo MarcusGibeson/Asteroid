@@ -57,6 +57,7 @@ public class AsteroidHandler {
 //    }
 
     private void handleCollisions() {
+        List<Asteroid> asteroidsToAdd = new ArrayList<>();
         Iterator<Asteroid> iterator = asteroids.iterator();
         while (iterator.hasNext()) {
             Asteroid asteroid = iterator.next();
@@ -64,14 +65,18 @@ public class AsteroidHandler {
             if (asteroid.isHitByBullet()) {
                 iterator.remove(); // Remove the asteroid from the list
                 if (asteroid.getTier() > 1) {
-                    // If the asteroid is not the smallest tier, split it into smaller asteroids
+                    // If the asteroid is not the smallest tier, add it to the list of asteroids to split
                     for (int i = 0; i < 2; i++) {
-                        asteroids.add(new Asteroid(asteroid.getPosition(), asteroid.getTier() - 1, playerShip));
+                        asteroidsToAdd.add(new Asteroid(asteroid.getPosition(), asteroid.getTier() - 1, playerShip));
                     }
                 }
             }
         }
+        // Add the split asteroids to the main list
+        asteroids.addAll(asteroidsToAdd);
     }
+
+
 
     public void render() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

@@ -18,9 +18,9 @@ public class Asteroid {
     private boolean hitByBullet;
     private PlayerShip playerShip;
 
-    private static final float SCREEN_HEIGHT = 720f;
-    private static final float SCREEN_WIDTH = 1280f;
-    private static final float MAX_SPEED = 5f;
+    private static final float SCREEN_HEIGHT = Gdx.graphics.getHeight();
+    private static final float SCREEN_WIDTH = Gdx.graphics.getWidth();
+    private static final float MAX_SPEED = 2f;
 
     // Defining spawn node coordinates so they can easily be assigned
     static final int[][] spawnCoordinates = {

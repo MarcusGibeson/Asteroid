@@ -41,7 +41,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 		// Update ship logic
 		ship.update(delta);
-		ufo.update(delta);
+//		ufo.update(delta);
 
 		//Update asteroids
 		asteroidHandler.update(delta);
@@ -51,8 +51,8 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		ship.drawBullets(shapeRenderer);
 
 		//Draw ufo
-		ufo.draw(shapeRenderer);
-		ufo.drawBullets(shapeRenderer);
+//		ufo.draw(shapeRenderer);
+//		ufo.drawBullets(shapeRenderer);
 
 		//Draw asteroids
 		asteroidHandler.render();
