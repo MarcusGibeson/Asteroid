@@ -70,7 +70,7 @@ public class Asteroid {
         position.y += velocity.y;
 
         loopOffScreenMovement();
-        detectCollision();
+//        detectCollision();
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -118,20 +118,20 @@ public class Asteroid {
         }
     }
 
-    public void detectCollision(){
-        List<Bullet> bullets = playerShip.getBullets();
-        if (!bullets.isEmpty()){
-            Iterator<Bullet> iterator = bullets.iterator();
-            while (iterator.hasNext()){
-                Bullet bullet = iterator.next();
-                if (intersects(bullet.getPosition())){
-                    hitByBullet = true;
-                    iterator.remove();
-                    break;
-                }
-            }
-        }
-    }
+//    public void detectCollision(){
+//        List<Bullet> bullets = playerShip.getBullets();
+//        if (!bullets.isEmpty()){
+//            Iterator<Bullet> iterator = bullets.iterator();
+//            while (iterator.hasNext()){
+//                Bullet bullet = iterator.next();
+//                if (intersects(bullet.getPosition())){
+//                    hitByBullet = true;
+//                    iterator.remove();
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
     private boolean intersects(Vector2 bulletPosition){
         // Calculate distance between bullet and asteroid center
