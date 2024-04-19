@@ -23,7 +23,7 @@ public class Asteroid {
     private static final float MAX_SPEED = 5f;
 
     // Defining spawn node coordinates so they can easily be assigned
-    private static final int[][] spawnCoordinates = {
+    static final int[][] spawnCoordinates = {
             {160, 719},
             {480, 719},
             {800, 719},
@@ -61,6 +61,7 @@ public class Asteroid {
         }
         this.position = new Vector2(parentPosition.x + MathUtils.random(-10,10), parentPosition.y + MathUtils.random(-10,10));
         int childTier = parentTier - 1;
+        this.tier = childTier;
         assignTierParameters(childTier);
     }
 
@@ -70,13 +71,11 @@ public class Asteroid {
         position.y += velocity.y;
 
         loopOffScreenMovement();
-//        detectCollision();
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
-        shapeRenderer.begin();
         shapeRenderer.setColor(Color.WHITE);
-
+        shapeRenderer.circle(position.x, position.y, width/2);
     }
 
     public void assignTierParameters(int tier){
@@ -118,20 +117,20 @@ public class Asteroid {
         }
     }
 
-//    public void detectCollision(){
-//        List<Bullet> bullets = playerShip.getBullets();
-//        if (!bullets.isEmpty()){
-//            Iterator<Bullet> iterator = bullets.iterator();
-//            while (iterator.hasNext()){
-//                Bullet bullet = iterator.next();
-//                if (intersects(bullet.getPosition())){
-//                    hitByBullet = true;
-//                    iterator.remove();
-//                    break;
-//                }
-//            }
-//        }
-//    }
+    public void detectCollision(){
+        List<Bullet> bullets = playerShip.getBullets();
+        if (!bullets.isEmpty()){
+            Iterator<Bullet> iterator = bullets.iterator();
+            while (iterator.hasNext()){
+                Bullet bullet = iterator.next();
+                if (intersects(bullet.getPosition())){
+                    hitByBullet = true;
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
+    }
 
     private boolean intersects(Vector2 bulletPosition){
         // Calculate distance between bullet and asteroid center
@@ -139,4 +138,8 @@ public class Asteroid {
         // Check if distance is less than the sum of their radii
         return distance < (width / 2 + 2);
     }
+
+    public int getTier() {return tier;}
+    public Vector2 getPosition() {return position;}
+    public boolean isHitByBullet(){return hitByBullet;}
 }

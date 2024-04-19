@@ -16,6 +16,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	CollisionHandler collisionHandler;
 	SpriteBatch spriteBatch;
 	BitmapFont font;
+	AsteroidHandler asteroidHandler;
 
 
 	@Override
@@ -26,6 +27,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
 		ufo = new UFOShip(200, 200, ship);
 		collisionHandler = new CollisionHandler();
+		asteroidHandler = new AsteroidHandler(ship, shapeRenderer);
 	}
 
 	@Override
@@ -41,6 +43,9 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		ship.update(delta);
 		ufo.update(delta);
 
+		//Update asteroids
+		asteroidHandler.update(delta);
+
 		// Draw ship
 		ship.draw(shapeRenderer);
 		ship.drawBullets(shapeRenderer);
@@ -48,6 +53,9 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		//Draw ufo
 		ufo.draw(shapeRenderer);
 		ufo.drawBullets(shapeRenderer);
+
+		//Draw asteroids
+		asteroidHandler.render();
 
 		//Respawn message
 		spriteBatch.begin();
