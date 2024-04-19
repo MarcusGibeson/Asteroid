@@ -210,4 +210,8 @@ public class PlayerShip {
             shotCooldownTimer = 0;
         }
     }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
 }
