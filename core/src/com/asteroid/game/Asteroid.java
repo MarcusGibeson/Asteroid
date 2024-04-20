@@ -17,6 +17,7 @@ public class Asteroid {
     private List<Vector2> spawnNodes;
     private boolean hitByBullet;
     private PlayerShip playerShip;
+    private UFOShip ufo;
 
     private static final float SCREEN_HEIGHT = Gdx.graphics.getHeight();
     private static final float SCREEN_WIDTH = Gdx.graphics.getWidth();
@@ -41,9 +42,11 @@ public class Asteroid {
     };
 
 
+
     //Main constructor for parent asteroids
-    public Asteroid(int node, int tier, PlayerShip playerShip) {
+    public Asteroid(int node, int tier, PlayerShip playerShip, UFOShip ufo) {
         this.playerShip = playerShip;
+        this.ufo = ufo;
         hitByBullet = false;
         this.spawnNodes = new ArrayList<>();
         for (int[] coord : spawnCoordinates) {
@@ -54,8 +57,9 @@ public class Asteroid {
     }
 
     //Constructor for child/sibling asteroids
-    public Asteroid(Vector2 parentPosition, int parentTier, PlayerShip playerShip){
+    public Asteroid(Vector2 parentPosition, int parentTier, PlayerShip playerShip, UFOShip ufo){
         this.playerShip = playerShip;
+        this.ufo = ufo;
         if (parentTier <= 1){
             return;
         }
@@ -119,6 +123,7 @@ public class Asteroid {
 
     public void detectCollision(){
         List<Bullet> bullets = playerShip.getBullets();
+        bullets.addAll(ufo.getBullets());
         if (!bullets.isEmpty()){
             Iterator<Bullet> iterator = bullets.iterator();
             while (iterator.hasNext()){
