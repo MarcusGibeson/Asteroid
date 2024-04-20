@@ -18,7 +18,7 @@ public class Asteroid {
     private boolean hitByBullet;
     private PlayerShip playerShip;
     private UFOShip ufo;
-
+    private int numberOfVertices;
     private static final float SCREEN_HEIGHT = Gdx.graphics.getHeight();
     private static final float SCREEN_WIDTH = Gdx.graphics.getWidth();
     private static final float MAX_SPEED = 2f;
@@ -80,7 +80,23 @@ public class Asteroid {
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.circle(position.x, position.y, width/2);
+//        shapeRenderer.circle(position.x, position.y, width/2);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        float[] vertices = calculateAsteroidVertices();
+        shapeRenderer.polygon(vertices);
+        shapeRenderer.end();
+    }
+
+    private float[] calculateAsteroidVertices() {
+        float[] vertices = new float[numberOfVertices * 2];
+        for (int i = 0; i < numberOfVertices; i++) {
+            double angle = Math.PI * 2 * i / numberOfVertices;
+            double randomLength = width / 2 + MathUtils.random(-width / 4, width / 4);
+            vertices [i * 2] = position.x + (float)(Math.cos(angle) * randomLength);
+            vertices [i * 2 + 1] = position.y + (float)(Math.sin(angle) * randomLength);
+        }
+        return vertices;
     }
 
     public void assignTierParameters(int tier){
@@ -89,18 +105,21 @@ public class Asteroid {
 //                health = 1;
                 height = 40;
                 width = 40;
+                numberOfVertices = 20;
                 velocity = new Vector2(4,4);
                 break;
             case 2: //Medium asteroid
 //                health = 2;
                 height = 160;
                 width = 160;
+                numberOfVertices = 40;
                 velocity = new Vector2(2,2);
                 break;
             case 3: //Large asteroid
 //                health = 3;
                 height = 300;
                 width = 300;
+                numberOfVertices = 80;
                 velocity = new Vector2(1,1);
                 break;
             default:

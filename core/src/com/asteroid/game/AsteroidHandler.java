@@ -85,10 +85,8 @@ public class AsteroidHandler {
 
 
     public void render() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         for (Asteroid asteroid : asteroids) {
             asteroid.draw(shapeRenderer); // Draw each asteroid
         }
-        shapeRenderer.end();
     }
 }
