@@ -54,6 +54,7 @@ public class Asteroid {
         }
         this.position = spawnNodes.get(node);
         assignTierParameters(tier);
+        System.out.println("Tier upon initialize: " + tier);
     }
 
     //Constructor for child/sibling asteroids
