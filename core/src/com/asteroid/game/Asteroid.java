@@ -134,6 +134,62 @@ public class Asteroid {
         System.arraycopy(smallPoints, 0, vertices, 0, smallPoints.length);
         return vertices;
     }
+    private float[] calculateMediumAsteroidVertices() {
+        //Define points relative to center of the asteroid
+        float[] mediumPoints = {
+                -90, 0,    // Vertex 1
+                -80, 30,   // Vertex 2
+                -60, 60,   // Vertex 3
+                -30, 90,   // Vertex 4
+                0, 100,    // Vertex 5
+                30, 90,    // Vertex 6
+                60, 60,    // Vertex 7
+                80, 30,    // Vertex 8
+                90, 0,     // Vertex 9
+                80, -30,   // Vertex 10
+                60, -60,   // Vertex 11
+                30, -90,   // Vertex 12
+                0, -100,   // Vertex 13
+                -30, -90,  // Vertex 14
+                -60, -60,  // Vertex 15
+                -80, -30,  // Vertex 16
+        };
+
+        int numberOfVertices = mediumPoints.length / 2;
+        float[] vertices = new float[numberOfVertices * 2];
+        System.arraycopy(mediumPoints, 0, vertices, 0, mediumPoints.length);
+        return vertices;
+    }
+    private float[] calculateLargeAsteroidVertices() {
+        //Define points relative to center of the asteroid
+        float[] largePoints = {
+                -80, 0,    // Vertex 1
+                -75, 25,   // Vertex 2
+                -65, 50,   // Vertex 3
+                -50, 75,   // Vertex 4
+                -25, 90,   // Vertex 5
+                0, 100,    // Vertex 6
+                25, 90,    // Vertex 7
+                50, 75,    // Vertex 8
+                65, 50,    // Vertex 9
+                75, 25,    // Vertex 10
+                80, 0,     // Vertex 11
+                75, -25,   // Vertex 12
+                65, -50,   // Vertex 13
+                50, -75,   // Vertex 14
+                25, -90,   // Vertex 15
+                0, -100,   // Vertex 16
+                -25, -90,  // Vertex 17
+                -50, -75,  // Vertex 18
+                -65, -50,  // Vertex 19
+                -75, -25,  // Vertex 20
+        };
+
+        int numberOfVertices = largePoints.length / 2;
+        float[] vertices = new float[numberOfVertices * 2];
+        System.arraycopy(largePoints, 0, vertices, 0, largePoints.length);
+        return vertices;
+    }
 
     public void drawSmallAsteroid(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -148,7 +204,7 @@ public class Asteroid {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.WHITE);
 
-        float[] vertices = calculateSmallAsteroidVertices();
+        float[] vertices = calculateMediumAsteroidVertices();
         shapeRenderer.polygon(vertices);
         shapeRenderer.end();
     }
@@ -157,7 +213,7 @@ public class Asteroid {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.WHITE);
 
-        float[] vertices = calculateSmallAsteroidVertices();
+        float[] vertices = calculateLargeAsteroidVertices();
         shapeRenderer.polygon(vertices);
         shapeRenderer.end();
     }
