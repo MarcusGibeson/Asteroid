@@ -57,10 +57,10 @@ public class Asteroid {
         System.out.println("Tier upon initialize: " + tier);
     }
 
+
     //Constructor for child/sibling asteroids
-    public Asteroid(Vector2 parentPosition, int parentTier, PlayerShip playerShip, UFOShip ufo){
+    public Asteroid(Vector2 parentPosition, int parentTier, PlayerShip playerShip){
         this.playerShip = playerShip;
-        this.ufo = ufo;
         if (parentTier <= 1){
             return;
         }
