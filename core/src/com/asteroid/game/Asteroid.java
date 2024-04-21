@@ -44,6 +44,7 @@ public class Asteroid {
     //Main constructor for parent asteroids
     public Asteroid(int node, int tier, PlayerShip playerShip) {
         this.playerShip = playerShip;
+        this.tier = tier;
         hitByBullet = false;
         this.spawnNodes = new ArrayList<>();
         for (int[] coord : spawnCoordinates) {
@@ -75,7 +76,21 @@ public class Asteroid {
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.circle(position.x, position.y, width/2);
+//        shapeRenderer.circle(position.x, position.y, width/2);
+
+        switch(tier) {
+            case 1:
+                drawSmallAsteroid(shapeRenderer);
+                break;
+            case 2:
+                drawMediumAsteroid(shapeRenderer);
+                break;
+            case 3:
+                drawLargeAsteroid(shapeRenderer);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid tier value" + tier);
+        }
     }
 
     public void assignTierParameters(int tier){
@@ -101,6 +116,50 @@ public class Asteroid {
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
         }
+    }
+
+    private float[] calculateSmallAsteroidVertices() {
+        //Define points relative to center of the asteroid
+        float[] smallPoints = {
+                -20, 10,
+                20, 10,
+                30, -10,
+                10, -20,
+                -10, -30,
+                -30, -20
+        };
+
+        int numberOfVertices = smallPoints.length / 2;
+        float[] vertices = new float[numberOfVertices * 2];
+        System.arraycopy(smallPoints, 0, vertices, 0, smallPoints.length);
+        return vertices;
+    }
+
+    public void drawSmallAsteroid(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.WHITE);
+
+        float[] vertices = calculateSmallAsteroidVertices();
+        shapeRenderer.polygon(vertices);
+        shapeRenderer.end();
+    }
+
+    public void drawMediumAsteroid(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.WHITE);
+
+        float[] vertices = calculateSmallAsteroidVertices();
+        shapeRenderer.polygon(vertices);
+        shapeRenderer.end();
+    }
+
+    public void drawLargeAsteroid(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.WHITE);
+
+        float[] vertices = calculateSmallAsteroidVertices();
+        shapeRenderer.polygon(vertices);
+        shapeRenderer.end();
     }
 
     //yes I did just copy your loop method from player class lol
