@@ -85,6 +85,7 @@ public class AsteroidHandler {
 
 
     public void render() {
+        shapeRenderer.setAutoShapeType(true);
         for (Asteroid asteroid : asteroids) {
             asteroid.draw(shapeRenderer); // Draw each asteroid
         }

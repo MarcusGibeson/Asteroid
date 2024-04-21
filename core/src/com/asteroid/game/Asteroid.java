@@ -18,7 +18,6 @@ public class Asteroid {
     private boolean hitByBullet;
     private PlayerShip playerShip;
     private UFOShip ufo;
-    private int numberOfVertices;
     private static final float SCREEN_HEIGHT = Gdx.graphics.getHeight();
     private static final float SCREEN_WIDTH = Gdx.graphics.getWidth();
     private static final float MAX_SPEED = 2f;
@@ -47,6 +46,7 @@ public class Asteroid {
     public Asteroid(int node, int tier, PlayerShip playerShip, UFOShip ufo) {
         this.playerShip = playerShip;
         this.ufo = ufo;
+        this.tier = tier;
         hitByBullet = false;
         this.spawnNodes = new ArrayList<>();
         for (int[] coord : spawnCoordinates) {
@@ -78,26 +78,46 @@ public class Asteroid {
         loopOffScreenMovement();
     }
 
-    public void draw(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.WHITE);
-//        shapeRenderer.circle(position.x, position.y, width/2);
+    private float[] calculateSmallAsteroidVertices() {
+        //Define custom points relative to the center of the asteroid
+        float[] customPoints = {
+                -20, 10, //Vertex 1 (x,y)
+                20, 10,
+                30, -10,
+                10,-20,
+                -10, -30,
+                -30, -20
+        };
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        float[] vertices = calculateAsteroidVertices();
-        shapeRenderer.polygon(vertices);
-        shapeRenderer.end();
-    }
+        //Calculate the total number of vertices
+        int numberOfVertices = customPoints.length / 2;
 
-    private float[] calculateAsteroidVertices() {
+        //Initialize array to store vertices
         float[] vertices = new float[numberOfVertices * 2];
-        for (int i = 0; i < numberOfVertices; i++) {
-            double angle = Math.PI * 2 * i / numberOfVertices;
-            double randomLength = width / 2 + MathUtils.random(-width / 4, width / 4);
-            vertices [i * 2] = position.x + (float)(Math.cos(angle) * randomLength);
-            vertices [i * 2 + 1] = position.y + (float)(Math.sin(angle) * randomLength);
-        }
+
+        //Copy custom points to vertices array
+        System.arraycopy(customPoints, 0, vertices, 0, customPoints.length);
         return vertices;
     }
+
+    public void draw(ShapeRenderer shapeRenderer) {
+
+//        shapeRenderer.circle(position.x, position.y, width/2);
+        switch(tier) {
+            case 1:
+                drawSmallAsteroid(shapeRenderer);
+                break;
+            case 2:
+              drawSmallAsteroid(shapeRenderer);
+                break;
+            case 3:
+              drawSmallAsteroid(shapeRenderer);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid tier value " + tier);
+        }
+    }
+
 
     public void assignTierParameters(int tier){
         switch(tier){
@@ -105,26 +125,35 @@ public class Asteroid {
 //                health = 1;
                 height = 40;
                 width = 40;
-                numberOfVertices = 20;
                 velocity = new Vector2(4,4);
                 break;
             case 2: //Medium asteroid
 //                health = 2;
                 height = 160;
                 width = 160;
-                numberOfVertices = 40;
                 velocity = new Vector2(2,2);
                 break;
             case 3: //Large asteroid
 //                health = 3;
                 height = 300;
                 width = 300;
-                numberOfVertices = 80;
                 velocity = new Vector2(1,1);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
         }
+    }
+
+    public void drawSmallAsteroid(ShapeRenderer shapeRenderer) {
+        shapeRenderer.begin();
+        //calculate custom vertices for the asteroid
+        float[] vertices = calculateSmallAsteroidVertices();
+
+        //draw the asteroid using the custom vertices
+        shapeRenderer.polygon(vertices);
+
+        shapeRenderer.end();
+
     }
 
     //yes I did just copy your loop method from player class lol
