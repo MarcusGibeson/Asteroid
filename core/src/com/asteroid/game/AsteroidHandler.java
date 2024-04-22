@@ -57,20 +57,24 @@ public class AsteroidHandler {
 //    }
 
     private void handleCollisions() {
-        Iterator<Asteroid> iterator = asteroids.iterator();
+         Iterator<Asteroid> iterator = asteroids.iterator();
+         List<Asteroid> asteroidsToAdd = new ArrayList<>(); //created new list of asteroids
         while (iterator.hasNext()) {
             Asteroid asteroid = iterator.next();
             asteroid.detectCollision();
             if (asteroid.isHitByBullet()) {
-                iterator.remove(); // Remove the asteroid from the list
-                if (asteroid.getTier() > 1) {
+                System.out.println("Asteroid tier: " + asteroid.getTierLevel());
+
+                if (asteroid.getTierLevel() > 1) {
                     // If the asteroid is not the smallest tier, split it into smaller asteroids
                     for (int i = 0; i < 2; i++) {
-                        asteroids.add(new Asteroid(asteroid.getPosition(), asteroid.getTier() - 1, playerShip));
+                        asteroidsToAdd.add(new Asteroid(asteroid.getPosition(), asteroid.getTierLevel() , playerShip));//first one was -1 twice
                     }
                 }
+                iterator.remove(); // Remove the asteroid from the list
             }
         }
+        asteroids.addAll(asteroidsToAdd); //added them here after asteroid is removed
     }
 
     public void render() {

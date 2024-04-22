@@ -13,6 +13,7 @@ import java.util.List;
 public class Asteroid {
     private Vector2 position, velocity;
     private int tier;
+    private int tierLevel;
     private float width, height;
     private List<Vector2> spawnNodes;
     private boolean hitByBullet;
@@ -59,7 +60,7 @@ public class Asteroid {
         if (parentTier <= 1){
             return;
         }
-        this.position = new Vector2(parentPosition.x + MathUtils.random(-10,10), parentPosition.y + MathUtils.random(-10,10));
+        this.position = new Vector2(parentPosition.x + MathUtils.random(-50,50), parentPosition.y + MathUtils.random(-50,50));
         int childTier = parentTier - 1;
         this.tier = childTier;
         assignTierParameters(childTier);
@@ -78,29 +79,35 @@ public class Asteroid {
         shapeRenderer.circle(position.x, position.y, width/2);
     }
 
+
+
     public void assignTierParameters(int tier){
         switch(tier){
             case 1: //Small asteroid
 //                health = 1;
                 height = 40;
                 width = 40;
-                velocity = new Vector2(4,4);
+                velocity = new Vector2(MathUtils.random(-4,4),MathUtils.random(-4,4)); //random in any direction
+                tierLevel = 1;
                 break;
             case 2: //Medium asteroid
 //                health = 2;
                 height = 160;
                 width = 160;
-                velocity = new Vector2(2,2);
+                velocity = new Vector2(MathUtils.random(-2,2),MathUtils.random(-2,2));
+                tierLevel = 2;
                 break;
             case 3: //Large asteroid
 //                health = 3;
                 height = 300;
                 width = 300;
-                velocity = new Vector2(1,1);
+                velocity = new Vector2(MathUtils.random(-1,1),MathUtils.random(-1,1));
+                tierLevel = 3;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
         }
+        System.out.println("Asteroid tier: " + tier);
     }
 
     //yes I did just copy your loop method from player class lol
@@ -139,7 +146,7 @@ public class Asteroid {
         return distance < (width / 2 + 2);
     }
 
-    public int getTier() {return tier;}
+    public int getTierLevel() {return tierLevel;} //changed to tierLevel to keep consistent
     public Vector2 getPosition() {return position;}
     public boolean isHitByBullet(){return hitByBullet;}
 }

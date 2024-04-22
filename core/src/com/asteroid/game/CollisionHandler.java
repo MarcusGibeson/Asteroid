@@ -14,7 +14,7 @@ public class CollisionHandler {
     public void update(PlayerShip playerShip, UFOShip ufo) {
         if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
             if(checkPlayerShipUFOCollision(playerShip, ufo)) {
-                playerShip.handleCollision();
+//                playerShip.handleCollision();
                 ufo.destroy();
             }
         }
@@ -28,7 +28,7 @@ public class CollisionHandler {
 
         if (!playerShip.isPlayerDead()) {
             if(checkUFOBulletPlayerShipCollision(ufo, playerShip)) {
-                playerShip.handleCollision();
+//                playerShip.handleCollision();
 
             }
         }
