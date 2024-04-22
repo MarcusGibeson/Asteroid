@@ -12,13 +12,15 @@ public class AsteroidHandler {
     private List<Asteroid> asteroids;
     private PlayerShip playerShip;
     private ShapeRenderer shapeRenderer;
+    private ScoreHandler scoreHandler;
     final static int SPAWN_COOLDOWN_MIN = 2000;
     final static int SPAWN_COOLDOWN_MAX = 3000;
 
-    public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer) {
+    public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
         this.playerShip = playerShip;
         this.asteroids = new ArrayList<>();
         this.shapeRenderer = shapeRenderer;
+        this.scoreHandler = scoreHandler;
         // Start spawning asteroids immediately
         scheduleSpawn();
     }
@@ -64,7 +66,7 @@ public class AsteroidHandler {
             asteroid.detectCollision();
             if (asteroid.isHitByBullet()) {
                 System.out.println("Asteroid tier: " + asteroid.getTierLevel());
-
+                int scoreToAdd = getScoreForTier(asteroid.getTierLevel());
                 if (asteroid.getTierLevel() > 1) {
                     // If the asteroid is not the smallest tier, split it into smaller asteroids
                     for (int i = 0; i < 2; i++) {
@@ -72,9 +74,23 @@ public class AsteroidHandler {
                     }
                 }
                 iterator.remove(); // Remove the asteroid from the list
+                scoreHandler.increaseScore(scoreToAdd);
             }
         }
         asteroids.addAll(asteroidsToAdd); //added them here after asteroid is removed
+    }
+
+    private int getScoreForTier(int tier) {
+        switch(tier) {
+            case 1:
+                return 10;
+            case 2:
+                return 20;
+            case 3:
+                return 30;
+            default:
+                return 0;
+        }
     }
 
     public void render() {

@@ -24,7 +24,7 @@ public class PlayerShip {
     private float rotation;
     private final float width = 20; // Adjust as needed
     private final float height = 30; // Adjust as needed
-    private static final float MAX_SPEED = 5f;
+    private static final float MAX_SPEED = 10f;
     private static final float ACCELERATION = 0.1f;
     private static final float ROTATION_SPEED = 3f;
     private static final float FRICTION = 0.01f;

@@ -17,17 +17,20 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	SpriteBatch spriteBatch;
 	BitmapFont font;
 	AsteroidHandler asteroidHandler;
+	ScoreHandler scoreHandler;
 
 
 	@Override
 	public void create() {
 		shapeRenderer = new ShapeRenderer();
+		scoreHandler = new ScoreHandler();
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont();
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
 		ufo = new UFOShip(200, 200, ship);
-		collisionHandler = new CollisionHandler();
-		asteroidHandler = new AsteroidHandler(ship, shapeRenderer);
+		collisionHandler = new CollisionHandler(scoreHandler);
+		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
+
 	}
 
 	@Override
@@ -61,6 +64,12 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		spriteBatch.begin();
 		ship.drawRespawnMessage(spriteBatch, font);
 		spriteBatch.end();
+
+		//Scoreboard
+		spriteBatch.begin();
+		font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+		spriteBatch.end();
+
 	}
 
 	@Override

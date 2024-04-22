@@ -10,6 +10,10 @@ import java.util.List;
 
 public class CollisionHandler {
 
+    ScoreHandler scoreHandler;
+    public CollisionHandler(ScoreHandler scoreHandler) {
+        this.scoreHandler = scoreHandler;
+    }
 
     public void update(PlayerShip playerShip, UFOShip ufo) {
         if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
@@ -22,7 +26,7 @@ public class CollisionHandler {
         if (!ufo.isDestroyed()) {
             if(checkPlayerBulletUFOCollision(playerShip, ufo)) {
                 ufo.destroy();
-                //add point logic here
+                scoreHandler.increaseScore(100);
             }
         }
 
