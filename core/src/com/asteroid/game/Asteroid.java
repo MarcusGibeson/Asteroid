@@ -77,6 +77,9 @@ public class Asteroid {
         position.y += velocity.y;
 
         loopOffScreenMovement();
+        System.out.println("Tier: " + tier);
+        System.out.println("Position: " + position);
+        System.out.println("Velocity: " + velocity);
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
