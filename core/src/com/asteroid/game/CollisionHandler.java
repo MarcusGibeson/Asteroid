@@ -95,6 +95,11 @@ public class CollisionHandler {
         return false;
     }
 
+    //Method to check collision
+//    public static boolean checkPlayerShipAsteroidCollision(PlayerShip playerShip, List<Asteroid> asteroids) {
+//
+//    }
+
     public static boolean checkPlayerShipBulletUFOBulletCollision(PlayerShip playerShip, UFOShip ufo) {
         List<Bullet> playerShipBullets = playerShip.getBullets();
         List<Bullet> ufoBullets = ufo.getBullets();

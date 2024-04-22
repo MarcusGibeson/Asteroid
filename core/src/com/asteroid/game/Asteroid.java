@@ -113,7 +113,7 @@ public class Asteroid {
     private float randomNonZeroValue(int minValue, int maxValue) {
         float randomValue;
         do {
-            randomValue = MathUtils.random(minValue, maxValue); // Adjust the range as needed
+            randomValue = MathUtils.random(minValue, maxValue);
         } while (randomValue == 0); // Keep generating until a non-zero value is obtained
         return randomValue;
     }
