@@ -3,14 +3,18 @@ package com.asteroid.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 
 public class AsteroidXtreme extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
+	private Texture lifeTexture;
+	private TextureRegion lifeRegion;
 	PlayerShip ship;
 	UFOShip ufo;
 	CollisionHandler collisionHandler;
@@ -20,11 +24,14 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	ScoreHandler scoreHandler;
 
 
+
 	@Override
 	public void create() {
 		shapeRenderer = new ShapeRenderer();
 		scoreHandler = new ScoreHandler();
 		spriteBatch = new SpriteBatch();
+		lifeTexture = new Texture(Gdx.files.internal("Images/Player_Ship_Lives.png"));
+		lifeRegion = new TextureRegion(lifeTexture);
 		font = new BitmapFont();
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
 		ufo = new UFOShip(200, 200, ship);
@@ -68,6 +75,17 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		//Scoreboard
 		spriteBatch.begin();
 		font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+
+
+		//Draw lives
+		int lives = ship.getLives();
+		float lifeImageWidth = lifeRegion.getRegionWidth();
+		float lifeImageHeight = lifeRegion.getRegionHeight();
+		float startX = 10;
+		float startY = Gdx.graphics.getHeight() - 80;
+		for (int i = 0; i < lives; i++) {
+			spriteBatch.draw(lifeRegion, startX + i * (lifeImageWidth + 5), startY, lifeImageWidth, lifeImageHeight);
+		}
 		spriteBatch.end();
 
 	}
@@ -75,6 +93,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		shapeRenderer.dispose();
+		lifeTexture.dispose();
 	}
 
 }
