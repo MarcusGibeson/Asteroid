@@ -45,6 +45,8 @@ public class UFOShip {
     private final Sound ufoExplosion;
     private boolean isDestroyed;
 
+
+
     public UFOShip(float x, float y, PlayerShip playerShip) {
         this.position = new Vector2(x, y);
         this.rotation = 0;

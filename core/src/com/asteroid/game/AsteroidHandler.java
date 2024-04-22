@@ -15,6 +15,8 @@ public class AsteroidHandler {
     final static int SPAWN_COOLDOWN_MIN = 2000;
     final static int SPAWN_COOLDOWN_MAX = 3000;
 
+
+
     public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer) {
         this.playerShip = playerShip;
         this.asteroids = new ArrayList<>();
@@ -28,7 +30,7 @@ public class AsteroidHandler {
         int spawnNode = MathUtils.random(Asteroid.spawnCoordinates.length - 1);
         int tier = MathUtils.random(1, 3);
         // Create new asteroid and add it to the list
-        asteroids.add(new Asteroid(spawnNode, tier, playerShip));
+        asteroids.add(new Asteroid(200, 200, tier, playerShip));
     }
 
     public void scheduleSpawn() {
@@ -65,9 +67,9 @@ public class AsteroidHandler {
                 iterator.remove(); // Remove the asteroid from the list
                 if (asteroid.getTier() > 1) {
                     // If the asteroid is not the smallest tier, split it into smaller asteroids
-                    for (int i = 0; i < 2; i++) {
-                        asteroids.add(new Asteroid(asteroid.getPosition(), asteroid.getTier() - 1, playerShip));
-                    }
+//                    for (int i = 0; i < 2; i++) {
+//                        asteroids.add(new Asteroid(asteroid.getPosition(), asteroid.getTier() - 1, playerShip));
+//                    }
                 }
             }
         }

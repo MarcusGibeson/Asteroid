@@ -17,7 +17,7 @@ public class Asteroid {
     private List<Vector2> spawnNodes;
     private boolean hitByBullet;
     private PlayerShip playerShip;
-
+    float speed = 100;
     private static final float SCREEN_HEIGHT = 720f;
     private static final float SCREEN_WIDTH = 1280f;
     private static final float MAX_SPEED = 5f;
@@ -42,29 +42,34 @@ public class Asteroid {
 
 
     //Main constructor for parent asteroids
-    public Asteroid(int node, int tier, PlayerShip playerShip) {
-        this.playerShip = playerShip;
+    public Asteroid(int x, int y, int tier, PlayerShip playerShip) {
         this.tier = tier;
-        hitByBullet = false;
-        this.spawnNodes = new ArrayList<>();
-        for (int[] coord : spawnCoordinates) {
-            spawnNodes.add(new Vector2(coord[0], coord[1]));
-        }
-        this.position = spawnNodes.get(node);
         assignTierParameters(tier);
+        this.position = new Vector2(x, y);
+        this.playerShip = playerShip;
+
+        hitByBullet = false;
+//        this.spawnNodes = new ArrayList<>();
+//        for (int[] coord : spawnCoordinates) {
+//            spawnNodes.add(new Vector2(coord[0], coord[1]));
+//        }
+//        spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+//        this.position = spawnNodes.get(node);
+
     }
 
-    //Constructor for child/sibling asteroids
-    public Asteroid(Vector2 parentPosition, int parentTier, PlayerShip playerShip){
-        this.playerShip = playerShip;
-        if (parentTier <= 1){
-            return;
-        }
-        this.position = new Vector2(parentPosition.x + MathUtils.random(-10,10), parentPosition.y + MathUtils.random(-10,10));
-        int childTier = parentTier - 1;
-        this.tier = childTier;
-        assignTierParameters(childTier);
-    }
+//    //Constructor for child/sibling asteroids
+//    public Asteroid(Vector2 parentPosition, int parentTier, PlayerShip playerShip){
+//        this.playerShip = playerShip;
+//        if (parentTier <= 1){
+//            return;
+//        }
+//        this.position = new Vector2(parentPosition.x + MathUtils.random(-10,10), parentPosition.y + MathUtils.random(-10,10));
+//        int childTier = parentTier - 1;
+//        this.tier = childTier;
+//        assignTierParameters(childTier);
+//    }
 
     public void update(float delta) {
         //Update asteroid's position
@@ -75,7 +80,7 @@ public class Asteroid {
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.WHITE);
+
 //        shapeRenderer.circle(position.x, position.y, width/2);
 
         switch(tier) {
@@ -99,24 +104,100 @@ public class Asteroid {
 //                health = 1;
                 height = 40;
                 width = 40;
-                velocity = new Vector2(4,4);
+                this.velocity = new Vector2(4,4);
                 break;
             case 2: //Medium asteroid
 //                health = 2;
                 height = 160;
                 width = 160;
-                velocity = new Vector2(2,2);
+                this.velocity = new Vector2(2,2);
                 break;
             case 3: //Large asteroid
 //                health = 3;
                 height = 300;
                 width = 300;
-                velocity = new Vector2(1,1);
+                this.velocity = new Vector2(1,1);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
         }
     }
+
+
+    //yes I did just copy your loop method from player class lol
+    public void loopOffScreenMovement() {
+        if (position.x < 0) {
+            position.x = Gdx.graphics.getWidth(); //moves asteroid to right side of screen if exits left
+        } else if (position.x > Gdx.graphics.getWidth()) {
+            position.x = 0; //moves asteroid to left side of screen if exits right
+        }
+        if (position.y < 0) {
+            position.y = Gdx.graphics.getHeight(); //moves asteroid to top side of screen if exits bottom
+        } else if (position.y > Gdx.graphics.getHeight()) {
+            position.y = 0; //moves asteroid to bottom of screen if exits top
+        }
+    }
+
+    public void spawnOffScreen(float screenWidth, float screenHeight) {
+        //Randomly select a side of the screen to spawn the UFO
+        int side = MathUtils.random(4); //0 top, 1 bottom, 2 left, 3 right
+
+        //Initialize UFO position off-screen
+        float spawnX = 0, spawnY = 0;
+        switch(side) {
+            case 0: //Top
+                spawnX = MathUtils.random(0, screenWidth);
+                spawnY = screenHeight;
+                break;
+            case 1: //Bottom
+                spawnX = MathUtils.random(0, screenWidth);
+                spawnY = 0;
+                break;
+            case 2: //Left
+                spawnX = 0;
+                spawnY = MathUtils.random(0, screenHeight);
+                break;
+            case 3: //Right
+                spawnX = screenWidth;
+                spawnY = MathUtils.random(0, screenHeight);
+                break;
+        }
+
+        //Set UFO position
+        position.set(spawnX, spawnY);
+
+        //Calculate velocity towards the center of the screen
+        float centerX = MathUtils.random(0, screenWidth);
+        float centerY = MathUtils.random(0, screenHeight);
+        velocity.set(centerX - spawnX, centerY - spawnY).nor().scl(speed);
+    }
+
+    public void detectCollision(){
+        List<Bullet> bullets = playerShip.getBullets();
+        if (!bullets.isEmpty()){
+            Iterator<Bullet> iterator = bullets.iterator();
+            while (iterator.hasNext()){
+                Bullet bullet = iterator.next();
+                if (intersects(bullet.getPosition())){
+                    hitByBullet = true;
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean intersects(Vector2 bulletPosition){
+        // Calculate distance between bullet and asteroid center
+        float distance = position.dst(bulletPosition);
+        // Check if distance is less than the sum of their radii
+        return distance < (width / 2 + 2);
+    }
+
+    public int getTier() {return tier;}
+    public Vector2 getPosition() {return position;}
+    public boolean isHitByBullet(){return hitByBullet;}
+
 
     private float[] calculateSmallAsteroidVertices() {
         //Define points relative to center of the asteroid
@@ -217,44 +298,4 @@ public class Asteroid {
         shapeRenderer.polygon(vertices);
         shapeRenderer.end();
     }
-
-    //yes I did just copy your loop method from player class lol
-    public void loopOffScreenMovement() {
-        if (position.x < 0) {
-            position.x = Gdx.graphics.getWidth(); //moves asteroid to right side of screen if exits left
-        } else if (position.x > Gdx.graphics.getWidth()) {
-            position.x = 0; //moves asteroid to left side of screen if exits right
-        }
-        if (position.y < 0) {
-            position.y = Gdx.graphics.getHeight(); //moves asteroid to top side of screen if exits bottom
-        } else if (position.y > Gdx.graphics.getHeight()) {
-            position.y = 0; //moves asteroid to bottom of screen if exits top
-        }
-    }
-
-    public void detectCollision(){
-        List<Bullet> bullets = playerShip.getBullets();
-        if (!bullets.isEmpty()){
-            Iterator<Bullet> iterator = bullets.iterator();
-            while (iterator.hasNext()){
-                Bullet bullet = iterator.next();
-                if (intersects(bullet.getPosition())){
-                    hitByBullet = true;
-                    iterator.remove();
-                    break;
-                }
-            }
-        }
-    }
-
-    private boolean intersects(Vector2 bulletPosition){
-        // Calculate distance between bullet and asteroid center
-        float distance = position.dst(bulletPosition);
-        // Check if distance is less than the sum of their radii
-        return distance < (width / 2 + 2);
-    }
-
-    public int getTier() {return tier;}
-    public Vector2 getPosition() {return position;}
-    public boolean isHitByBullet(){return hitByBullet;}
 }
