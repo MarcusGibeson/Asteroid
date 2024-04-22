@@ -87,27 +87,35 @@ public class Asteroid {
 //                health = 1;
                 height = 40;
                 width = 40;
-                velocity = new Vector2(MathUtils.random(-4,4),MathUtils.random(-4,4)); //random in any direction
+                velocity = new Vector2(randomNonZeroValue(-4, 4), randomNonZeroValue(-4,4));
                 tierLevel = 1;
                 break;
             case 2: //Medium asteroid
 //                health = 2;
                 height = 160;
                 width = 160;
-                velocity = new Vector2(MathUtils.random(-2,2),MathUtils.random(-2,2));
+                velocity = new Vector2(randomNonZeroValue(-2,2), randomNonZeroValue(-2,2));
                 tierLevel = 2;
                 break;
             case 3: //Large asteroid
 //                health = 3;
                 height = 300;
                 width = 300;
-                velocity = new Vector2(MathUtils.random(-1,1),MathUtils.random(-1,1));
+                velocity = new Vector2(randomNonZeroValue(-1,1), randomNonZeroValue(-1,1));
                 tierLevel = 3;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
         }
         System.out.println("Asteroid tier: " + tier);
+    }
+
+    private float randomNonZeroValue(int minValue, int maxValue) {
+        float randomValue;
+        do {
+            randomValue = MathUtils.random(minValue, maxValue); // Adjust the range as needed
+        } while (randomValue == 0); // Keep generating until a non-zero value is obtained
+        return randomValue;
     }
 
     //yes I did just copy your loop method from player class lol
