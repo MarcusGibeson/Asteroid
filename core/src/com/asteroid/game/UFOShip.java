@@ -34,12 +34,12 @@ public class UFOShip {
     //respawn variables and constant
     private float respawnTimer = 0;
     private boolean isWaitingToRespawn = false;
-    private static final float RESPAWN_DELAY = 5;
+    private static final float RESPAWN_DELAY = 10;
     private PlayerShip playerShip;
 
     //shooting variables and constant
     private float shootTimer = 0;
-    private static final float SHOOT_INTERVAL = 1f; //adjust how many seconds between shots
+    private static final float SHOOT_INTERVAL = 1.5f; //adjust how many seconds between shots
     private final List<Bullet> bullets;
     private final Sound bulletUFO;
     private final Sound ufoExplosion;
@@ -96,7 +96,7 @@ public class UFOShip {
 
             //Draw UFO cockpit
             shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.arc(0, bodyHeight /2, cockpitRadius, 0, 180);
+            shapeRenderer.arc(0, cockpitHeight /2, cockpitRadius, 0, 180);
 
             //Draw UFO wings
             shapeRenderer.setColor(Color.WHITE);
