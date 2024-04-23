@@ -10,11 +10,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.List;
+
 
 public class AsteroidXtreme extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 	private Texture lifeTexture;
 	private TextureRegion lifeRegion;
+	BossAsteroid boss;
 	PlayerShip ship;
 	UFOShip ufo;
 	CollisionHandler collisionHandler;
@@ -22,6 +25,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	BitmapFont font;
 	AsteroidHandler asteroidHandler;
 	ScoreHandler scoreHandler;
+
 
 
 
@@ -35,6 +39,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		font = new BitmapFont();
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
 		ufo = new UFOShip(200, 200, ship);
+		boss = new BossAsteroid(new Vector2(500,500),3, ship, 500);
 		collisionHandler = new CollisionHandler(scoreHandler);
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
 
@@ -52,6 +57,9 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		// Update ship logic
 		ship.update(delta);
 		ufo.update(delta);
+		boss.setPlayerShip(ship);
+		boss.update(delta);
+
 
 		//Update asteroids
 		asteroidHandler.update(delta);
@@ -66,6 +74,11 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 		//Draw asteroids
 		asteroidHandler.render();
+
+		//Draw boss asteroid
+		boss.draw(shapeRenderer);
+
+		boss.drawComets(shapeRenderer);
 
 		//Respawn message
 		spriteBatch.begin();

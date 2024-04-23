@@ -5,20 +5,23 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class Comet {
-    public static final float COMET_SPEED = 5.0f;
+    public static final float COMET_SPEED = 100.0f;
     private Vector2 velocity;
     private Vector2 position;
     private float radius;
 
+    PlayerShip playerShip;
 
-    public Comet(Vector2 position, Vector2 playerShipPosition) {
+    public Comet(Vector2 position, Vector2 playerShipPosition, PlayerShip playerShip) {
+        this.playerShip = playerShip;
         this.position = position;
-        this.radius = 1.0f;
+        this.radius = 10.0f;
         velocity = playerShipPosition.cpy().sub(position).nor().scl(COMET_SPEED);
     }
 
     public void update(float delta) {
         position.add(velocity.x * delta, velocity.y * delta);
+        velocity = playerShip.getPosition().cpy().sub(position).nor().scl(COMET_SPEED);
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
