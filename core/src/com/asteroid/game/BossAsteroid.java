@@ -16,7 +16,7 @@ public class BossAsteroid extends Asteroid{
     private final float height = 150;
     private static final float BOSS_SPEED = 2.0f;
     private static final int BOSS_HEALTH = 100;
-    private static final float COMET_SHOOT_RANGE = 200;
+    private static final float COMET_SHOOT_RANGE = 600;
     private static final float COMET_SHOOT_DELAY = 3;
     private float timeSinceLastComet = 0;
 
@@ -49,7 +49,7 @@ public class BossAsteroid extends Asteroid{
         Iterator<Comet> iterator = comets.iterator();
         while(iterator.hasNext()) {
             Comet comet = iterator.next();
-            comet.update(delta);
+            comet.update(delta, playerShip.getPosition());
         }
     }
 
