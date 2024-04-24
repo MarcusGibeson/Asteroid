@@ -16,8 +16,8 @@ public class BossAsteroid extends Asteroid{
     private final float height = 150;
     private static final float BOSS_SPEED = 2.0f;
     private static final int BOSS_HEALTH = 100;
-    private static final float COMET_SHOOT_RANGE = 600;
-    private static final float COMET_SHOOT_DELAY = 3;
+    private static final float COMET_SHOOT_RANGE = 1000;
+    private static final float COMET_SHOOT_DELAY = 2;
     private float timeSinceLastComet = 0;
 
     PlayerShip playerShip;
@@ -86,13 +86,18 @@ public class BossAsteroid extends Asteroid{
         //create new comet
         Vector2 playerShipPosition = playerShip.getPosition();
         Vector2 cometDirection = playerShipPosition.cpy().sub(getPosition()).nor();
+        Vector2 perpendicularDirection = new Vector2(-cometDirection.y, cometDirection.x);
+        Vector2 cometPosition1 = getPosition().cpy().add(perpendicularDirection.scl(10));
+        Vector2 cometPosition2 = getPosition().cpy().sub(perpendicularDirection.scl(10));
         Vector2 cometVelocity = cometDirection.scl(COMET_SPEED);
 
         //Create a new comet at the position of the boss asteroid
-        Comet comet = new Comet(getPosition().cpy(), cometVelocity, playerShip);
+        Comet comet = new Comet(cometPosition1, cometVelocity, playerShip);
+        Comet comet2 = new Comet(cometPosition2, cometVelocity, playerShip);
 
         //Add the comet to the list of comets
         comets.add(comet);
+        comets.add(comet2);
         timeSinceLastComet = 0;
     }
 
