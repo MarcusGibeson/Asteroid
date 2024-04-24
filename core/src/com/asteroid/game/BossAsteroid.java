@@ -26,6 +26,7 @@ public class BossAsteroid extends Asteroid{
     private int maxHealth;
     private int currentHealth;
 
+
     public BossAsteroid(Vector2 position, int tierLevel, PlayerShip playerShip, int maxHealth) {
         super(position, tierLevel, playerShip);
         this.maxHealth = maxHealth;
