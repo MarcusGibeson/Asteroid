@@ -12,7 +12,7 @@ public class Comet {
     private float radius = 10;
     private float guideDuration = 0.5f;
     private float guideTimer = 0.0f;
-    private float tailDuration = 1.5f;
+    private float tailDuration = 3f;
     private float tailTimer = 0.0f;
     private boolean drawTail = true;
     private Vector2 previousPosition;
