@@ -26,6 +26,7 @@ public class BossAsteroid extends Asteroid{
 
     private int maxHealth;
     private int currentHealth;
+    private boolean isDestroyed;
 
 
     public BossAsteroid(Vector2 position, int tierLevel, PlayerShip playerShip, int maxHealth) {
@@ -33,6 +34,7 @@ public class BossAsteroid extends Asteroid{
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.comets = new ArrayList<>();
+        this.isDestroyed = false;
     }
 
     public void update(float delta) {
@@ -65,7 +67,12 @@ public class BossAsteroid extends Asteroid{
         currentHealth -= damage;
         if (currentHealth < 0) {
             currentHealth = 0;
+            isDestroyed = true;
         }
+    }
+
+    public boolean checkIsDestroyed() {
+        return isDestroyed;
     }
 
     private boolean shouldShootComet() {

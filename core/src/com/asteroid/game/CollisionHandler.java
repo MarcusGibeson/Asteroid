@@ -17,10 +17,15 @@ public class CollisionHandler {
         this.scoreHandler = scoreHandler;
     }
 
-    public void update(PlayerShip playerShip, UFOShip ufo) {
+    public void update(PlayerShip playerShip, UFOShip ufo, BossAsteroid boss) {
 
 
-
+        if (!boss.checkIsDestroyed() && !playerShip.isPlayerDead()) {
+            if(checkPlayerShipBulletBossAsteroidCollision(playerShip, boss)) {
+                //playerShip.handleCollision();
+                boss.takeDamage(50);
+            }
+        }
 
         if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
             if(checkPlayerShipUFOCollision(playerShip, ufo)) {
