@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Asteroid {
-    private Vector2 position, velocity;
+    public Vector2 position, velocity;
     private int tier;
     private int tierLevel;
     private float width, height;
