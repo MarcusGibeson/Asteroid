@@ -1,6 +1,8 @@
 package com.asteroid.game;
 
+import static com.asteroid.game.BossAsteroid.BOSS_RADIUS;
 import static com.asteroid.game.Bullet.BULLET_RADIUS;
+import static com.asteroid.game.Comet.COMET_RADIUS;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
@@ -16,6 +18,8 @@ public class CollisionHandler {
     }
 
     public void update(PlayerShip playerShip, UFOShip ufo) {
+
+
 
 
         if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
@@ -124,4 +128,57 @@ public class CollisionHandler {
         }
         return false;
     }
+
+    public static boolean checkPlayerShipCometCollision(PlayerShip playerShip, BossAsteroid boss) {
+        Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+        List<Comet> comets = boss.getComets();
+        for (Comet comet : comets) {
+            Circle cometCircle = new Circle(comet.getPosition(), COMET_RADIUS);
+            if(Intersector.overlaps(cometCircle, playerShipRectangle)) {
+                //collision detected
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkPlayerShipBulletCometCollision(PlayerShip playerShip, BossAsteroid boss) {
+        List<Bullet> bullets = playerShip.getBullets();
+        List<Comet> comets = boss.getComets();
+        for (Comet comet : comets) {
+            Circle cometCircle = new Circle(comet.getPosition(), COMET_RADIUS);
+            for (Bullet bullet : bullets) {
+                Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
+                if(Intersector.overlaps(bulletCircle,cometCircle)) {
+                    //collision detected
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkPlayerShipBulletBossAsteroidCollision(PlayerShip playerShip, BossAsteroid boss) {
+        List<Bullet> bullets = playerShip.getBullets();
+        Circle bossCircle = new Circle(boss.getPosition(), BOSS_RADIUS);
+        for(Bullet bullet : bullets) {
+            Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
+            if(Intersector.overlaps(bulletCircle, bossCircle)) {
+                //collision detected
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkPlayerShipBossAsteroidCollision(PlayerShip playerShip, BossAsteroid boss) {
+        Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+        Circle bossCircle = new Circle(boss.getPosition(), BOSS_RADIUS);
+        if (Intersector.overlaps(bossCircle, playerShipRectangle)) {
+            //collision detected
+            return true;
+        }
+        return false;
+    }
+
 }

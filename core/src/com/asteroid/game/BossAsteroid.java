@@ -12,6 +12,7 @@ import java.util.List;
 
 public class BossAsteroid extends Asteroid{
 
+    public static final float BOSS_RADIUS = 150.0f;
     private final float width = 300;
     private final float height = 150;
     private static final float BOSS_SPEED = 2.0f;
@@ -53,6 +54,7 @@ public class BossAsteroid extends Asteroid{
             comet.update(delta, playerShip.getPosition());
         }
     }
+
 
     public void setPlayerShip(PlayerShip playerShip) {
         this.playerShip = playerShip;
@@ -126,5 +128,13 @@ public class BossAsteroid extends Asteroid{
         for (Comet comet : comets) {
             comet.draw(shapeRenderer);
         }
+    }
+
+    //getters
+    public List<Comet> getComets() {
+        return comets;
+    }
+    public Vector2 getPosition() {
+        return position;
     }
 }

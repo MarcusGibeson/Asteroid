@@ -9,7 +9,7 @@ public class Comet {
     public static final float COMET_SPEED = 500.0f;
     private Vector2 velocity;
     private Vector2 position;
-    private float radius = 10;
+    public static final float COMET_RADIUS = 10;
     private float guideDuration = 0.5f;
     private float guideTimer = 0.0f;
     private float tailDuration = 3f;
@@ -26,7 +26,6 @@ public class Comet {
     public Comet(Vector2 position, Vector2 playerShipPosition, PlayerShip playerShip) {
         this.playerShip = playerShip;
         this.position = position;
-        this.radius = 10.0f;
         velocity = playerShipPosition.cpy().sub(position).nor().scl(COMET_SPEED);
         shapeRenderer = new ShapeRenderer();
         this.previousPosition = new Vector2(position.x, position.y);
@@ -56,7 +55,7 @@ public class Comet {
                 shapeRenderer.identity();
                 shapeRenderer.translate(position.x, position.y, 0);
                 shapeRenderer.rotate(0, 0, 1, rotation); // Rotate around the Z axis
-                shapeRenderer.circle(0, 0, radius);
+                shapeRenderer.circle(0, 0, COMET_RADIUS);
 
                 previousPosition.set(position);
 
@@ -89,15 +88,18 @@ public class Comet {
         }
         //Main body of comet
         shapeRenderer.setColor(Color.GRAY);
-        shapeRenderer.circle(position.x, position.y, radius);
+        shapeRenderer.circle(position.x, position.y, COMET_RADIUS);
 
         //Tail of Comet
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rectLine(position.x, position.y, position.x - radius , position.y, - radius );
+        shapeRenderer.rectLine(position.x, position.y, position.x - COMET_RADIUS , position.y, -COMET_RADIUS );
 
 
         shapeRenderer.end();
 
     }
 
+    public Vector2 getPosition() {
+        return position;
+    }
 }
