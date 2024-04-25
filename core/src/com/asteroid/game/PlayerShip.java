@@ -32,7 +32,15 @@ public class PlayerShip {
     private static final int MAX_HEALTH = 1;
 
     private float shotCooldownTimer = 0f;
-    private static final float SHOT_COOLDOWN = 0.25f;
+    private static float shotCooldown = 0.25f;
+
+    public static float getShotCooldown() {
+        return shotCooldown;
+    }
+
+    public static void setShotCooldown(float shotCooldown) {
+        PlayerShip.shotCooldown = shotCooldown;
+    }
 
     private final List<Bullet> bullets;
     private final Sound shootingSound;
@@ -295,7 +303,7 @@ public class PlayerShip {
     }
 
     private void resetCooldownTimer() {
-        shotCooldownTimer = SHOT_COOLDOWN;
+        shotCooldownTimer = shotCooldown;
     }
 
     private void updateCooldownTimer(float delta) {

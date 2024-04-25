@@ -15,7 +15,7 @@ public class CollisionHandler {
         this.scoreHandler = scoreHandler;
     }
 
-    public void update(PlayerShip playerShip, UFOShip ufo) {
+    public void update(PlayerShip playerShip, UFOShip ufo, List<PowerUp> powerUps) {
         if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
             if(checkPlayerShipUFOCollision(playerShip, ufo)) {
                 playerShip.handleCollision();
@@ -37,8 +37,7 @@ public class CollisionHandler {
             }
         }
 
-
-       if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
+        if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
            List<Bullet> playerShipBullets = playerShip.getBullets();
            List<Bullet> ufoBullets = ufo.getBullets();
 
@@ -59,6 +58,20 @@ public class CollisionHandler {
                }
            }
        }
+
+        if (checkPowerUpPlayerCollision(playerShip, powerUps)){
+            //if powerUps isn't empty
+            if (!powerUps.isEmpty()){
+                //for each powerUp on the screen
+                for (PowerUp powerUp : powerUps){
+                    //if it's touching the ship
+                    if (powerUp.isTouchingShip()){
+                        //apply it
+                        powerUp.applyToShip(playerShip);
+                    }
+                }
+            }
+        }
     }
 
     //Method to check collision between UFO bullets and player ship
@@ -121,5 +134,20 @@ public class CollisionHandler {
             }
         }
         return false;
+    }
+
+    //method to check collision between the ship and any active powerups
+    public static boolean checkPowerUpPlayerCollision(PlayerShip playerShip, List<PowerUp> powerUps) {
+        Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+        if (!powerUps.isEmpty()) {
+            for (PowerUp powerUp : powerUps) {
+                Rectangle powerUpRectangle = powerUp.getCollisionRectangle();
+                if (Intersector.overlaps(playerShipRectangle, powerUpRectangle)) {
+                    powerUp.setTouchingShip(true);
+                    return true; // Collision detected, return true
+                }
+            }
+        }
+        return false; // No collision detected, return false
     }
 }

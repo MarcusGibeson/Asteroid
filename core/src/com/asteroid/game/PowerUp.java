@@ -1,8 +1,11 @@
 package com.asteroid.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 public class PowerUp {
     public enum Type {
@@ -42,6 +45,19 @@ public class PowerUp {
     public void applyToShip(PlayerShip player){
         switch(getType()){
             case RAPID_FIRE:
+                //storing original cooldown timer to be reset after the powerup wears off
+                float originalCooldown = PlayerShip.getShotCooldown();
+
+                //setting the shot cooldown to about 60% faster
+                PlayerShip.setShotCooldown(0.1f);
+
+                //scheduling it to reset the cooldown after it wears off
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        PlayerShip.setShotCooldown(originalCooldown);
+                    }
+                }, getDuration());
                 break;
             case PULSE_SHOT:
                 break;
@@ -58,5 +74,14 @@ public class PowerUp {
             default:
                 break;
         }
+    }
+
+    public void draw(ShapeRenderer shapeRenderer){
+        shapeRenderer.setColor(Color.PINK);
+        shapeRenderer.rect(position.x, position.y, dimensions.x, dimensions.y);
+    }
+
+    public Rectangle getCollisionRectangle() {
+        return new Rectangle(position.x, position.y, dimensions.x, dimensions.y);
     }
 }

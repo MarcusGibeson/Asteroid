@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class AsteroidXtreme extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
@@ -22,6 +25,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	BitmapFont font;
 	AsteroidHandler asteroidHandler;
 	ScoreHandler scoreHandler;
+	List<PowerUp> powerUps;
 
 
 
@@ -37,6 +41,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		ufo = new UFOShip(200, 200, ship);
 		collisionHandler = new CollisionHandler(scoreHandler);
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
+		powerUps = new ArrayList<>();
 
 	}
 
@@ -47,7 +52,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		float delta = Gdx.graphics.getDeltaTime();
 
 		//Update collision handler
-		collisionHandler.update(ship, ufo);
+		collisionHandler.update(ship, ufo, powerUps);
 
 		// Update ship logic
 		ship.update(delta);
