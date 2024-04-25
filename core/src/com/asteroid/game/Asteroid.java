@@ -14,10 +14,13 @@ public class Asteroid {
     public Vector2 position, velocity;
     private int tier;
     private int tierLevel;
-    private float width, height;
+    private float width;
+    private float height;
     private List<Vector2> spawnNodes;
     private boolean hitByBullet;
     private PlayerShip playerShip;
+
+    public float radius = width /2;
 
     private static final float SCREEN_HEIGHT = 720f;
     private static final float SCREEN_WIDTH = 1280f;
@@ -79,7 +82,9 @@ public class Asteroid {
         shapeRenderer.circle(position.x, position.y, width/2);
     }
 
-
+    public float getRadius() {
+        return radius;
+    }
 
     public void assignTierParameters(int tier){
         switch(tier){

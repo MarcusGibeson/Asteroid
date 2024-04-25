@@ -18,7 +18,9 @@ public class Comet {
     private Vector2 previousPosition;
     private float tailAlpha = 2.0f;
 
-
+    private int maxHealth = 1;
+    private int currentHealth;
+    private boolean isDestroyed;
 
     PlayerShip playerShip;
     ShapeRenderer shapeRenderer;
@@ -29,49 +31,57 @@ public class Comet {
         velocity = playerShipPosition.cpy().sub(position).nor().scl(COMET_SPEED);
         shapeRenderer = new ShapeRenderer();
         this.previousPosition = new Vector2(position.x, position.y);
+        this.isDestroyed = false;
+        this.currentHealth = maxHealth;
     }
 
     public void update(float delta, Vector2 playerShipPosition) {
-        if(!playerShip.isPlayerDead()){
-            if(guideTimer < guideDuration) {
-                // Calculate the direction from the comet to the player ship
-                Vector2 direction = playerShipPosition.cpy().sub(position).nor();
-                velocity = playerShip.getPosition().cpy().sub(position).nor().scl(COMET_SPEED);
-                guideTimer += delta;
+        if(!isDestroyed) {
+            if(!playerShip.isPlayerDead()){
+                if(guideTimer < guideDuration) {
+                    // Calculate the direction from the comet to the player ship
+                    Vector2 direction = playerShipPosition.cpy().sub(position).nor();
+                    velocity = playerShip.getPosition().cpy().sub(position).nor().scl(COMET_SPEED);
+                    guideTimer += delta;
 
-                // Calculate the rotation angle
-                float rotation = direction.angleDeg();
+                    // Calculate the rotation angle
+                    float rotation = direction.angleDeg();
 
-                // Update the position of the comet
-                position.add(velocity.x * delta, velocity.y * delta);
-                // Update the rotation of the comet if it's moving
-                if (velocity.len() > 0) {
-                    rotation = rotation - 45; // Adjust the rotation as needed
+                    // Update the position of the comet
+                    position.add(velocity.x * delta, velocity.y * delta);
+                    // Update the rotation of the comet if it's moving
+                    if (velocity.len() > 0) {
+                        rotation = rotation - 45; // Adjust the rotation as needed
+                    }
+
+                    // Draw the comet with rotation using ShapeRenderer
+                    shapeRenderer.setAutoShapeType(true);
+                    shapeRenderer.begin();
+                    shapeRenderer.identity();
+                    shapeRenderer.translate(position.x, position.y, 0);
+                    shapeRenderer.rotate(0, 0, 1, rotation); // Rotate around the Z axis
+                    shapeRenderer.circle(0, 0, COMET_RADIUS);
+
+                    previousPosition.set(position);
+
+                    //Draw the tail if it should be visible
+
+                    shapeRenderer.end();
+                } else {
+                    //After guide duration, resume flying straight
+                    velocity = velocity.nor().scl(COMET_SPEED);
+                    position.add(velocity.x * delta, velocity.y * delta);
                 }
 
-                // Draw the comet with rotation using ShapeRenderer
-                shapeRenderer.setAutoShapeType(true);
-                shapeRenderer.begin();
-                shapeRenderer.identity();
-                shapeRenderer.translate(position.x, position.y, 0);
-                shapeRenderer.rotate(0, 0, 1, rotation); // Rotate around the Z axis
-                shapeRenderer.circle(0, 0, COMET_RADIUS);
-
-                previousPosition.set(position);
-
-                //Draw the tail if it should be visible
-
-                shapeRenderer.end();
-            } else {
-                //After guide duration, resume flying straight
+            }else {
                 velocity = velocity.nor().scl(COMET_SPEED);
                 position.add(velocity.x * delta, velocity.y * delta);
             }
+            tailTimer += delta;
+            if (tailTimer >= tailDuration) {
+                drawTail = false;
+            }
 
-        }
-        tailTimer += delta;
-        if (tailTimer >= tailDuration) {
-            drawTail = false;
         }
 
     }
@@ -97,6 +107,18 @@ public class Comet {
 
         shapeRenderer.end();
 
+    }
+
+    public void takeDamage(int damage) {
+        currentHealth -= damage;
+        if (currentHealth < 0) {
+            currentHealth = 0;
+            isDestroyed = true;
+        }
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 
     public Vector2 getPosition() {

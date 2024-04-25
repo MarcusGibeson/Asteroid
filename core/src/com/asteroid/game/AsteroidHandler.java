@@ -80,6 +80,9 @@ public class AsteroidHandler {
         asteroids.addAll(asteroidsToAdd); //added them here after asteroid is removed
     }
 
+    public List<Asteroid> getAsteroids() {
+        return asteroids;
+    }
     private int getScoreForTier(int tier) {
         switch(tier) {
             case 1:

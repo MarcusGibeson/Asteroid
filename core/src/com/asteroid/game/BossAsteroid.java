@@ -42,7 +42,6 @@ public class BossAsteroid extends Asteroid{
             super.update(delta);
             //Update time since last comet
             timeSinceLastComet += delta;
-            updateComets(delta);
             //Check if the boss should shoot a comet based on range and delay
             if (shouldShootComet() && timeSinceLastComet >= COMET_SHOOT_DELAY) {
                 shootComet();

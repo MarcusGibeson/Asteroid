@@ -26,7 +26,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	AsteroidHandler asteroidHandler;
 	ScoreHandler scoreHandler;
 
-
+	List<Asteroid> asteroids;
 
 
 	@Override
@@ -42,7 +42,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		boss = new BossAsteroid(new Vector2(500,500),3, ship, 500);
 		collisionHandler = new CollisionHandler(scoreHandler);
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
-
+		asteroids = asteroidHandler.getAsteroids();
 	}
 
 	@Override
@@ -52,13 +52,14 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		float delta = Gdx.graphics.getDeltaTime();
 
 		//Update collision handler
-		collisionHandler.update(ship, ufo, boss);
+		collisionHandler.update(ship, ufo, boss, asteroids);
 
 		// Update ship logic
 		ship.update(delta);
 		ufo.update(delta);
 		boss.setPlayerShip(ship);
 		boss.update(delta);
+		boss.updateComets(delta);
 
 
 		//Update asteroids
