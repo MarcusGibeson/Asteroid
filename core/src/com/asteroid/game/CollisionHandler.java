@@ -19,21 +19,21 @@ public class CollisionHandler {
 
     public void update(PlayerShip playerShip, UFOShip ufo, BossAsteroid boss) {
 
-
+        //Boss asteroid getting shot by player ship bullet
         if (!boss.checkIsDestroyed() && !playerShip.isPlayerDead()) {
             if(checkPlayerShipBulletBossAsteroidCollision(playerShip, boss)) {
-                //playerShip.handleCollision();
-                boss.takeDamage(50);
+                boss.takeDamage(1);
             }
         }
 
+        //Player ship and UFO collidiing
         if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
             if(checkPlayerShipUFOCollision(playerShip, ufo)) {
 //                playerShip.handleCollision();
                 ufo.destroy();
             }
         }
-
+        //UFO getting shot by player ship
         if (!ufo.isDestroyed()) {
             if(checkPlayerBulletUFOCollision(playerShip, ufo)) {
                 ufo.destroy();
@@ -41,6 +41,7 @@ public class CollisionHandler {
             }
         }
 
+        //UFO and Player ship colliding
         if (!playerShip.isPlayerDead()) {
             if(checkUFOBulletPlayerShipCollision(ufo, playerShip)) {
 //                playerShip.handleCollision();
@@ -48,7 +49,7 @@ public class CollisionHandler {
             }
         }
 
-
+        //Player ship getting shot by UFO
        if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
            List<Bullet> playerShipBullets = playerShip.getBullets();
            List<Bullet> ufoBullets = ufo.getBullets();

@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class Comet {
-    public static final float COMET_SPEED = 500.0f;
+    public static final float COMET_SPEED = 400.0f;
     private Vector2 velocity;
     private Vector2 position;
     public static final float COMET_RADIUS = 10;

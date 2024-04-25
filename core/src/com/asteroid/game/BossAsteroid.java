@@ -38,14 +38,17 @@ public class BossAsteroid extends Asteroid{
     }
 
     public void update(float delta) {
-        super.update(delta);
-        //Update time since last comet
-        timeSinceLastComet += delta;
-        updateComets(delta);
-        //Check if the boss should shoot a comet based on range and delay
-        if (shouldShootComet() && timeSinceLastComet >= COMET_SHOOT_DELAY) {
-            shootComet();
+        if(!isDestroyed) {
+            super.update(delta);
+            //Update time since last comet
+            timeSinceLastComet += delta;
+            updateComets(delta);
+            //Check if the boss should shoot a comet based on range and delay
+            if (shouldShootComet() && timeSinceLastComet >= COMET_SHOOT_DELAY) {
+                shootComet();
+            }
         }
+
     }
 
     public void updateComets(float delta) {
@@ -114,21 +117,24 @@ public class BossAsteroid extends Asteroid{
     //Draw method
     @Override
     public void draw(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setAutoShapeType(true);
-        shapeRenderer.begin();
-        //Draw boss asteroid with glow effect
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.circle(getPosition().x, getPosition().y, width / 2 + 5);
+        if(!isDestroyed) {
+            shapeRenderer.setAutoShapeType(true);
+            shapeRenderer.begin();
+            //Draw boss asteroid with glow effect
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.circle(getPosition().x, getPosition().y, width / 2 + 5);
 
-        //Draw boss asteroid
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.circle(getPosition().x, getPosition().y, width / 2);
+            //Draw boss asteroid
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.circle(getPosition().x, getPosition().y, width / 2);
 
-        //Draw the health bar
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.rect(getPosition().x - width / 2, getPosition().y + height /2 +5, width *(currentHealth / (float)maxHealth), 5);
-        shapeRenderer.end();
+            //Draw the health bar
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.rect(getPosition().x - width / 2, getPosition().y + height /2 +5, width *(currentHealth / (float)maxHealth), 5);
+            shapeRenderer.end();
+        }
+
     }
 
     public void drawComets(ShapeRenderer shapeRenderer) {
