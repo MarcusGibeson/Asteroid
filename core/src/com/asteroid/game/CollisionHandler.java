@@ -63,22 +63,25 @@ public class CollisionHandler {
         }
 
         //Asteroid colliding with player
-        if(checkPlayerShipAsteroidCollision(playerShip, asteroidHandler)) {
-            List<Asteroid> asteroidsToAdd = new ArrayList<>();
-            Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
-            List<Asteroid> asteroids = asteroidHandler.getAsteroids();
+        if(!playerShip.isPlayerDead()){
+            if(checkPlayerShipAsteroidCollision(playerShip, asteroidHandler)) {
+                List<Asteroid> asteroidsToAdd = new ArrayList<>();
+                Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+                List<Asteroid> asteroids = asteroidHandler.getAsteroids();
 
-            for(int i = 0; i < asteroids.size(); i++) {
-                Asteroid asteroid = asteroids.get(i);
-                Circle asteriodCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
-                if(Intersector.overlaps(asteriodCircle, playerShipRectangle)) {
-                    asteroidHandler.handleHitAsteroid(asteroid, asteroidsToAdd);
-                    asteroids.remove(asteroid);
-                    playerShip.handleCollision();
+                for(int i = 0; i < asteroids.size(); i++) {
+                    Asteroid asteroid = asteroids.get(i);
+                    Circle asteriodCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
+                    if(Intersector.overlaps(asteriodCircle, playerShipRectangle)) {
+                        asteroidHandler.handleHitAsteroid(asteroid, asteroidsToAdd);
+                        asteroids.remove(asteroid);
+                        playerShip.handleCollision();
+                    }
                 }
+                asteroids.addAll(asteroidsToAdd);
             }
-            asteroids.addAll(asteroidsToAdd);
         }
+
 
         //Player ship and Boss Asteroid colliding
         if(!boss.checkIsDestroyed() && !playerShip.isPlayerDead()){
@@ -180,6 +183,7 @@ public class CollisionHandler {
         for(Asteroid asteroid : asteroids) {
             Circle asteroidCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
             if(Intersector.overlaps(asteroidCircle, playerShipRectangle)) {
+                //collision detected
                 return true;
             }
         }

@@ -20,8 +20,10 @@ public class Asteroid {
     private boolean hitByBullet;
     private PlayerShip playerShip;
 
-    public float radius = width /2;
-
+    public static final float SMALL_ASTEROID_RADIUS = 20;
+    public static final float MEDIUM_ASTEROID_RADIUS = 80;
+    public static final float LARGE_ASTEROID_RADIUS = 150;
+    private float asteroidRadius;
     private static final float SCREEN_HEIGHT = 720f;
     private static final float SCREEN_WIDTH = 1280f;
     private static final float MAX_SPEED = 5f;
@@ -83,7 +85,7 @@ public class Asteroid {
     }
 
     public float getRadius() {
-        return radius;
+        return asteroidRadius;
     }
 
     public void assignTierParameters(int tier){
@@ -94,6 +96,7 @@ public class Asteroid {
                 width = 40;
                 velocity = new Vector2(randomNonZeroValue(-4, 4), randomNonZeroValue(-4,4));
                 tierLevel = 1;
+                asteroidRadius = SMALL_ASTEROID_RADIUS;
                 break;
             case 2: //Medium asteroid
 //                health = 2;
@@ -101,6 +104,7 @@ public class Asteroid {
                 width = 160;
                 velocity = new Vector2(randomNonZeroValue(-2,2), randomNonZeroValue(-2,2));
                 tierLevel = 2;
+                asteroidRadius = MEDIUM_ASTEROID_RADIUS;
                 break;
             case 3: //Large asteroid
 //                health = 3;
@@ -108,6 +112,7 @@ public class Asteroid {
                 width = 300;
                 velocity = new Vector2(randomNonZeroValue(-1,1), randomNonZeroValue(-1,1));
                 tierLevel = 3;
+                asteroidRadius = LARGE_ASTEROID_RADIUS;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
