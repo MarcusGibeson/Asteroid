@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CollisionHandler {
@@ -17,7 +18,7 @@ public class CollisionHandler {
         this.scoreHandler = scoreHandler;
     }
 
-    public void update(PlayerShip playerShip, UFOShip ufo, BossAsteroid boss, List<Asteroid> asteroids) {
+    public void update(PlayerShip playerShip, UFOShip ufo, BossAsteroid boss, AsteroidHandler asteroidHandler) {
 
         //Boss asteroid getting shot by player ship bullet
         if (!boss.checkIsDestroyed() && !playerShip.isPlayerDead()) {
@@ -61,11 +62,28 @@ public class CollisionHandler {
             }
         }
 
+        //Asteroid colliding with player
+        if(checkPlayerShipAsteroidCollision(playerShip, asteroidHandler)) {
+            List<Asteroid> asteroidsToAdd = new ArrayList<>();
+            Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+            List<Asteroid> asteroids = asteroidHandler.getAsteroids();
+
+            for(int i = 0; i < asteroids.size(); i++) {
+                Asteroid asteroid = asteroids.get(i);
+                Circle asteriodCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
+                if(Intersector.overlaps(asteriodCircle, playerShipRectangle)) {
+                    asteroidHandler.handleHitAsteroid(asteroid, asteroidsToAdd);
+                    asteroids.remove(asteroid);
+                    playerShip.handleCollision();
+                }
+            }
+            asteroids.addAll(asteroidsToAdd);
+        }
 
         //Player ship and Boss Asteroid colliding
         if(!boss.checkIsDestroyed() && !playerShip.isPlayerDead()){
             if(checkPlayerShipBossAsteroidCollision(playerShip, boss)) {
-//                playerShip.handleCollision();
+                playerShip.handleCollision();
                 boss.takeDamage(25);
             }
         }
@@ -156,8 +174,9 @@ public class CollisionHandler {
     }
 
     //Method to check collision between player and asteroid
-    public static boolean checkPlayerShipAsteroidCollision(PlayerShip playerShip, List<Asteroid> asteroids) {
+    public static boolean checkPlayerShipAsteroidCollision(PlayerShip playerShip, AsteroidHandler asteroidHandler) {
         Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+        List<Asteroid> asteroids = asteroidHandler.getAsteroids();
         for(Asteroid asteroid : asteroids) {
             Circle asteroidCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
             if(Intersector.overlaps(asteroidCircle, playerShipRectangle)) {

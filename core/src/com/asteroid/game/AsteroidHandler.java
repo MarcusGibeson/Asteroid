@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 public class AsteroidHandler {
@@ -58,26 +59,40 @@ public class AsteroidHandler {
 //        }
 //    }
 
+    //refactored to make some code reusable for Collision Handler
     private void handleCollisions() {
          Iterator<Asteroid> iterator = asteroids.iterator();
          List<Asteroid> asteroidsToAdd = new ArrayList<>(); //created new list of asteroids
         while (iterator.hasNext()) {
             Asteroid asteroid = iterator.next();
-            asteroid.detectCollision();
+            detectCollision(asteroid);
             if (asteroid.isHitByBullet()) {
-                System.out.println("Asteroid tier: " + asteroid.getTierLevel());
+                handleHitAsteroid(asteroid, asteroidsToAdd);
                 int scoreToAdd = getScoreForTier(asteroid.getTierLevel());
-                if (asteroid.getTierLevel() > 1) {
-                    // If the asteroid is not the smallest tier, split it into smaller asteroids
-                    for (int i = 0; i < 2; i++) {
-                        asteroidsToAdd.add(new Asteroid(asteroid.getPosition(), asteroid.getTierLevel() , playerShip));//first one was -1 twice
-                    }
-                }
-                iterator.remove(); // Remove the asteroid from the list
                 scoreHandler.increaseScore(scoreToAdd);
+                iterator.remove(); // Remove the asteroid from the list
+
             }
         }
         asteroids.addAll(asteroidsToAdd); //added them here after asteroid is removed
+    }
+
+    private void detectCollision(Asteroid asteroid) {
+        asteroid.detectCollision();
+    }
+
+    public void handleHitAsteroid(Asteroid asteroid, List<Asteroid> asteroidsToAdd) {
+        if(asteroid.getTierLevel() > 1) {
+            splitAsteroid(asteroid, asteroidsToAdd);
+        }
+    }
+
+    public void splitAsteroid(Asteroid asteroid, List<Asteroid> asteroidsToAdd) {
+        Vector2 asteroidPosition = asteroid.getPosition();
+        int newTierLevel = asteroid.getTierLevel();
+        for (int i = 0; i < 2; i++) {
+            asteroidsToAdd.add(new Asteroid(asteroidPosition, newTierLevel, playerShip));
+        }
     }
 
     public List<Asteroid> getAsteroids() {

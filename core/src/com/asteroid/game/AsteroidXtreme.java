@@ -52,7 +52,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		float delta = Gdx.graphics.getDeltaTime();
 
 		//Update collision handler
-		collisionHandler.update(ship, ufo, boss, asteroids);
+		collisionHandler.update(ship, ufo, boss, asteroidHandler);
 
 		// Update ship logic
 		ship.update(delta);
