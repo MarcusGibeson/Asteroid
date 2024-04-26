@@ -87,6 +87,10 @@ public class Asteroid {
     public float getRadius() {
         return asteroidRadius;
     }
+    public Vector2 getVelocity() {return velocity;}
+    public void setVelocity(Vector2 velocity) {
+        this.velocity.set(velocity);
+    }
 
     public void assignTierParameters(int tier){
         switch(tier){

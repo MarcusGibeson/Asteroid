@@ -118,4 +118,37 @@ public class AsteroidHandler {
         }
         shapeRenderer.end();
     }
+
+    //Asteroid on Asteroid collision logic
+    public void checkImpactResolution(Asteroid asteroid1, Asteroid asteroid2) {
+        //Combined velocity
+        Vector2 combinedVelocity = new Vector2();
+        combinedVelocity.x = Math.abs(asteroid1.getVelocity().x) + Math.abs(asteroid2.getVelocity().x);
+        combinedVelocity.y = Math.abs(asteroid1.getVelocity().y) + Math.abs(asteroid2.getVelocity().y);
+
+        //Determine impact magnitude
+        float impactMagnitude = combinedVelocity.len();
+        float collisionThreshold = 100.0f;
+
+        if(impactMagnitude > collisionThreshold) {
+            List<Asteroid> asteroidsToAdd = new ArrayList<>();
+            splitAsteroid(asteroid1,asteroidsToAdd);
+            splitAsteroid(asteroid2, asteroidsToAdd);
+        } else {
+            //bounce asteroids off each other
+            Vector2 collisionNormal = new Vector2(asteroid2.getPosition()).sub(asteroid1.getPosition()).nor();
+            Vector2 relativeVelocity = new Vector2(asteroid2.getVelocity()).sub(asteroid1.getVelocity());
+
+            float relativeVelocityAlongNormal = relativeVelocity.dot(collisionNormal);
+            Vector2 velocityChange = collisionNormal.scl(2 * relativeVelocityAlongNormal);
+            asteroid1.setVelocity(asteroid1.getVelocity().add(velocityChange));
+            asteroid2.setVelocity(asteroid2.getVelocity().add(velocityChange));
+        }
+
+
+    }
+
+
+
+
 }

@@ -20,6 +20,22 @@ public class CollisionHandler {
 
     public void update(PlayerShip playerShip, UFOShip ufo, BossAsteroid boss, AsteroidHandler asteroidHandler) {
 
+        //Asteroids bumping into each other
+        if(checkAsteroidCollisionWithAnotherAsteroid(asteroidHandler)) {
+            List<Asteroid> asteroids = asteroidHandler.getAsteroids();
+            for (int i = 0; i < asteroids.size(); i++) {
+                Asteroid asteroid1 = asteroids.get(i);
+                Circle asteroid1Circle = new Circle(asteroid1.getPosition(), asteroid1.getRadius());
+                for (int j = 0; j < asteroids.size(); j++) {
+                    Asteroid asteroid2 = asteroids.get(j);
+                    Circle asteroid2Circle = new Circle(asteroid2.getPosition(), asteroid2.getRadius());
+                    if(Intersector.overlaps(asteroid2Circle, asteroid1Circle)) {
+                        asteroidHandler.checkImpactResolution(asteroid1, asteroid2);
+                    }
+                }
+            }
+        }
+
         //Boss asteroid getting shot by player ship bullet
         if (!boss.checkIsDestroyed() && !playerShip.isPlayerDead()) {
             if(checkPlayerShipBulletBossAsteroidCollision(playerShip, boss)) {
@@ -261,6 +277,22 @@ public class CollisionHandler {
         if (Intersector.overlaps(bossCircle, playerShipRectangle)) {
             //collision detected
             return true;
+        }
+        return false;
+    }
+
+    //check collision between Asteroids
+    public static boolean checkAsteroidCollisionWithAnotherAsteroid(AsteroidHandler asteroidHandler) {
+        List<Asteroid> asteroids = asteroidHandler.getAsteroids();
+        for (Asteroid asteroid1 : asteroids) {
+            for (Asteroid asteroid2 : asteroids) {
+                Circle asteroid1Circle = new Circle(asteroid1.getPosition(), asteroid1.getRadius());
+                Circle asteroid2Circle = new Circle(asteroid2.getPosition(), asteroid2.getRadius());
+                if (Intersector.overlaps(asteroid1Circle, asteroid2Circle)) {
+                    //collision detected
+                    return true;
+                }
+            }
         }
         return false;
     }
