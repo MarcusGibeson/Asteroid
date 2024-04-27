@@ -19,6 +19,7 @@ public class Asteroid {
     private List<Vector2> spawnNodes;
     private boolean hitByBullet;
     private PlayerShip playerShip;
+    public boolean toRemove;
 
     public static final float SMALL_ASTEROID_RADIUS = 20;
     public static final float MEDIUM_ASTEROID_RADIUS = 80;
@@ -57,6 +58,7 @@ public class Asteroid {
         }
         this.position = spawnNodes.get(node);
         assignTierParameters(tier);
+        toRemove = false;
     }
 
     //Constructor for child/sibling asteroids
@@ -69,6 +71,7 @@ public class Asteroid {
         int childTier = parentTier - 1;
         this.tier = childTier;
         assignTierParameters(childTier);
+        toRemove = false;
     }
 
     public void update(float delta) {
@@ -134,15 +137,16 @@ public class Asteroid {
 
     //yes I did just copy your loop method from player class lol
     public void loopOffScreenMovement() {
-        if (position.x < 0) {
-            position.x = Gdx.graphics.getWidth(); //moves asteroid to right side of screen if exits left
-        } else if (position.x > Gdx.graphics.getWidth()) {
-            position.x = 0; //moves asteroid to left side of screen if exits right
+        //changes position based on location so ship remains on screen
+        if (position.x < -width) {
+            position.x = Gdx.graphics.getWidth() +width; //moves ship to right side of screen if exits left
+        } else if (position.x > Gdx.graphics.getWidth() +width) {
+            position.x = -width; //moves ship to left side of screen if exits right
         }
-        if (position.y < 0) {
-            position.y = Gdx.graphics.getHeight(); //moves asteroid to top side of screen if exits bottom
-        } else if (position.y > Gdx.graphics.getHeight()) {
-            position.y = 0; //moves asteroid to bottom of screen if exits top
+        if (position.y < -width) {
+            position.y = Gdx.graphics.getHeight() + width; //moves ship to top side of screen if exits bottom
+        } else if (position.y > Gdx.graphics.getHeight() + width){
+            position.y = -width; //moves ship to bottom of screen if exits top
         }
     }
 
@@ -171,4 +175,12 @@ public class Asteroid {
     public int getTierLevel() {return tierLevel;} //changed to tierLevel to keep consistent
     public Vector2 getPosition() {return position;}
     public boolean isHitByBullet(){return hitByBullet;}
+
+    public boolean isToRemove() {
+        return toRemove;
+    }
+
+    public void setToRemove(boolean toRemove) {
+        this.toRemove = toRemove;
+    }
 }

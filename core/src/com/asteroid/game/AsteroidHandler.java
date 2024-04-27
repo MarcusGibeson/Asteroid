@@ -125,15 +125,19 @@ public class AsteroidHandler {
         Vector2 combinedVelocity = new Vector2();
         combinedVelocity.x = Math.abs(asteroid1.getVelocity().x) + Math.abs(asteroid2.getVelocity().x);
         combinedVelocity.y = Math.abs(asteroid1.getVelocity().y) + Math.abs(asteroid2.getVelocity().y);
-
+        System.out.println("Combined velocity: " + combinedVelocity);
         //Determine impact magnitude
         float impactMagnitude = combinedVelocity.len();
-        float collisionThreshold = 100.0f;
+        System.out.println("Impact magnitude: " + impactMagnitude);
+        float collisionThreshold = 8.0f;
 
         if(impactMagnitude > collisionThreshold) {
             List<Asteroid> asteroidsToAdd = new ArrayList<>();
             splitAsteroid(asteroid1,asteroidsToAdd);
+            asteroid1.setToRemove(true);
             splitAsteroid(asteroid2, asteroidsToAdd);
+            asteroid2.setToRemove(true);
+            asteroids.addAll(asteroidsToAdd);
         } else {
             //bounce asteroids off each other
             Vector2 collisionNormal = new Vector2(asteroid2.getPosition()).sub(asteroid1.getPosition()).nor();
@@ -144,10 +148,18 @@ public class AsteroidHandler {
             asteroid1.setVelocity(asteroid1.getVelocity().add(velocityChange));
             asteroid2.setVelocity(asteroid2.getVelocity().add(velocityChange));
         }
-
-
     }
 
+    //Method to remove asteroids marked for removal
+    public void removeMarkedAsteroids(List<Asteroid> asteroids) {
+        Iterator<Asteroid> iterator = asteroids.iterator();
+        while(iterator.hasNext()) {
+            Asteroid asteroid = iterator.next();
+            if(asteroid.isToRemove()) {
+                iterator.remove();
+            }
+        }
+    }
 
 
 
