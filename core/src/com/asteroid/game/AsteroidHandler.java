@@ -118,9 +118,11 @@ public class AsteroidHandler {
         }
         shapeRenderer.end();
     }
+    public String impactResolution;
 
     //Asteroid on Asteroid collision logic
     public void checkImpactResolution(Asteroid asteroid1, Asteroid asteroid2) {
+        List<Asteroid> asteroidsToAdd = new ArrayList<>();
         //Combined velocity
         Vector2 combinedVelocity = new Vector2();
         combinedVelocity.x = Math.abs(asteroid1.getVelocity().x) + Math.abs(asteroid2.getVelocity().x);
@@ -129,25 +131,33 @@ public class AsteroidHandler {
         //Determine impact magnitude
         float impactMagnitude = combinedVelocity.len();
         System.out.println("Impact magnitude: " + impactMagnitude);
-        float collisionThreshold = 8.0f;
+        float collisionThreshold =6.0f;
 
-        if(impactMagnitude > collisionThreshold) {
-            List<Asteroid> asteroidsToAdd = new ArrayList<>();
-            splitAsteroid(asteroid1,asteroidsToAdd);
+        if(impactMagnitude > collisionThreshold && asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() > 1) {
+            handleHitAsteroid(asteroid1,asteroidsToAdd);
             asteroid1.setToRemove(true);
-            splitAsteroid(asteroid2, asteroidsToAdd);
+            handleHitAsteroid(asteroid2, asteroidsToAdd);
             asteroid2.setToRemove(true);
             asteroids.addAll(asteroidsToAdd);
+            removeMarkedAsteroids(asteroids);
+        } else if (asteroid1.getTierLevel() == 1 && asteroid2.getTierLevel() > 1) {
+            asteroid1.setToRemove(true);
+            removeMarkedAsteroids(asteroids);
+        } else if (asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() == 1) {
+            asteroid2.setToRemove(true);
+            removeMarkedAsteroids(asteroids);
         } else {
             //bounce asteroids off each other
             Vector2 collisionNormal = new Vector2(asteroid2.getPosition()).sub(asteroid1.getPosition()).nor();
             Vector2 relativeVelocity = new Vector2(asteroid2.getVelocity()).sub(asteroid1.getVelocity());
+            float restitutionCoefficient = 0.001f;
 
             float relativeVelocityAlongNormal = relativeVelocity.dot(collisionNormal);
-            Vector2 velocityChange = collisionNormal.scl(2 * relativeVelocityAlongNormal);
+            Vector2 velocityChange = collisionNormal.scl(2 * relativeVelocityAlongNormal * restitutionCoefficient);
             asteroid1.setVelocity(asteroid1.getVelocity().add(velocityChange));
             asteroid2.setVelocity(asteroid2.getVelocity().add(velocityChange));
         }
+
     }
 
     //Method to remove asteroids marked for removal
@@ -160,7 +170,5 @@ public class AsteroidHandler {
             }
         }
     }
-
-
 
 }

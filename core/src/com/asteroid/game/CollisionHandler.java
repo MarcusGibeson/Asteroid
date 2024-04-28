@@ -25,19 +25,17 @@ public class CollisionHandler {
             List<Asteroid> asteroids = asteroidHandler.getAsteroids();
             for (int i = 0; i < asteroids.size(); i++) {
                 Asteroid asteroid1 = asteroids.get(i);
-                System.out.println("Asteroid: " + asteroid1);
                 Circle asteroid1Circle = new Circle(asteroid1.getPosition(), asteroid1.getRadius());
                 for (int j = i + 1; j < asteroids.size(); j++) {
                     Asteroid asteroid2 = asteroids.get(j);
-                    System.out.println("Asteroid: " + asteroid2);
                     Circle asteroid2Circle = new Circle(asteroid2.getPosition(), asteroid2.getRadius());
                     if(Intersector.overlaps(asteroid2Circle, asteroid1Circle)) {
                         asteroidHandler.checkImpactResolution(asteroid1, asteroid2);
-                    }
 
+                    }
                 }
             }
-            asteroidHandler.removeMarkedAsteroids(asteroids);
+
         }
 
         //Boss asteroid getting shot by player ship bullet

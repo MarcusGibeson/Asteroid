@@ -254,15 +254,15 @@ public class PlayerShip {
 
     public void loopOffScreenMovement() {
         //changes position based on location so ship remains on screen
-        if (position.x < -width) {
-            position.x = Gdx.graphics.getWidth() +width; //moves ship to right side of screen if exits left
+        if (position.x < 0) {
+            position.x = Gdx.graphics.getWidth(); //moves ship to right side of screen if exits left
         } else if (position.x > Gdx.graphics.getWidth() +width) {
-            position.x = -width; //moves ship to left side of screen if exits right
+            position.x = 0; //moves ship to left side of screen if exits right
         }
-        if (position.y < -width) {
-            position.y = Gdx.graphics.getHeight() + width; //moves ship to top side of screen if exits bottom
-        } else if (position.y > Gdx.graphics.getHeight() + width){
-            position.y = -width; //moves ship to bottom of screen if exits top
+        if (position.y < 0) {
+            position.y = Gdx.graphics.getHeight(); //moves ship to top side of screen if exits bottom
+        } else if (position.y > Gdx.graphics.getHeight()){
+            position.y = 0; //moves ship to bottom of screen if exits top
         }
     }
 
