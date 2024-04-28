@@ -63,7 +63,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 
 		//Update asteroids
-		asteroidHandler.update(delta, ship);
+		asteroidHandler.update(delta);
 
 		// Draw ship
 		ship.draw(shapeRenderer);

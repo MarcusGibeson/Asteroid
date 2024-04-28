@@ -49,7 +49,7 @@ public class AsteroidHandler {
         }, delay / 1000f);
     }
 
-    public void update(float delta, PlayerShip playerShip) {
+    public void update(float delta) {
         handleCollisions(); // Check for collisions and handle them
         // Update asteroid positions
         for (Asteroid asteroid : asteroids) {
