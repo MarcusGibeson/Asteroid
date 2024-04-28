@@ -31,11 +31,11 @@ public class CollisionHandler {
                     Circle asteroid2Circle = new Circle(asteroid2.getPosition(), asteroid2.getRadius());
                     if(Intersector.overlaps(asteroid2Circle, asteroid1Circle)) {
                         asteroidHandler.checkImpactResolution(asteroid1, asteroid2);
-
                     }
+
                 }
             }
-
+            asteroidHandler.removeMarkedAsteroids(asteroids);
         }
 
         //Boss asteroid getting shot by player ship bullet
@@ -100,6 +100,40 @@ public class CollisionHandler {
             }
         }
 
+        //Comet from asteroid collision colliding with player
+        if(checkPlayerShipAsteroidCometCollision(playerShip, asteroidHandler)) {
+            Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+            List<Comet> comets = asteroidHandler.getComets();
+            for(int i = 0; i < comets.size(); i++) {
+                Comet comet = comets.get(i);
+                Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
+                if(Intersector.overlaps(cometCircle, playerShipRectangle)) {
+                    comets.remove(comet);
+                    playerShip.handleCollision();
+                }
+            }
+        }
+
+        //Comet getting shot by player ship bullet
+        if(checkPlayerShipBulletCometCollision(playerShip, asteroidHandler)) {
+            List<Bullet> playerShipBullets = playerShip.getBullets();
+            List<Comet> comets = asteroidHandler.getComets();
+            for (int i = 0; i < playerShipBullets.size(); i++) {
+                Bullet playerBullet = playerShipBullets.get(i);
+                Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+
+                for (int j = 0; j < comets.size(); j++) {
+                    Comet comet = comets.get(j);
+                    Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
+                    if (Intersector.overlaps(playerBulletCircle, cometCircle)) {
+                        playerShipBullets.remove(playerBullet);
+                        comets.remove(comet);
+                        i--;
+                        break;
+                    }
+                }
+            }
+        }
 
         //Player ship and Boss Asteroid colliding
         if(!boss.checkIsDestroyed() && !playerShip.isPlayerDead()){
@@ -245,6 +279,37 @@ public class CollisionHandler {
     public static boolean checkPlayerShipBulletCometCollision(PlayerShip playerShip, BossAsteroid boss) {
         List<Bullet> bullets = playerShip.getBullets();
         List<Comet> comets = boss.getComets();
+        for (Comet comet : comets) {
+            Circle cometCircle = new Circle(comet.getPosition(), COMET_RADIUS);
+            for (Bullet bullet : bullets) {
+                Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
+                if(Intersector.overlaps(bulletCircle,cometCircle)) {
+                    //collision detected
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //check player ship and comets (from asteroid collision) collision
+    public static boolean checkPlayerShipAsteroidCometCollision(PlayerShip playerShip, AsteroidHandler asteroidHandler) {
+        Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+        List<Comet> comets = asteroidHandler.getComets();
+        for (Comet comet : comets) {
+            Circle cometCircle = new Circle(comet.getPosition(), COMET_RADIUS);
+            if(Intersector.overlaps(cometCircle, playerShipRectangle)) {
+                //collision detected
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Method to check collision between player's bullet and comet's from asteroid collision
+    public static boolean checkPlayerShipBulletCometCollision(PlayerShip playerShip, AsteroidHandler asteroidHandler) {
+        List<Bullet> bullets = playerShip.getBullets();
+        List<Comet> comets = asteroidHandler.getComets();
         for (Comet comet : comets) {
             Circle cometCircle = new Circle(comet.getPosition(), COMET_RADIUS);
             for (Bullet bullet : bullets) {

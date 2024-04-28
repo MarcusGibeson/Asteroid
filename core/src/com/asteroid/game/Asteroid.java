@@ -67,7 +67,7 @@ public class Asteroid {
         if (parentTier <= 1){
             return;
         }
-        this.position = new Vector2(parentPosition.x + randomNonZeroValue(-50,50), parentPosition.y + randomNonZeroValue(-50,50));
+        this.position = new Vector2(parentPosition.x + randomNonZeroValue(-100,100), parentPosition.y + randomNonZeroValue(-100,100));
         int childTier = parentTier - 1;
         this.tier = childTier;
         assignTierParameters(childTier);

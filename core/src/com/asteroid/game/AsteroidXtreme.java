@@ -37,7 +37,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		lifeTexture = new Texture(Gdx.files.internal("Images/Player_Ship_Lives.png"));
 		lifeRegion = new TextureRegion(lifeTexture);
 		font = new BitmapFont();
-		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
+		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 99);
 		ufo = new UFOShip(200, 200, ship);
 		boss = new BossAsteroid(new Vector2(500,500),3, ship, 500);
 		collisionHandler = new CollisionHandler(scoreHandler);
@@ -63,7 +63,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 
 		//Update asteroids
-		asteroidHandler.update(delta);
+		asteroidHandler.update(delta, ship);
 
 		// Draw ship
 		ship.draw(shapeRenderer);

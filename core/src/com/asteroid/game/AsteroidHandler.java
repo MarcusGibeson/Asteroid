@@ -1,5 +1,7 @@
 package com.asteroid.game;
 
+import static com.asteroid.game.Comet.COMET_SPEED;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +13,7 @@ import com.badlogic.gdx.utils.Timer;
 
 public class AsteroidHandler {
     private List<Asteroid> asteroids;
+    private List<Comet> comets;
     private PlayerShip playerShip;
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
@@ -20,6 +23,7 @@ public class AsteroidHandler {
     public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
         this.playerShip = playerShip;
         this.asteroids = new ArrayList<>();
+        this.comets = new ArrayList<>();
         this.shapeRenderer = shapeRenderer;
         this.scoreHandler = scoreHandler;
         // Start spawning asteroids immediately
@@ -45,12 +49,16 @@ public class AsteroidHandler {
         }, delay / 1000f);
     }
 
-    public void update(float delta) {
+    public void update(float delta, PlayerShip playerShip) {
         handleCollisions(); // Check for collisions and handle them
         // Update asteroid positions
         for (Asteroid asteroid : asteroids) {
             asteroid.update(delta);
         }
+        for(Comet comet: comets) {
+            comet.update(delta, playerShip.getPosition());
+        }
+
     }
 
 //    private void handleCollisions() {
@@ -118,7 +126,6 @@ public class AsteroidHandler {
         }
         shapeRenderer.end();
     }
-    public String impactResolution;
 
     //Asteroid on Asteroid collision logic
     public void checkImpactResolution(Asteroid asteroid1, Asteroid asteroid2) {
@@ -131,7 +138,7 @@ public class AsteroidHandler {
         //Determine impact magnitude
         float impactMagnitude = combinedVelocity.len();
         System.out.println("Impact magnitude: " + impactMagnitude);
-        float collisionThreshold =6.0f;
+        float collisionThreshold =5.0f;
 
         if(impactMagnitude > collisionThreshold && asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() > 1) {
             handleHitAsteroid(asteroid1,asteroidsToAdd);
@@ -143,9 +150,11 @@ public class AsteroidHandler {
         } else if (asteroid1.getTierLevel() == 1 && asteroid2.getTierLevel() > 1) {
             asteroid1.setToRemove(true);
             removeMarkedAsteroids(asteroids);
+            spawnCometsOnImpact(asteroid1, asteroid2);
         } else if (asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() == 1) {
             asteroid2.setToRemove(true);
             removeMarkedAsteroids(asteroids);
+            spawnCometsOnImpact(asteroid1, asteroid2);
         } else {
             //bounce asteroids off each other
             Vector2 collisionNormal = new Vector2(asteroid2.getPosition()).sub(asteroid1.getPosition()).nor();
@@ -169,6 +178,53 @@ public class AsteroidHandler {
                 iterator.remove();
             }
         }
+    }
+
+    private void spawnCometsOnImpact(Asteroid asteroid1, Asteroid asteroid2) {
+        // Calculate the position of impact (average position between the two asteroids)
+        Vector2 impactPosition = new Vector2(
+                (asteroid1.getPosition().x + asteroid2.getPosition().x) / 2,
+                (asteroid1.getPosition().y + asteroid2.getPosition().y) / 2
+        );
+
+        // Calculate the velocity of the comets (average velocity between the two asteroids)
+        Vector2 impactVelocity = new Vector2(
+                (asteroid1.getVelocity().x + asteroid2.getVelocity().x) / 2,
+                (asteroid1.getVelocity().y + asteroid2.getVelocity().y) / 2
+        );
+
+        // Spawn the comets at the point of impact with the calculated velocity
+        spawnComet(impactPosition, impactVelocity, playerShip);
+    }
+
+    private void spawnComet(Vector2 position, Vector2 velocity, PlayerShip playerShip) {
+        // Create two perpendicular directions
+        Vector2 cometDirection = velocity.cpy().nor();
+        Vector2 perpendicularDirection = new Vector2(-cometDirection.y, cometDirection.x);
+
+        // Calculate positions for the two comets based on the perpendicular direction
+        Vector2 cometPosition1 = position.cpy().add(perpendicularDirection.scl(10));
+        Vector2 cometPosition2 = position.cpy().sub(perpendicularDirection.scl(10));
+
+        // Create comets at the calculated positions and with the provided velocity
+        Comet comet1 = new Comet(cometPosition1, velocity, playerShip);
+        Comet comet2 = new Comet(cometPosition2, velocity, playerShip);
+
+        // Add the comets to the list of comets
+        comets.add(comet1);
+        comets.add(comet2);
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+                    public void run() {
+                comets.remove(comet1);
+                comets.remove(comet2);
+            }
+        }, 2); //1 second delay
+    }
+
+    public List<Comet> getComets() {
+        return comets;
     }
 
 }
