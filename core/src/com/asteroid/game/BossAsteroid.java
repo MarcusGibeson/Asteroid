@@ -55,7 +55,7 @@ public class BossAsteroid extends Asteroid{
         Iterator<Comet> iterator = comets.iterator();
         while(iterator.hasNext()) {
             Comet comet = iterator.next();
-            comet.update(delta, playerShip.getPosition());
+            comet.update(delta, this.playerShip.getPosition());
         }
     }
 

@@ -17,7 +17,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 	private Texture lifeTexture;
 	private TextureRegion lifeRegion;
-	BossAsteroid boss;
+
 	PlayerShip ship;
 	UFOShip ufo;
 	CollisionHandler collisionHandler;
@@ -42,11 +42,10 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		font = new BitmapFont();
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
 		ufo = new UFOShip(200, 200, ship);
-		boss = new BossAsteroid(new Vector2(500,500),3, ship, 500);
 		collisionHandler = new CollisionHandler(scoreHandler);
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
+		stageManager = new StageManager(asteroidHandler, ship);
 		asteroids = asteroidHandler.getAsteroids();
-		stageManager = new StageManager(asteroidHandler);
 	}
 
 	@Override
@@ -56,7 +55,9 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		float delta = Gdx.graphics.getDeltaTime();
 
 		//Update collision handler
-		collisionHandler.update(ship, ufo, boss, asteroidHandler);
+		collisionHandler.update(ship, ufo, asteroidHandler);
+
+		stageManager.update(delta);
 
 		// Update ship logic
 		ship.update(delta);
@@ -64,7 +65,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 		//Update asteroids
 		asteroidHandler.update(delta);
-		asteroidHandler.updateBoss(delta);
+
 
 
 		// Draw ship
@@ -77,12 +78,6 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 		//Draw asteroids
 		asteroidHandler.render();
-		asteroidHandler.drawBoss(shapeRenderer);
-
-		//Draw boss asteroid
-		boss.draw(shapeRenderer);
-
-		boss.drawComets(shapeRenderer);
 
 		//Respawn message
 		spriteBatch.begin();

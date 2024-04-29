@@ -34,7 +34,7 @@ public class UFOShip {
     //respawn variables and constant
     private float respawnTimer = 0;
     private boolean isWaitingToRespawn = false;
-    private static final float RESPAWN_DELAY = 10;
+    private static final float RESPAWN_DELAY = 20;
     private PlayerShip playerShip;
 
     //shooting variables and constant

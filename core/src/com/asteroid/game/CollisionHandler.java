@@ -18,7 +18,7 @@ public class CollisionHandler {
         this.scoreHandler = scoreHandler;
     }
 
-    public void update(PlayerShip playerShip, UFOShip ufo, BossAsteroid boss, AsteroidHandler asteroidHandler) {
+    public void update(PlayerShip playerShip, UFOShip ufo, AsteroidHandler asteroidHandler) {
 
         //Asteroids bumping into each other
         if(checkAsteroidCollisionWithAnotherAsteroid(asteroidHandler)) {
@@ -39,46 +39,46 @@ public class CollisionHandler {
         }
 
         //Boss asteroid getting shot by player ship bullet
-        if (!boss.checkIsDestroyed() && !playerShip.isPlayerDead()) {
-            if(checkPlayerShipBulletBossAsteroidCollision(playerShip, boss)) {
-                boss.takeDamage(1);
-            }
-        }
+//        if (!boss.checkIsDestroyed() && !playerShip.isPlayerDead()) {
+//            if(checkPlayerShipBulletBossAsteroidCollision(playerShip, boss)) {
+//                boss.takeDamage(1);
+//            }
+//        }
 
         //Comet getting shot by player ship bullet
-        if(checkPlayerShipBulletCometCollision(playerShip, boss)) {
-            List<Bullet> playerShipBullets = playerShip.getBullets();
-            List<Comet> comets = boss.getComets();
-            for (int i = 0; i < playerShipBullets.size(); i++) {
-                Bullet playerBullet = playerShipBullets.get(i);
-                Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
-
-                for (int j = 0; j < comets.size(); j++) {
-                    Comet comet = comets.get(j);
-                    Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
-                    if (Intersector.overlaps(playerBulletCircle, cometCircle)) {
-                        playerShipBullets.remove(playerBullet);
-                        comets.remove(comet);
-                        i--;
-                        break;
-                    }
-                }
-            }
-        }
+//        if(checkPlayerShipBulletCometCollision(playerShip, boss)) {
+//            List<Bullet> playerShipBullets = playerShip.getBullets();
+//            List<Comet> comets = boss.getComets();
+//            for (int i = 0; i < playerShipBullets.size(); i++) {
+//                Bullet playerBullet = playerShipBullets.get(i);
+//                Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+//
+//                for (int j = 0; j < comets.size(); j++) {
+//                    Comet comet = comets.get(j);
+//                    Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
+//                    if (Intersector.overlaps(playerBulletCircle, cometCircle)) {
+//                        playerShipBullets.remove(playerBullet);
+//                        comets.remove(comet);
+//                        i--;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
 
         //Comet colliding with player
-        if(checkPlayerShipCometCollision(playerShip, boss)) {
-            Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
-            List<Comet> comets = boss.getComets();
-            for(int i = 0; i < comets.size(); i++) {
-                Comet comet = comets.get(i);
-                Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
-                if(Intersector.overlaps(cometCircle, playerShipRectangle)) {
-                    comets.remove(comet);
-                    playerShip.handleCollision();
-                }
-            }
-        }
+//        if(checkPlayerShipCometCollision(playerShip, boss)) {
+//            Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+//            List<Comet> comets = boss.getComets();
+//            for(int i = 0; i < comets.size(); i++) {
+//                Comet comet = comets.get(i);
+//                Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
+//                if(Intersector.overlaps(cometCircle, playerShipRectangle)) {
+//                    comets.remove(comet);
+//                    playerShip.handleCollision();
+//                }
+//            }
+//        }
 
         //Asteroid colliding with player
         if(!playerShip.isPlayerDead()){
@@ -101,12 +101,12 @@ public class CollisionHandler {
         }
 
         //Player ship and Boss Asteroid colliding
-        if(!boss.checkIsDestroyed() && !playerShip.isPlayerDead()){
-            if(checkPlayerShipBossAsteroidCollision(playerShip, boss)) {
-                playerShip.handleCollision();
-                boss.takeDamage(25);
-            }
-        }
+//        if(!boss.checkIsDestroyed() && !playerShip.isPlayerDead()){
+//            if(checkPlayerShipBossAsteroidCollision(playerShip, boss)) {
+//                playerShip.handleCollision();
+//                boss.takeDamage(25);
+//            }
+//        }
 
         //Player ship and UFO collidiing
         if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {

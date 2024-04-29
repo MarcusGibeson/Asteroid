@@ -1,7 +1,5 @@
 package com.asteroid.game;
 
-import static com.asteroid.game.Comet.COMET_SPEED;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +15,7 @@ public class AsteroidHandler {
     private BossAsteroid bossAsteroid;
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
+    private StageManager stageManager;
     final static int SPAWN_COOLDOWN_MIN = 2000;
     final static int SPAWN_COOLDOWN_MAX = 3000;
 
@@ -31,8 +30,8 @@ public class AsteroidHandler {
         this.asteroids = new ArrayList<>();
         this.shapeRenderer = shapeRenderer;
         this.scoreHandler = scoreHandler;
-        // Start spawning asteroids immediately
-        scheduleSpawn();
+        startSpawning();
+
     }
 
     public void setAsteroidsPerSpawn(int asteroidsPerSpawn) {
@@ -46,6 +45,10 @@ public class AsteroidHandler {
     public void startSpawning() {
         isSpawning = true;
         scheduleSpawn();
+    }
+
+    public void setBossAsteroid(BossAsteroid bossAsteroid) {
+        this.bossAsteroid = bossAsteroid;
     }
 
     public void spawnAsteroid() {
@@ -62,20 +65,24 @@ public class AsteroidHandler {
         }
     }
 
+
     public void spawnBossAsteroid() {
-        Vector2 bossSpawnPosition = new Vector2(650, 500);
-        BossAsteroid bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
-        asteroids.add(bossAsteroid);
+        if (bossAsteroid != null) {
+            return;
+        }
+        Vector2 bossSpawnPosition = new Vector2(650, 300);
+        bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
     }
 
     public void updateBoss(float delta) {
-        bossAsteroid.setPlayerShip(playerShip);
+
         bossAsteroid.update(delta);
         bossAsteroid.updateComets(delta);
     }
 
     public void drawBoss(ShapeRenderer shapeRenderer) {
         bossAsteroid.draw(shapeRenderer);
+        bossAsteroid.drawComets(shapeRenderer);
     }
 
     public void scheduleSpawn() {
@@ -88,7 +95,7 @@ public class AsteroidHandler {
                 spawnAsteroids(asteroidsPerSpawn);
                 scheduleSpawn(); // Reschedule spawning
             }
-        }, delay / 250f);
+        }, delay / 2000f);
     }
 
     public void update(float delta) {
@@ -97,8 +104,9 @@ public class AsteroidHandler {
         for (Asteroid asteroid : asteroids) {
             asteroid.update(delta);
         }
-
-
+        if (bossAsteroid != null) {
+            updateBoss(delta);
+        }
     }
 
 //    private void handleCollisions() {
@@ -165,6 +173,10 @@ public class AsteroidHandler {
             asteroid.draw(shapeRenderer); // Draw each asteroid
         }
         shapeRenderer.end();
+        if(bossAsteroid != null) {
+            drawBoss(shapeRenderer);
+        }
+
     }
 
     //Asteroid on Asteroid collision logic
