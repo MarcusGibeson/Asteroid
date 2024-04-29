@@ -1,15 +1,19 @@
 package com.asteroid.game;
 
+import static com.asteroid.game.Comet.COMET_SPEED;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 public class AsteroidHandler {
     private List<Asteroid> asteroids;
+
     private PlayerShip playerShip;
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
@@ -19,6 +23,7 @@ public class AsteroidHandler {
     public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
         this.playerShip = playerShip;
         this.asteroids = new ArrayList<>();
+
         this.shapeRenderer = shapeRenderer;
         this.scoreHandler = scoreHandler;
         // Start spawning asteroids immediately
@@ -50,6 +55,8 @@ public class AsteroidHandler {
         for (Asteroid asteroid : asteroids) {
             asteroid.update(delta);
         }
+
+
     }
 
 //    private void handleCollisions() {
@@ -58,28 +65,45 @@ public class AsteroidHandler {
 //        }
 //    }
 
+    //refactored to make some code reusable for Collision Handler
     private void handleCollisions() {
          Iterator<Asteroid> iterator = asteroids.iterator();
          List<Asteroid> asteroidsToAdd = new ArrayList<>(); //created new list of asteroids
         while (iterator.hasNext()) {
             Asteroid asteroid = iterator.next();
-            asteroid.detectCollision();
+            detectCollision(asteroid);
             if (asteroid.isHitByBullet()) {
-                System.out.println("Asteroid tier: " + asteroid.getTierLevel());
+                handleHitAsteroid(asteroid, asteroidsToAdd);
                 int scoreToAdd = getScoreForTier(asteroid.getTierLevel());
-                if (asteroid.getTierLevel() > 1) {
-                    // If the asteroid is not the smallest tier, split it into smaller asteroids
-                    for (int i = 0; i < 2; i++) {
-                        asteroidsToAdd.add(new Asteroid(asteroid.getPosition(), asteroid.getTierLevel() , playerShip));//first one was -1 twice
-                    }
-                }
-                iterator.remove(); // Remove the asteroid from the list
                 scoreHandler.increaseScore(scoreToAdd);
+                iterator.remove(); // Remove the asteroid from the list
+
             }
         }
         asteroids.addAll(asteroidsToAdd); //added them here after asteroid is removed
     }
 
+    private void detectCollision(Asteroid asteroid) {
+        asteroid.detectCollision();
+    }
+
+    public void handleHitAsteroid(Asteroid asteroid, List<Asteroid> asteroidsToAdd) {
+        if(asteroid.getTierLevel() > 1) {
+            splitAsteroid(asteroid, asteroidsToAdd);
+        }
+    }
+
+    public void splitAsteroid(Asteroid asteroid, List<Asteroid> asteroidsToAdd) {
+        Vector2 asteroidPosition = asteroid.getPosition();
+        int newTierLevel = asteroid.getTierLevel();
+        for (int i = 0; i < 2; i++) {
+            asteroidsToAdd.add(new Asteroid(asteroidPosition, newTierLevel, playerShip));
+        }
+    }
+
+    public List<Asteroid> getAsteroids() {
+        return asteroids;
+    }
     private int getScoreForTier(int tier) {
         switch(tier) {
             case 1:
@@ -100,4 +124,59 @@ public class AsteroidHandler {
         }
         shapeRenderer.end();
     }
+
+    //Asteroid on Asteroid collision logic
+    public void checkImpactResolution(Asteroid asteroid1, Asteroid asteroid2) {
+        List<Asteroid> asteroidsToAdd = new ArrayList<>();
+        //Combined velocity
+        Vector2 combinedVelocity = new Vector2();
+        combinedVelocity.x = Math.abs(asteroid1.getVelocity().x) + Math.abs(asteroid2.getVelocity().x);
+        combinedVelocity.y = Math.abs(asteroid1.getVelocity().y) + Math.abs(asteroid2.getVelocity().y);
+        System.out.println("Combined velocity: " + combinedVelocity);
+        //Determine impact magnitude
+        float impactMagnitude = combinedVelocity.len();
+        System.out.println("Impact magnitude: " + impactMagnitude);
+        float collisionThreshold =5.0f;
+
+        if(impactMagnitude > collisionThreshold && asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() > 1) {
+            handleHitAsteroid(asteroid1,asteroidsToAdd);
+            asteroid1.setToRemove(true);
+            handleHitAsteroid(asteroid2, asteroidsToAdd);
+            asteroid2.setToRemove(true);
+            asteroids.addAll(asteroidsToAdd);
+            removeMarkedAsteroids(asteroids);
+        } else if (asteroid1.getTierLevel() == 1 && asteroid2.getTierLevel() > 1) {
+            asteroid1.setToRemove(true);
+            removeMarkedAsteroids(asteroids);
+
+        } else if (asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() == 1) {
+            asteroid2.setToRemove(true);
+            removeMarkedAsteroids(asteroids);
+
+        } else {
+            //bounce asteroids off each other
+            Vector2 collisionNormal = new Vector2(asteroid2.getPosition()).sub(asteroid1.getPosition()).nor();
+            Vector2 relativeVelocity = new Vector2(asteroid2.getVelocity()).sub(asteroid1.getVelocity());
+            float restitutionCoefficient = 0.001f;
+
+            float relativeVelocityAlongNormal = relativeVelocity.dot(collisionNormal);
+            Vector2 velocityChange = collisionNormal.scl(2 * relativeVelocityAlongNormal * restitutionCoefficient);
+            asteroid1.setVelocity(asteroid1.getVelocity().add(velocityChange));
+            asteroid2.setVelocity(asteroid2.getVelocity().add(velocityChange));
+        }
+
+    }
+
+    //Method to remove asteroids marked for removal
+    public void removeMarkedAsteroids(List<Asteroid> asteroids) {
+        Iterator<Asteroid> iterator = asteroids.iterator();
+        while(iterator.hasNext()) {
+            Asteroid asteroid = iterator.next();
+            if(asteroid.isToRemove()) {
+                iterator.remove();
+            }
+        }
+    }
+
+
 }

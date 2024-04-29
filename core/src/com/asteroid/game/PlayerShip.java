@@ -264,12 +264,12 @@ public class PlayerShip {
         //changes position based on location so ship remains on screen
         if (position.x < 0) {
             position.x = Gdx.graphics.getWidth(); //moves ship to right side of screen if exits left
-        } else if (position.x > Gdx.graphics.getWidth()) {
+        } else if (position.x > Gdx.graphics.getWidth() +width) {
             position.x = 0; //moves ship to left side of screen if exits right
         }
         if (position.y < 0) {
             position.y = Gdx.graphics.getHeight(); //moves ship to top side of screen if exits bottom
-        } else if (position.y > Gdx.graphics.getHeight()) {
+        } else if (position.y > Gdx.graphics.getHeight()){
             position.y = 0; //moves ship to bottom of screen if exits top
         }
     }

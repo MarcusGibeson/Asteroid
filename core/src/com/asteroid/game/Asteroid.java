@@ -11,14 +11,20 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Asteroid {
-    private Vector2 position, velocity;
+    public Vector2 position, velocity;
     private int tier;
     private int tierLevel;
-    private float width, height;
+    private float width;
+    private float height;
     private List<Vector2> spawnNodes;
     private boolean hitByBullet;
     private PlayerShip playerShip;
+    public boolean toRemove;
 
+    public static final float SMALL_ASTEROID_RADIUS = 20;
+    public static final float MEDIUM_ASTEROID_RADIUS = 80;
+    public static final float LARGE_ASTEROID_RADIUS = 150;
+    private float asteroidRadius;
     private static final float SCREEN_HEIGHT = 720f;
     private static final float SCREEN_WIDTH = 1280f;
     private static final float MAX_SPEED = 5f;
@@ -52,6 +58,7 @@ public class Asteroid {
         }
         this.position = spawnNodes.get(node);
         assignTierParameters(tier);
+        toRemove = false;
     }
 
     //Constructor for child/sibling asteroids
@@ -60,10 +67,11 @@ public class Asteroid {
         if (parentTier <= 1){
             return;
         }
-        this.position = new Vector2(parentPosition.x + MathUtils.random(-50,50), parentPosition.y + MathUtils.random(-50,50));
+        this.position = new Vector2(parentPosition.x + randomNonZeroValue(-100,100), parentPosition.y + randomNonZeroValue(-100,100));
         int childTier = parentTier - 1;
         this.tier = childTier;
         assignTierParameters(childTier);
+        toRemove = false;
     }
 
     public void update(float delta) {
@@ -72,14 +80,24 @@ public class Asteroid {
         position.y += velocity.y;
 
         loopOffScreenMovement();
+
+
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.circle(position.x, position.y, width/2);
+
+
     }
 
-
+    public float getRadius() {
+        return asteroidRadius;
+    }
+    public Vector2 getVelocity() {return velocity;}
+    public void setVelocity(Vector2 velocity) {
+        this.velocity.set(velocity);
+    }
 
     public void assignTierParameters(int tier){
         switch(tier){
@@ -89,6 +107,7 @@ public class Asteroid {
                 width = 40;
                 velocity = new Vector2(randomNonZeroValue(-4, 4), randomNonZeroValue(-4,4));
                 tierLevel = 1;
+                asteroidRadius = SMALL_ASTEROID_RADIUS;
                 break;
             case 2: //Medium asteroid
 //                health = 2;
@@ -96,6 +115,7 @@ public class Asteroid {
                 width = 160;
                 velocity = new Vector2(randomNonZeroValue(-2,2), randomNonZeroValue(-2,2));
                 tierLevel = 2;
+                asteroidRadius = MEDIUM_ASTEROID_RADIUS;
                 break;
             case 3: //Large asteroid
 //                health = 3;
@@ -103,6 +123,7 @@ public class Asteroid {
                 width = 300;
                 velocity = new Vector2(randomNonZeroValue(-1,1), randomNonZeroValue(-1,1));
                 tierLevel = 3;
+                asteroidRadius = LARGE_ASTEROID_RADIUS;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
@@ -120,15 +141,16 @@ public class Asteroid {
 
     //yes I did just copy your loop method from player class lol
     public void loopOffScreenMovement() {
+        //changes position based on location so ship remains on screen
         if (position.x < 0) {
-            position.x = Gdx.graphics.getWidth(); //moves asteroid to right side of screen if exits left
-        } else if (position.x > Gdx.graphics.getWidth()) {
-            position.x = 0; //moves asteroid to left side of screen if exits right
+            position.x = Gdx.graphics.getWidth(); //moves ship to right side of screen if exits left
+        } else if (position.x > Gdx.graphics.getWidth() +width) {
+            position.x = 0; //moves ship to left side of screen if exits right
         }
         if (position.y < 0) {
-            position.y = Gdx.graphics.getHeight(); //moves asteroid to top side of screen if exits bottom
-        } else if (position.y > Gdx.graphics.getHeight()) {
-            position.y = 0; //moves asteroid to bottom of screen if exits top
+            position.y = Gdx.graphics.getHeight(); //moves ship to top side of screen if exits bottom
+        } else if (position.y > Gdx.graphics.getHeight()){
+            position.y = 0; //moves ship to bottom of screen if exits top
         }
     }
 
@@ -147,6 +169,10 @@ public class Asteroid {
         }
     }
 
+    public void setPosition(Vector2 position) {
+        this.position = position;
+    }
+
     private boolean intersects(Vector2 bulletPosition){
         // Calculate distance between bullet and asteroid center
         float distance = position.dst(bulletPosition);
@@ -157,4 +183,12 @@ public class Asteroid {
     public int getTierLevel() {return tierLevel;} //changed to tierLevel to keep consistent
     public Vector2 getPosition() {return position;}
     public boolean isHitByBullet(){return hitByBullet;}
+
+    public boolean isToRemove() {
+        return toRemove;
+    }
+
+    public void setToRemove(boolean toRemove) {
+        this.toRemove = toRemove;
+    }
 }
