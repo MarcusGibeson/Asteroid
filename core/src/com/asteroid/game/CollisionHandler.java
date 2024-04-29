@@ -168,7 +168,7 @@ public class CollisionHandler {
             }
         }
     }
-
+//
     //Method to check collision between UFO bullets and player ship
     public static boolean checkUFOBulletPlayerShipCollision(UFOShip ufo, PlayerShip playerShip) {
         for (Bullet bullet : ufo.getBullets()) {
