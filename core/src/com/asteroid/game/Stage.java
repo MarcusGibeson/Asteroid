@@ -1,20 +1,21 @@
 package com.asteroid.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Stage {
     private int stageNumber;
     private int asteroidCount;
     private int bossCount;
-    private int spawnCooldownMin;
-    private int spawnCooldownMax;
     private int bossHealth;
+    private List<BossAsteroid> bossAsteroids;
 
-    public Stage(int stageNumber, int asteroidCount, int bossCount, int spawnCooldownMin, int spawnCooldownMax, int bossHealth) {
+    public Stage(int stageNumber, int asteroidCount, int bossCount, int bossHealth) {
         this.stageNumber = stageNumber;
         this.asteroidCount = asteroidCount;
         this.bossCount = bossCount;
-        this.spawnCooldownMin = spawnCooldownMin;
-        this.spawnCooldownMax = spawnCooldownMax;
         this.bossHealth = bossHealth;
+        this.bossAsteroids = new ArrayList<>();
     }
 
     public int getBossHealth() {
@@ -32,12 +33,12 @@ public class Stage {
         return bossCount;
     }
 
-    public int getSpawnCooldownMin() {
-        return spawnCooldownMin;
+
+    public List<BossAsteroid> getBossAsteroids() {
+        return bossAsteroids;
     }
 
-    public int getSpawnCooldownMax() {
-        return spawnCooldownMax;
+    public void addBossAsteroid(BossAsteroid bossAsteroid) {
+        bossAsteroids.add(bossAsteroid);
     }
-
 }

@@ -113,7 +113,6 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	private void updateStageParameters() {
 		Stage currentStage = stageManager.getCurrentStage();
 		asteroidHandler.setAsteroidsPerSpawn(currentStage.getAsteroidCount());
-		asteroidHandler.setSpawnCooldown(currentStage.getSpawnCooldownMin(), currentStage.getSpawnCooldownMax());
 	}
 
 	private void drawPlayerLives(SpriteBatch batch) {

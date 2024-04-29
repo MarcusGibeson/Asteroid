@@ -71,18 +71,15 @@ public class StageManager {
         for(int i = 1; i <= MAX_STAGES; i++) {
             int asteroidCount = initialAsteroidCount + ((i-1) * 2); //increment asteroids by 2 each stage
             int bossCount = determineBossCount(i); //determine how many bosses
-            int minSpawnCooldown = 2000 - (i - 1) * 200; //Decrease min spawn cooldown by 200 each stage
-            int maxSpawnCooldown = 3000 - (i - 1) * 300;//Decrease max spawn cooldown by 300 each stage
             int bossHealth = 500;
 
-            Stage stage = new Stage(i, asteroidCount, bossCount, minSpawnCooldown, maxSpawnCooldown, bossHealth);
+            Stage stage = new Stage(i, asteroidCount, bossCount, bossHealth);
             stages.add(stage);
             for (int j = 0; j < bossCount; j++) {
                 Vector2 bossSpawnPosition = new Vector2(650, 300);
                 BossAsteroid bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, bossHealth);
                 bossAsteroid.setPlayerShip(playerShip);
-                asteroidHandler.setBossAsteroid(bossAsteroid);
-
+                stage.addBossAsteroid(bossAsteroid);
             }
         }
     }
@@ -94,13 +91,11 @@ public class StageManager {
     private void startCurrentStage() {
         currentStage = stages.get(currentStageIndex);
         asteroidHandler.setAsteroidsPerSpawn(currentStage.getAsteroidCount());
-        asteroidHandler.setSpawnCooldown(currentStage.getSpawnCooldownMin(), currentStage.getSpawnCooldownMax());
-        if (currentStage.hasBossAsteriod()) {
-            asteroidHandler.setBossAsteroidsPerSpawn(currentStage.getBossCount());
+        for (BossAsteroid bossAsteroid : currentStage.getBossAsteroids()) {
+            asteroidHandler.spawnBossAsteroid(bossAsteroid);
         }
 
         asteroidHandler.startSpawning();
-
 
     }
 

@@ -13,17 +13,10 @@ public class AsteroidHandler {
     private List<Asteroid> asteroids;
     private PlayerShip playerShip;
     private List<BossAsteroid> bossAsteroids;
-
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
-    private StageManager stageManager;
-    final static int SPAWN_COOLDOWN_MIN = 2000;
-    final static int SPAWN_COOLDOWN_MAX = 3000;
-
     private int asteroidsPerSpawn;
     private int bossPerSpawn;
-    private int spawnCooldownMin;
-    private int spawnCooldownMax;
     private boolean isSpawning;
 
 
@@ -40,14 +33,6 @@ public class AsteroidHandler {
         this.asteroidsPerSpawn = asteroidsPerSpawn;
     }
 
-    public void setBossAsteroidsPerSpawn(int bossPerSpawn) {
-        this.bossPerSpawn = bossPerSpawn;
-    }
-
-    public void setSpawnCooldown(int spawnCooldownMin, int spawnCooldownMax) {
-        this.spawnCooldownMin = spawnCooldownMin;
-        this.spawnCooldownMax = spawnCooldownMax;
-    }
 
     public void startSpawning() {
         isSpawning = true;
@@ -55,9 +40,6 @@ public class AsteroidHandler {
         spawnAsteroids(asteroidsPerSpawn);
     }
 
-
-    public void setBossAsteroid(BossAsteroid bossAsteroid) {
-    }
 
     public void spawnAsteroid() {
         // Generate random spawn node and tier
@@ -73,13 +55,12 @@ public class AsteroidHandler {
         }
     }
 
-
-    public void spawnBossAsteroid() {
+    public void spawnBossAsteroid(BossAsteroid bossAsteroid) {
         if (bossAsteroids != null) {
             return;
         }
-        Vector2 bossSpawnPosition = new Vector2(650, 300);
-        BossAsteroid bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
+        Vector2 bossSpawnPosition = new Vector2(MathUtils.random(500,500), MathUtils.random(550,650));
+        bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
         bossAsteroids.add(bossAsteroid);
     }
 
@@ -97,19 +78,6 @@ public class AsteroidHandler {
         }
     }
 
-    public void scheduleSpawn() {
-        if(!isSpawning) return;
-
-        int delay = MathUtils.random(SPAWN_COOLDOWN_MIN, SPAWN_COOLDOWN_MAX);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                spawnAsteroids(asteroidsPerSpawn);
-                scheduleSpawn(); // Reschedule spawning
-            }
-        }, delay / 2000f);
-    }
-
     public void update(float delta) {
         handleCollisions(); // Check for collisions and handle them
         // Update asteroid positions
@@ -124,11 +92,6 @@ public class AsteroidHandler {
         }
     }
 
-//    private void handleCollisions() {
-//        for (Asteroid asteroid : asteroids) {
-//            asteroid.detectCollision(); // Delegate collision detection to Asteroid class
-//        }
-//    }
 
     //refactored to make some code reusable for Collision Handler
     private void handleCollisions() {
