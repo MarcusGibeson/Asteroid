@@ -2,30 +2,30 @@ package com.asteroid.game;
 
 public class Stage {
     private int stageNumber;
-    private int asteroidLimit;
+    private int asteroidCount;
     private boolean hasBossAsteriod;
     private int spawnCooldownMin;
     private int spawnCooldownMax;
     private int thresholdScore;
 
-    public Stage(int stageNumber, int asteroidLimit, boolean hasBossAsteriod, int spawnCooldownMin, int spawnCooldownMax, int thresholdScore) {
+    public Stage(int stageNumber, int asteroidCount, boolean hasBossAsteriod, int spawnCooldownMin, int spawnCooldownMax, int thresholdScore) {
         this.stageNumber = stageNumber;
-        this.asteroidLimit = asteroidLimit;
+        this.asteroidCount = asteroidCount;
         this.hasBossAsteriod = hasBossAsteriod;
         this.spawnCooldownMin = spawnCooldownMin;
         this.spawnCooldownMax = spawnCooldownMax;
         this.thresholdScore = thresholdScore;
     }
 
-    public int getAsteroidLimit() {
-        return asteroidLimit;
+    public int getAsteroidCount() {
+        return asteroidCount;
     }
 
     public int getStageNumber() {
         return stageNumber;
     }
 
-    public boolean isHasBossAsteriod() {
+    public boolean hasBossAsteriod() {
         return hasBossAsteriod;
     }
 

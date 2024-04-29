@@ -13,20 +13,38 @@ import com.badlogic.gdx.utils.Timer;
 
 public class AsteroidHandler {
     private List<Asteroid> asteroids;
-
     private PlayerShip playerShip;
+    private BossAsteroid bossAsteroid;
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
     final static int SPAWN_COOLDOWN_MIN = 2000;
     final static int SPAWN_COOLDOWN_MAX = 3000;
 
+    private int asteroidsPerSpawn;
+    private int spawnCooldownMin;
+    private int spawnCooldownMax;
+    private boolean isSpawning;
+
+
     public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
         this.playerShip = playerShip;
         this.asteroids = new ArrayList<>();
-
         this.shapeRenderer = shapeRenderer;
         this.scoreHandler = scoreHandler;
         // Start spawning asteroids immediately
+        scheduleSpawn();
+    }
+
+    public void setAsteroidsPerSpawn(int asteroidsPerSpawn) {
+        this.asteroidsPerSpawn = asteroidsPerSpawn;
+    }
+    public void setSpawnCooldown(int spawnCooldownMin, int spawnCooldownMax) {
+        this.spawnCooldownMin = spawnCooldownMin;
+        this.spawnCooldownMax = spawnCooldownMax;
+    }
+
+    public void startSpawning() {
+        isSpawning = true;
         scheduleSpawn();
     }
 
@@ -38,15 +56,39 @@ public class AsteroidHandler {
         asteroids.add(new Asteroid(spawnNode, tier, playerShip));
     }
 
+    private void spawnAsteroids(int count) {
+        for(int i = 0; i < count; i++) {
+            spawnAsteroid();
+        }
+    }
+
+    public void spawnBossAsteroid() {
+        Vector2 bossSpawnPosition = new Vector2(650, 500);
+        BossAsteroid bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
+        asteroids.add(bossAsteroid);
+    }
+
+    public void updateBoss(float delta) {
+        bossAsteroid.setPlayerShip(playerShip);
+        bossAsteroid.update(delta);
+        bossAsteroid.updateComets(delta);
+    }
+
+    public void drawBoss(ShapeRenderer shapeRenderer) {
+        bossAsteroid.draw(shapeRenderer);
+    }
+
     public void scheduleSpawn() {
+        if(!isSpawning) return;
+
         int delay = MathUtils.random(SPAWN_COOLDOWN_MIN, SPAWN_COOLDOWN_MAX);
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                spawnAsteroid();
+                spawnAsteroids(asteroidsPerSpawn);
                 scheduleSpawn(); // Reschedule spawning
             }
-        }, delay / 1000f);
+        }, delay / 250f);
     }
 
     public void update(float delta) {

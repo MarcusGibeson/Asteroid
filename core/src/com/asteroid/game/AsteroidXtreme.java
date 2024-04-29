@@ -28,9 +28,12 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 	List<Asteroid> asteroids;
 
+	private StageManager stageManager;
+
 
 	@Override
 	public void create() {
+
 		shapeRenderer = new ShapeRenderer();
 		scoreHandler = new ScoreHandler();
 		spriteBatch = new SpriteBatch();
@@ -43,6 +46,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		collisionHandler = new CollisionHandler(scoreHandler);
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
 		asteroids = asteroidHandler.getAsteroids();
+		stageManager = new StageManager(asteroidHandler);
 	}
 
 	@Override
@@ -57,13 +61,11 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		// Update ship logic
 		ship.update(delta);
 		ufo.update(delta);
-		boss.setPlayerShip(ship);
-		boss.update(delta);
-		boss.updateComets(delta);
-
 
 		//Update asteroids
 		asteroidHandler.update(delta);
+		asteroidHandler.updateBoss(delta);
+
 
 		// Draw ship
 		ship.draw(shapeRenderer);
@@ -75,6 +77,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 		//Draw asteroids
 		asteroidHandler.render();
+		asteroidHandler.drawBoss(shapeRenderer);
 
 		//Draw boss asteroid
 		boss.draw(shapeRenderer);
@@ -90,17 +93,12 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		spriteBatch.begin();
 		font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
 
-
 		//Draw lives
-		int lives = ship.getLives();
-		float lifeImageWidth = lifeRegion.getRegionWidth();
-		float lifeImageHeight = lifeRegion.getRegionHeight();
-		float startX = 10;
-		float startY = Gdx.graphics.getHeight() - 80;
-		for (int i = 0; i < lives; i++) {
-			spriteBatch.draw(lifeRegion, startX + i * (lifeImageWidth + 5), startY, lifeImageWidth, lifeImageHeight);
-		}
+		drawPlayerLives(spriteBatch);
 		spriteBatch.end();
+
+		//Check for stage transitions and update parameters
+		updateStageParameters();
 
 	}
 
@@ -110,4 +108,21 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		lifeTexture.dispose();
 	}
 
+
+	private void updateStageParameters() {
+		Stage currentStage = stageManager.getCurrentStage();
+		asteroidHandler.setAsteroidsPerSpawn(currentStage.getAsteroidCount());
+		asteroidHandler.setSpawnCooldown(currentStage.getSpawnCooldownMin(), currentStage.getSpawnCooldownMax());
+	}
+
+	private void drawPlayerLives(SpriteBatch batch) {
+		int lives = ship.getLives();
+		float lifeImageWidth = lifeRegion.getRegionWidth();
+		float lifeImageHeight = lifeRegion.getRegionHeight();
+		float startX = 10;
+		float startY = Gdx.graphics.getHeight() - 80;
+		for (int i = 0; i < lives; i++) {
+			spriteBatch.draw(lifeRegion, startX + i * (lifeImageWidth + 5), startY, lifeImageWidth, lifeImageHeight);
+		}
+	}
 }
