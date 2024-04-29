@@ -12,7 +12,8 @@ import com.badlogic.gdx.utils.Timer;
 public class AsteroidHandler {
     private List<Asteroid> asteroids;
     private PlayerShip playerShip;
-    private BossAsteroid bossAsteroid;
+    private List<BossAsteroid> bossAsteroids;
+
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
     private StageManager stageManager;
@@ -20,6 +21,7 @@ public class AsteroidHandler {
     final static int SPAWN_COOLDOWN_MAX = 3000;
 
     private int asteroidsPerSpawn;
+    private int bossPerSpawn;
     private int spawnCooldownMin;
     private int spawnCooldownMax;
     private boolean isSpawning;
@@ -28,15 +30,20 @@ public class AsteroidHandler {
     public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
         this.playerShip = playerShip;
         this.asteroids = new ArrayList<>();
+        this.bossAsteroids = new ArrayList<>();
         this.shapeRenderer = shapeRenderer;
         this.scoreHandler = scoreHandler;
-        startSpawning();
 
     }
 
     public void setAsteroidsPerSpawn(int asteroidsPerSpawn) {
         this.asteroidsPerSpawn = asteroidsPerSpawn;
     }
+
+    public void setBossAsteroidsPerSpawn(int bossPerSpawn) {
+        this.bossPerSpawn = bossPerSpawn;
+    }
+
     public void setSpawnCooldown(int spawnCooldownMin, int spawnCooldownMax) {
         this.spawnCooldownMin = spawnCooldownMin;
         this.spawnCooldownMax = spawnCooldownMax;
@@ -44,11 +51,12 @@ public class AsteroidHandler {
 
     public void startSpawning() {
         isSpawning = true;
-        scheduleSpawn();
+//        scheduleSpawn();
+        spawnAsteroids(asteroidsPerSpawn);
     }
 
+
     public void setBossAsteroid(BossAsteroid bossAsteroid) {
-        this.bossAsteroid = bossAsteroid;
     }
 
     public void spawnAsteroid() {
@@ -67,22 +75,26 @@ public class AsteroidHandler {
 
 
     public void spawnBossAsteroid() {
-        if (bossAsteroid != null) {
+        if (bossAsteroids != null) {
             return;
         }
         Vector2 bossSpawnPosition = new Vector2(650, 300);
-        bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
+        BossAsteroid bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
+        bossAsteroids.add(bossAsteroid);
     }
 
     public void updateBoss(float delta) {
-
-        bossAsteroid.update(delta);
-        bossAsteroid.updateComets(delta);
+        for (BossAsteroid bossAsteroid : bossAsteroids) {
+            bossAsteroid.update(delta);
+            bossAsteroid.updateComets(delta);
+        }
     }
 
     public void drawBoss(ShapeRenderer shapeRenderer) {
-        bossAsteroid.draw(shapeRenderer);
-        bossAsteroid.drawComets(shapeRenderer);
+        for (BossAsteroid bossAsteroid: bossAsteroids) {
+            bossAsteroid.draw(shapeRenderer);
+            bossAsteroid.drawComets(shapeRenderer);
+        }
     }
 
     public void scheduleSpawn() {
@@ -104,8 +116,11 @@ public class AsteroidHandler {
         for (Asteroid asteroid : asteroids) {
             asteroid.update(delta);
         }
-        if (bossAsteroid != null) {
-            updateBoss(delta);
+        if (bossAsteroids != null) {
+            for (BossAsteroid bossAsteroid : bossAsteroids) {
+                updateBoss(delta);
+            }
+
         }
     }
 
@@ -173,8 +188,11 @@ public class AsteroidHandler {
             asteroid.draw(shapeRenderer); // Draw each asteroid
         }
         shapeRenderer.end();
-        if(bossAsteroid != null) {
-            drawBoss(shapeRenderer);
+        if(bossAsteroids != null) {
+            for (BossAsteroid bossAsteroid: bossAsteroids){
+                drawBoss(shapeRenderer);
+            }
+
         }
 
     }
@@ -186,10 +204,8 @@ public class AsteroidHandler {
         Vector2 combinedVelocity = new Vector2();
         combinedVelocity.x = Math.abs(asteroid1.getVelocity().x) + Math.abs(asteroid2.getVelocity().x);
         combinedVelocity.y = Math.abs(asteroid1.getVelocity().y) + Math.abs(asteroid2.getVelocity().y);
-        System.out.println("Combined velocity: " + combinedVelocity);
         //Determine impact magnitude
         float impactMagnitude = combinedVelocity.len();
-        System.out.println("Impact magnitude: " + impactMagnitude);
         float collisionThreshold =5.0f;
 
         if(impactMagnitude > collisionThreshold && asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() > 1) {

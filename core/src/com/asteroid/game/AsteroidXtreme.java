@@ -57,7 +57,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		//Update collision handler
 		collisionHandler.update(ship, ufo, asteroidHandler);
 
-		stageManager.update(delta);
+
 
 		// Update ship logic
 		ship.update(delta);
@@ -93,8 +93,14 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		spriteBatch.end();
 
 		//Check for stage transitions and update parameters
-		updateStageParameters();
 
+//		updateStageParameters();
+		stageManager.update(delta);
+
+		//Game won message
+		spriteBatch.begin();
+		stageManager.drawGameWonMessage(spriteBatch, font);
+		spriteBatch.end();
 	}
 
 	@Override

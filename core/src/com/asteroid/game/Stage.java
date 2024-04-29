@@ -3,19 +3,17 @@ package com.asteroid.game;
 public class Stage {
     private int stageNumber;
     private int asteroidCount;
-    private boolean hasBossAsteriod;
+    private int bossCount;
     private int spawnCooldownMin;
     private int spawnCooldownMax;
-    private int thresholdScore;
     private int bossHealth;
 
-    public Stage(int stageNumber, int asteroidCount, boolean hasBossAsteriod, int spawnCooldownMin, int spawnCooldownMax, int thresholdScore, int bossHealth) {
+    public Stage(int stageNumber, int asteroidCount, int bossCount, int spawnCooldownMin, int spawnCooldownMax, int bossHealth) {
         this.stageNumber = stageNumber;
         this.asteroidCount = asteroidCount;
-        this.hasBossAsteriod = hasBossAsteriod;
+        this.bossCount = bossCount;
         this.spawnCooldownMin = spawnCooldownMin;
         this.spawnCooldownMax = spawnCooldownMax;
-        this.thresholdScore = thresholdScore;
         this.bossHealth = bossHealth;
     }
 
@@ -30,8 +28,8 @@ public class Stage {
         return stageNumber;
     }
 
-    public boolean hasBossAsteriod() {
-        return hasBossAsteriod;
+    public int getBossCount() {
+        return bossCount;
     }
 
     public int getSpawnCooldownMin() {
@@ -42,7 +40,4 @@ public class Stage {
         return spawnCooldownMax;
     }
 
-    public int getThresholdScore() {
-        return thresholdScore;
-    }
 }
