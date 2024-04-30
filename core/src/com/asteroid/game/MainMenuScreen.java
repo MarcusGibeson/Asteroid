@@ -87,13 +87,13 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-
+        stage.dispose();
     }
 
     @Override
     public void dispose() {
         backgroundTexture.dispose();
-        stage.dispose();
+
         batch.dispose();
     }
 

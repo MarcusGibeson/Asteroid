@@ -29,13 +29,16 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	List<Asteroid> asteroids;
 	StageLevel stageLevel;
 
+	boolean gameOver;
 	private StageManager stageManager;
+	private ScreenSwitch screenSwitch;
 
 	public AsteroidXtreme() {
 	}
 
-	public AsteroidXtreme(SpriteBatch batch) {
+	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch) {
 		this.spriteBatch = batch;
+		this.screenSwitch = screenSwitch;
 		initialize();
 	}
 	private void initialize() {
@@ -53,6 +56,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		stageManager = new StageManager(asteroidHandler, ship);
 		asteroids = asteroidHandler.getAsteroids();
 		stageLevel = stageManager.getCurrentStage();
+		gameOver = false;
 
 	}
 
@@ -106,6 +110,12 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		spriteBatch.begin();
 		stageManager.drawGameWonMessage(spriteBatch, font);
 		spriteBatch.end();
+
+		//Game over
+		if(isGameOver()) {
+			screenSwitch.switchToMainMenu();
+			return;
+		}
 	}
 
 	@Override
@@ -139,5 +149,13 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		for (int i = 0; i < lives; i++) {
 			spriteBatch.draw(lifeRegion, startX + i * (lifeImageWidth + 5), startY, lifeImageWidth, lifeImageHeight);
 		}
+	}
+
+	private boolean isGameOver() {
+		int playerLives = ship.getLives();
+		if (playerLives == 0) {
+			return true;
+		}
+		return false;
 	}
 }

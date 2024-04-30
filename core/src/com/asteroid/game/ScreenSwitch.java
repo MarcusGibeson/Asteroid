@@ -1,6 +1,7 @@
 package com.asteroid.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -20,7 +21,10 @@ public class ScreenSwitch extends Game {
     }
 
     public void switchToAsteroidXtreme() {
-        setScreen(new AsteroidXtreme(batch));
+        setScreen(new AsteroidXtreme((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
     }
 
+    public void switchToMainMenu() {
+        setScreen(new MainMenuScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
+    }
 }
