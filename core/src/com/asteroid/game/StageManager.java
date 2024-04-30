@@ -74,7 +74,7 @@ public class StageManager {
 
     public void initializeStages() {
         int initialAsteroidCount = 1;
-        for(int i = 7; i <= MAX_STAGES; i++) {
+        for(int i = 1; i <= MAX_STAGES; i++) {
             int asteroidCount = initialAsteroidCount + ((i-1) * 2); //increment asteroids by 2 each stage
             int bossCount = determineBossCount(i); //determine how many bosses
             int bossHealth = 500;

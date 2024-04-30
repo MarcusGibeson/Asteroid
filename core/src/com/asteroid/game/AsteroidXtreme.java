@@ -27,6 +27,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	ScoreHandler scoreHandler;
 
 	List<Asteroid> asteroids;
+	Stage stage;
 
 	private StageManager stageManager;
 
@@ -46,6 +47,7 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
 		stageManager = new StageManager(asteroidHandler, ship);
 		asteroids = asteroidHandler.getAsteroids();
+		stage = stageManager.getCurrentStage();
 	}
 
 	@Override

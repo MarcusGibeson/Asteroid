@@ -56,6 +56,10 @@ public class AsteroidHandler {
         bossAsteroids.add(bossAsteroid);
     }
 
+    public List<BossAsteroid> getBossAsteroids() {
+        return bossAsteroids;
+    }
+
     public void drawBoss(ShapeRenderer shapeRenderer) {
         for (BossAsteroid bossAsteroid: bossAsteroids) {
             bossAsteroid.draw(shapeRenderer);
@@ -73,7 +77,6 @@ public class AsteroidHandler {
             bossAsteroid.update(delta);
             bossAsteroid.updateComets(delta);
         }
-
     }
 
 

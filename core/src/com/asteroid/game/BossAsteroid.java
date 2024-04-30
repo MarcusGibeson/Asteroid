@@ -20,6 +20,7 @@ public class BossAsteroid extends Asteroid{
     private static final float COMET_SHOOT_RANGE = 1000;
     private static final float COMET_SHOOT_DELAY = 2;
     private float timeSinceLastComet = 0;
+    public boolean toRemove;
 
     PlayerShip playerShip;
     List<Comet> comets;
@@ -35,6 +36,7 @@ public class BossAsteroid extends Asteroid{
         this.currentHealth = maxHealth;
         this.comets = new ArrayList<>();
         this.isDestroyed = false;
+        toRemove = false;
     }
 
     public void update(float delta) {
@@ -47,7 +49,10 @@ public class BossAsteroid extends Asteroid{
                 shootComet();
             }
         }
+    }
 
+    public int getCurrentHealth() {
+        return currentHealth;
     }
 
     public void updateComets(float delta) {
@@ -148,5 +153,13 @@ public class BossAsteroid extends Asteroid{
     }
     public Vector2 getPosition() {
         return position;
+    }
+
+    public boolean isToRemove() {
+        return toRemove;
+    }
+
+    public void setToRemove(boolean toRemove) {
+        this.toRemove = toRemove;
     }
 }
