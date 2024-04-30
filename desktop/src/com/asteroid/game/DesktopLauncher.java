@@ -9,6 +9,6 @@ public class DesktopLauncher {
 		config.setWindowedMode(1280, 720);
 		config.setForegroundFPS(60);
 		config.setTitle("Asteroid Xtreme");
-		new Lwjgl3Application(new AsteroidXtreme(), config);
+		new Lwjgl3Application(new ScreenSwitch(), config);
 	}
 }

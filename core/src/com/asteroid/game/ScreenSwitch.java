@@ -20,6 +20,7 @@ public class ScreenSwitch extends Game {
     }
 
     public void switchToAsteroidXtreme() {
-        setScreen(new AsteroidXtreme());
+        setScreen(new AsteroidXtreme(batch));
     }
+
 }

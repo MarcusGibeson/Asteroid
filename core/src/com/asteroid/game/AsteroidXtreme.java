@@ -2,6 +2,7 @@ package com.asteroid.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.List;
 
 
-public class AsteroidXtreme extends ApplicationAdapter {
+public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	private ShapeRenderer shapeRenderer;
 	private Texture lifeTexture;
 	private TextureRegion lifeRegion;
@@ -32,6 +33,9 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	private StageManager stageManager;
 
 	public AsteroidXtreme() {
+	}
+
+	public AsteroidXtreme(SpriteBatch batch) {
 		this.spriteBatch = batch;
 	}
 	@Override
@@ -101,6 +105,21 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		spriteBatch.begin();
 		stageManager.drawGameWonMessage(spriteBatch, font);
 		spriteBatch.end();
+	}
+
+	@Override
+	public void show() {
+
+	}
+
+	@Override
+	public void render(float delta) {
+
+	}
+
+	@Override
+	public void hide() {
+
 	}
 
 	@Override
