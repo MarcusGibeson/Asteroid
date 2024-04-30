@@ -31,7 +31,9 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 	private StageManager stageManager;
 
-
+	public AsteroidXtreme() {
+		this.spriteBatch = batch;
+	}
 	@Override
 	public void create() {
 
@@ -48,7 +50,6 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		stageManager = new StageManager(asteroidHandler, ship);
 		asteroids = asteroidHandler.getAsteroids();
 		stage = stageManager.getCurrentStage();
-		setScreen(new MainMenuScreen(this, batch));
 	}
 
 	@Override

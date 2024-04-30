@@ -1,7 +1,7 @@
 package com.asteroid.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,12 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MainMenuScreen implements Screen {
-    private AsteroidXtreme game;
+    private ScreenSwitch game;
     private Stage stage;
     private Texture backgroundTexture;
     SpriteBatch batch;
 
-    public MainMenuScreen(AsteroidXtreme game, SpriteBatch batch) {
+    public MainMenuScreen(ScreenSwitch game, SpriteBatch batch) {
         this.game = game;
         this.stage = new Stage(new ScreenViewport());
         this.backgroundTexture = new Texture("backgroundTexture.jpg");
@@ -46,6 +46,11 @@ public class MainMenuScreen implements Screen {
         //Render the stage UI
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
+        //Handle user input to start the game
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            game.switchToAsteroidXtreme();
+        }
     }
 
     @Override
