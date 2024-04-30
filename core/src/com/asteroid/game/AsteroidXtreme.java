@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	ScoreHandler scoreHandler;
 
 	List<Asteroid> asteroids;
-	Stage stage;
+	StageLevel stageLevel;
 
 	private StageManager stageManager;
 
@@ -37,9 +36,9 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	public AsteroidXtreme(SpriteBatch batch) {
 		this.spriteBatch = batch;
+		initialize();
 	}
-	@Override
-	public void create() {
+	private void initialize() {
 
 		shapeRenderer = new ShapeRenderer();
 		scoreHandler = new ScoreHandler();
@@ -53,14 +52,16 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
 		stageManager = new StageManager(asteroidHandler, ship);
 		asteroids = asteroidHandler.getAsteroids();
-		stage = stageManager.getCurrentStage();
+		stageLevel = stageManager.getCurrentStage();
+
 	}
 
+
 	@Override
-	public void render() {
+	public void render(float delta) {
 		// Clear screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		float delta = Gdx.graphics.getDeltaTime();
+//		float delta = Gdx.graphics.getDeltaTime();
 
 		//Update collision handler
 		collisionHandler.update(ship, ufo, asteroidHandler);
@@ -112,10 +113,10 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	}
 
-	@Override
-	public void render(float delta) {
-
-	}
+//	@Override
+//	public void render(float delta) {
+//
+//	}
 
 	@Override
 	public void hide() {

@@ -3,14 +3,14 @@ package com.asteroid.game;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Stage {
+public class StageLevel {
     private int stageNumber;
     private int asteroidCount;
     private int bossCount;
     private int bossHealth;
     private List<BossAsteroid> bossAsteroids;
 
-    public Stage(int stageNumber, int asteroidCount, int bossCount, int bossHealth) {
+    public StageLevel(int stageNumber, int asteroidCount, int bossCount, int bossHealth) {
         this.stageNumber = stageNumber;
         this.asteroidCount = asteroidCount;
         this.bossCount = bossCount;

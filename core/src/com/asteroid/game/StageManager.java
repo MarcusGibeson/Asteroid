@@ -12,9 +12,9 @@ import java.util.List;
 
 
 public class StageManager {
-    private List<Stage> stages;
+    private List<StageLevel> stageLevels;
     private int currentStageIndex;
-    private Stage currentStage;
+    private StageLevel currentStageLevel;
     private AsteroidHandler asteroidHandler;
     PlayerShip playerShip;
     public boolean gameWon = false;
@@ -27,7 +27,7 @@ public class StageManager {
     public StageManager(AsteroidHandler asteroidHandler, PlayerShip playerShip) {
         this.asteroidHandler = asteroidHandler;
         this.playerShip = playerShip;
-        this.stages = new ArrayList<>();
+        this.stageLevels = new ArrayList<>();
         this.currentStageIndex = 0;
         initializeStages();
         startCurrentStage();
@@ -52,9 +52,9 @@ public class StageManager {
         // Advance to the next stage if not already at the last stage
         if (asteroidHandler.getAsteroids().isEmpty()) {
             checkAsteroidsDestroyed();
-            if(currentStage.getBossAsteroids().isEmpty()) {
+            if(currentStageLevel.getBossAsteroids().isEmpty()) {
                 System.out.println("Astroid number: " + asteroidHandler.getAsteroids());
-                if (currentStageIndex < stages.size() - 1) {
+                if (currentStageIndex < stageLevels.size() - 1) {
                     currentStageIndex++;
                     startCurrentStage();
                 } else {
@@ -79,13 +79,13 @@ public class StageManager {
             int bossCount = determineBossCount(i); //determine how many bosses
             int bossHealth = 500;
 
-            Stage stage = new Stage(i, asteroidCount, bossCount, bossHealth);
-            stages.add(stage);
+            StageLevel stageLevel = new StageLevel(i, asteroidCount, bossCount, bossHealth);
+            stageLevels.add(stageLevel);
             for (int j = 0; j < bossCount; j++) {
                 Vector2 bossSpawnPosition = new Vector2(MathUtils.random(500,500), MathUtils.random(550,650));
                 BossAsteroid bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, bossHealth);
                 bossAsteroid.setPlayerShip(playerShip);
-                stage.addBossAsteroid(bossAsteroid);
+                stageLevel.addBossAsteroid(bossAsteroid);
             }
         }
     }
@@ -103,8 +103,8 @@ public class StageManager {
     }
 
     private void startCurrentStage() {
-        currentStage = stages.get(currentStageIndex);
-        asteroidHandler.setAsteroidsPerSpawn(currentStage.getAsteroidCount());
+        currentStageLevel = stageLevels.get(currentStageIndex);
+        asteroidHandler.setAsteroidsPerSpawn(currentStageLevel.getAsteroidCount());
         asteroidHandler.startSpawning();
     }
 
@@ -112,8 +112,8 @@ public class StageManager {
 
 
     private void checkAsteroidsDestroyed() {
-        if (currentStage != null && asteroidHandler.getAsteroids().isEmpty()) {
-            boolean allBossesDestroyed = currentStage.getBossAsteroids().isEmpty();
+        if (currentStageLevel != null && asteroidHandler.getAsteroids().isEmpty()) {
+            boolean allBossesDestroyed = currentStageLevel.getBossAsteroids().isEmpty();
             if (!allBossesDestroyed && !bossAsteroidsSpawned) {
                 startBossAsteroids();
                 bossAsteroidsSpawned = true;
@@ -122,12 +122,12 @@ public class StageManager {
     }
 
     private void startBossAsteroids() {
-        for (BossAsteroid bossAsteroid : currentStage.getBossAsteroids()) {
+        for (BossAsteroid bossAsteroid : currentStageLevel.getBossAsteroids()) {
             asteroidHandler.spawnBossAsteroid(bossAsteroid);
         }
     }
 
-    public Stage getCurrentStage() {
-        return currentStage;
+    public StageLevel getCurrentStage() {
+        return currentStageLevel;
     }
 }
