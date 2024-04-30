@@ -57,8 +57,6 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		//Update collision handler
 		collisionHandler.update(ship, ufo, asteroidHandler);
 
-
-
 		// Update ship logic
 		ship.update(delta);
 		ufo.update(delta);
@@ -93,8 +91,6 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		spriteBatch.end();
 
 		//Check for stage transitions and update parameters
-
-//		updateStageParameters();
 		stageManager.update(delta);
 
 		//Game won message
@@ -109,11 +105,6 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		lifeTexture.dispose();
 	}
 
-
-	private void updateStageParameters() {
-		Stage currentStage = stageManager.getCurrentStage();
-		asteroidHandler.setAsteroidsPerSpawn(currentStage.getAsteroidCount());
-	}
 
 	private void drawPlayerLives(SpriteBatch batch) {
 		int lives = ship.getLives();

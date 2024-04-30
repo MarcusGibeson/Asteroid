@@ -20,14 +20,17 @@ public class StageManager {
     public boolean gameWon = false;
     private static final int STAGE_TRANSITION_COOLDOWN_MIN = 2000;
     private static final int STAGE_TRANSITION_COOLDOWN_MAX = 3000;
+    private boolean bossAsteroidsSpawned = false;
+    private static final float MAX_STAGES = 50;
 
-    private static final float MAX_STAGES = 5;
+
     public StageManager(AsteroidHandler asteroidHandler, PlayerShip playerShip) {
         this.asteroidHandler = asteroidHandler;
         this.playerShip = playerShip;
         this.stages = new ArrayList<>();
         this.currentStageIndex = 0;
         initializeStages();
+        startCurrentStage();
     }
 
     public void update(float delta) {
@@ -48,13 +51,16 @@ public class StageManager {
     public void advanceToNextStage() {
         // Advance to the next stage if not already at the last stage
         if (asteroidHandler.getAsteroids().isEmpty()) {
-            System.out.println("Astroid number: " + asteroidHandler.getAsteroids());
-            if (currentStageIndex < stages.size() - 1) {
-                currentStageIndex++;
-                startCurrentStage();
-            } else {
-                gameWon = true;
-                //handle game completion
+            checkAsteroidsDestroyed();
+            if(currentStage.getBossAsteroids().isEmpty()) {
+                System.out.println("Astroid number: " + asteroidHandler.getAsteroids());
+                if (currentStageIndex < stages.size() - 1) {
+                    currentStageIndex++;
+                    startCurrentStage();
+                } else {
+                    gameWon = true;
+                    //handle game completion
+                }
             }
         }
     }
@@ -68,7 +74,7 @@ public class StageManager {
 
     public void initializeStages() {
         int initialAsteroidCount = 1;
-        for(int i = 1; i <= MAX_STAGES; i++) {
+        for(int i = 7; i <= MAX_STAGES; i++) {
             int asteroidCount = initialAsteroidCount + ((i-1) * 2); //increment asteroids by 2 each stage
             int bossCount = determineBossCount(i); //determine how many bosses
             int bossHealth = 500;
@@ -76,7 +82,7 @@ public class StageManager {
             Stage stage = new Stage(i, asteroidCount, bossCount, bossHealth);
             stages.add(stage);
             for (int j = 0; j < bossCount; j++) {
-                Vector2 bossSpawnPosition = new Vector2(650, 300);
+                Vector2 bossSpawnPosition = new Vector2(MathUtils.random(500,500), MathUtils.random(550,650));
                 BossAsteroid bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, bossHealth);
                 bossAsteroid.setPlayerShip(playerShip);
                 stage.addBossAsteroid(bossAsteroid);
@@ -85,18 +91,40 @@ public class StageManager {
     }
 
     private int determineBossCount(int stageIndex) {
-        return stageIndex % 5 == 0 ? 1 : 0;
+        if (stageIndex % 19 == 0) {
+            return 3;
+        } else if (stageIndex % 13 == 0) {
+            return 2;
+        } else if (stageIndex % 7 == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     private void startCurrentStage() {
         currentStage = stages.get(currentStageIndex);
         asteroidHandler.setAsteroidsPerSpawn(currentStage.getAsteroidCount());
+        asteroidHandler.startSpawning();
+    }
+
+
+
+
+    private void checkAsteroidsDestroyed() {
+        if (currentStage != null && asteroidHandler.getAsteroids().isEmpty()) {
+            boolean allBossesDestroyed = currentStage.getBossAsteroids().isEmpty();
+            if (!allBossesDestroyed && !bossAsteroidsSpawned) {
+                startBossAsteroids();
+                bossAsteroidsSpawned = true;
+            }
+        }
+    }
+
+    private void startBossAsteroids() {
         for (BossAsteroid bossAsteroid : currentStage.getBossAsteroids()) {
             asteroidHandler.spawnBossAsteroid(bossAsteroid);
         }
-
-        asteroidHandler.startSpawning();
-
     }
 
     public Stage getCurrentStage() {

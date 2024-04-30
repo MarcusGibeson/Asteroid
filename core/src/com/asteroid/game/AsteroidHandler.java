@@ -16,8 +16,7 @@ public class AsteroidHandler {
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
     private int asteroidsPerSpawn;
-    private int bossPerSpawn;
-    private boolean isSpawning;
+
 
 
     public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
@@ -35,8 +34,6 @@ public class AsteroidHandler {
 
 
     public void startSpawning() {
-        isSpawning = true;
-//        scheduleSpawn();
         spawnAsteroids(asteroidsPerSpawn);
     }
 
@@ -56,19 +53,7 @@ public class AsteroidHandler {
     }
 
     public void spawnBossAsteroid(BossAsteroid bossAsteroid) {
-        if (bossAsteroids != null) {
-            return;
-        }
-        Vector2 bossSpawnPosition = new Vector2(MathUtils.random(500,500), MathUtils.random(550,650));
-        bossAsteroid = new BossAsteroid(bossSpawnPosition, 3, playerShip, 500);
         bossAsteroids.add(bossAsteroid);
-    }
-
-    public void updateBoss(float delta) {
-        for (BossAsteroid bossAsteroid : bossAsteroids) {
-            bossAsteroid.update(delta);
-            bossAsteroid.updateComets(delta);
-        }
     }
 
     public void drawBoss(ShapeRenderer shapeRenderer) {
@@ -84,12 +69,11 @@ public class AsteroidHandler {
         for (Asteroid asteroid : asteroids) {
             asteroid.update(delta);
         }
-        if (bossAsteroids != null) {
-            for (BossAsteroid bossAsteroid : bossAsteroids) {
-                updateBoss(delta);
-            }
-
+        for (BossAsteroid bossAsteroid : bossAsteroids) {
+            bossAsteroid.update(delta);
+            bossAsteroid.updateComets(delta);
         }
+
     }
 
 
@@ -151,12 +135,7 @@ public class AsteroidHandler {
             asteroid.draw(shapeRenderer); // Draw each asteroid
         }
         shapeRenderer.end();
-        if(bossAsteroids != null) {
-            for (BossAsteroid bossAsteroid: bossAsteroids){
-                drawBoss(shapeRenderer);
-            }
-
-        }
+        drawBoss(shapeRenderer);
 
     }
 
@@ -211,5 +190,14 @@ public class AsteroidHandler {
         }
     }
 
-
+    //Method to remove bosses
+    public void removeMarkedBosses(List<BossAsteroid> bossAsteroids) {
+        Iterator<BossAsteroid> iterator = bossAsteroids.iterator();
+        while(iterator.hasNext()) {
+            Asteroid asteroid = iterator.next();
+            if(asteroid.isToRemove()) {
+                iterator.remove();
+            }
+        }
+    }
 }
