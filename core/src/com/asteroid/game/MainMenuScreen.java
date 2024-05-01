@@ -7,12 +7,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -24,25 +25,36 @@ public class MainMenuScreen implements Screen {
     SpriteBatch batch;
     private int width = Gdx.graphics.getWidth();
     private int height = Gdx.graphics.getHeight();
+    ShapeRenderer shapeRenderer;
+
+    Texture startButtonTexture = new Texture("Images/MainMenuStartButton.png");
+    ImageButton startButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(startButtonTexture)));
+
+    Texture settingsButtonTexture = new Texture("Images/MainMenuSettingsButton.png");
+    ImageButton settingsButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(settingsButtonTexture)));
+
+    Texture highScoresButtonTexture = new Texture("Images/MainMenuHighScoresButton.png");
+    ImageButton highScoresButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(highScoresButtonTexture)));
 
     public MainMenuScreen(ScreenSwitch screenSwitch, SpriteBatch batch) {
         this.screenSwitch = screenSwitch;
         this.stage = new Stage(new ScreenViewport());
-        this.backgroundTexture = new Texture("Images/backgroundTexture.jpg");
+        this.backgroundTexture = new Texture("Images/MainMenuBackground.jpg");
+        shapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(stage);
         batch = new SpriteBatch();
         setupMenu();
     }
     private void setupMenu() {
         //Add UI elements to the stage
-        Texture startButtonTexture = new Texture("Images/startButton.png");
-        ImageButton startButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(startButtonTexture)));
         startButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2);
+        settingsButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 200);
+        highScoresButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 400);
 
-        //add hover effect
-        final Texture startButtonSelectedTexture = new Texture("Images/startButtonSelected.png");
-        final TextureRegionDrawable startButtonSelectedDrawable = new TextureRegionDrawable(new TextureRegion(startButtonSelectedTexture));
-        final TextureRegionDrawable startButtonDefaultDrawable = new TextureRegionDrawable(new TextureRegion(startButtonTexture));
+        //add hover effects
+        addHoverEffect(startButton);
+        addHoverEffect(settingsButton);
+        addHoverEffect(highScoresButton);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -51,27 +63,48 @@ public class MainMenuScreen implements Screen {
                 startButton.removeListener(this);
             }
         });
-        startButton.addListener(getHoverListener(startButton, startButtonDefaultDrawable, startButtonSelectedDrawable));
+
         stage.addActor(startButton);
+        stage.addActor(settingsButton);
+        stage.addActor(highScoresButton);
 
     }
 
-    private EventListener getHoverListener(final ImageButton button, final TextureRegionDrawable defaultDrawable,final TextureRegionDrawable selectedDrawable) {
-        return new ChangeListener(){
+    private void addHoverEffect(final ImageButton button) {
+        final Texture fireTexture = new Texture("Images/MenuFireSelection.png");
+        final Image fireImage = new Image(new TextureRegionDrawable(new TextureRegion(fireTexture)));
+        fireImage.setVisible(false);
+        fireImage.setPosition(button.getX(), button.getY() + button.getHeight());
+
+        button.addListener(new InputListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if(button.isOver()) {
-                    button.getStyle().imageUp = selectedDrawable;
-                }else {
-                    button.getStyle().imageUp = defaultDrawable;
-                }
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                fireImage.setVisible(true);
             }
-        };
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                fireImage.setVisible(false);
+            }
+        });
+        stage.addActor(fireImage);
     }
+
+    private void drawSelectedAreaOutline(ShapeRenderer shapeRenderer, ImageButton button) {
+        float x = button.getX();
+        float y = button.getY();
+        float width = button.getWidth();
+        float height = button.getHeight();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.rect(x,y,width,height);
+        shapeRenderer.end();
+    }
+
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -93,6 +126,9 @@ public class MainMenuScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             screenSwitch.switchToAsteroidXtreme();
         }
+
+        drawSelectedAreaOutline(shapeRenderer, startButton);
+
     }
 
     @Override
