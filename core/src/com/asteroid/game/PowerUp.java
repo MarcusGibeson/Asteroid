@@ -19,8 +19,8 @@ public class PowerUp {
 
     private boolean isTouchingShip;
     private Type type;
-    private static final long EFFECT_DURATION = 15000;//measured in milliseconds, it's 15s total
-    private static final long SPAWN_COOLDOWN = 45000; //45s cooldown between spawns
+    private static final long EFFECT_DURATION = 15;//measured in seconds, it's 15s total
+    private static final long SPAWN_COOLDOWN = 45; //45s cooldown between spawns
     private long startTime;
     public Vector2 dimensions = new Vector2(60,60);
     public Vector2 position;
@@ -44,52 +44,17 @@ public class PowerUp {
     }
 
     public void applyToShip(PlayerShip player){
-        float originalCooldown = PlayerShip.getShotCooldown(); //storing original cooldown timer to be reset after the powerup wears off
-        switch(getType()){
-            case RAPID_FIRE:
-                //setting the shot cooldown to about 60% faster
-                PlayerShip.setShotCooldown(0.1f);
+        player.setTouchingPowerUp(true);
+        player.setCurrentPowerUpType(getType());
 
-                //scheduling it to reset the cooldown after it wears off
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        PlayerShip.setShotCooldown(originalCooldown);
-                    }
-                }, getEffectDuration());
-                break;
-            case PULSE_SHOT:
-                // Set the speed of the rapid fire pulse shots
-                float pulseCooldown = 0.05f;
-
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        // Set the shot cooldown to the rapid fire speed
-                        PlayerShip.setShotCooldown(pulseCooldown);
-
-                        // Sets a cooldown that resets every 3 shots worth of time
-                        Timer.schedule(new Timer.Task() {
-                            @Override
-                            public void run() {
-                                // Reset the shot cooldown to the original value
-                                PlayerShip.setShotCooldown(originalCooldown);
-                            }
-                        }, 0.15f);
-                    }
-                }, 0, 0.25f);
-                break;
-            case WAVE_SHOT:
-                break;
-            case KILL_AURA:
-                break;
-            case MULTI_SHOT:
-                break;
-            case INVULN:
-                break;
-            default:
-                break;
-        }
+        //Remove power ups after 15 seconds and set the current powerup to null
+        Timer.schedule(new Timer.Task(){
+            @Override
+            public void run() {
+                player.setTouchingPowerUp(false);
+                player.setCurrentPowerUpType(null);
+            }
+        }, EFFECT_DURATION);
     }
 
     public void draw(ShapeRenderer shapeRenderer){

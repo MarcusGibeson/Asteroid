@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CollisionHandler {
@@ -75,7 +76,7 @@ public class CollisionHandler {
                 Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
                 if(Intersector.overlaps(cometCircle, playerShipRectangle)) {
                     comets.remove(comet);
-                    playerShip.handleCollision();
+                    playerShip.handleCollision(); //this
                 }
             }
         }
@@ -93,7 +94,7 @@ public class CollisionHandler {
                     if(Intersector.overlaps(asteriodCircle, playerShipRectangle)) {
                         asteroidHandler.handleHitAsteroid(asteroid, asteroidsToAdd);
                         asteroids.remove(asteroid);
-                        playerShip.handleCollision();
+                        playerShip.handleCollision(); //this
                     }
                 }
                 asteroids.addAll(asteroidsToAdd);
@@ -103,7 +104,7 @@ public class CollisionHandler {
         //Player ship and Boss Asteroid colliding
         if(!boss.checkIsDestroyed() && !playerShip.isPlayerDead()){
             if(checkPlayerShipBossAsteroidCollision(playerShip, boss)) {
-                playerShip.handleCollision();
+                playerShip.handleCollision(); //this
                 boss.takeDamage(25);
             }
         }
@@ -132,7 +133,7 @@ public class CollisionHandler {
         }
 
         //Player ship getting shot by UFO
-       if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
+        if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
            List<Bullet> playerShipBullets = playerShip.getBullets();
            List<Bullet> ufoBullets = ufo.getBullets();
 
@@ -167,8 +168,23 @@ public class CollisionHandler {
                 }
             }
         }
+
+        //kill aura and asteroids colliding
+        if (checkKillAuraCollisionsWithAsteroids(playerShip, asteroidHandler)){
+            Circle killAuraCircle = playerShip.getKillAuraCircle();
+            List<Asteroid> asteroidList = asteroidHandler.getAsteroids();
+
+            Iterator<Asteroid> iterator = asteroidList.iterator();
+            while (iterator.hasNext()) {
+                Asteroid asteroid = iterator.next();
+                Circle asteroidCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
+                if (Intersector.overlaps(killAuraCircle, asteroidCircle)) {
+                    iterator.remove();
+                }
+            }
+        }
     }
-//
+
     //Method to check collision between UFO bullets and player ship
     public static boolean checkUFOBulletPlayerShipCollision(UFOShip ufo, PlayerShip playerShip) {
         for (Bullet bullet : ufo.getBullets()) {
@@ -272,7 +288,6 @@ public class CollisionHandler {
     }
 
 
-
     //check collision between player's bullet and Boss asteroid
     public static boolean checkPlayerShipBulletBossAsteroidCollision(PlayerShip playerShip, BossAsteroid boss) {
         List<Bullet> bullets = playerShip.getBullets();
@@ -327,6 +342,40 @@ public class CollisionHandler {
             }
         }
         return false; // No collision detected, return false
+    }
+
+    //check collision between a kill aura circle and asteroids
+    public static boolean checkKillAuraCollisionsWithAsteroids(PlayerShip playerShip, AsteroidHandler asteroidHandler){
+        Circle killAuraCircle = playerShip.getKillAuraCircle();
+        List<Asteroid> asteroidList = asteroidHandler.getAsteroids();
+
+        if (playerShip.getCurrentPowerUpType() != null){
+            if (playerShip.getCurrentPowerUpType() == PowerUp.Type.KILL_AURA){
+                for (Asteroid asteroid : asteroidList){
+                    Circle asteroidCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
+                    if(Intersector.overlaps(asteroidCircle, killAuraCircle)) {
+                        //collision detected
+                        return true;
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    //check collision between kill aura circle and ufo
+    public static boolean checkKillAuraCollisionsWithUFOs(PlayerShip playerShip, UFOShip ufo){
+        Circle killAuraCircle = playerShip.getKillAuraCircle();
+        Rectangle ufoRectangle = ufo.getCollisionRectangle();
+
+        if (playerShip.getCurrentPowerUpType() != null){
+            if (playerShip.getCurrentPowerUpType() == PowerUp.Type.KILL_AURA){
+                return Intersector.overlaps(killAuraCircle, ufoRectangle);
+            }
+        }
+        return false;
     }
 
 }
