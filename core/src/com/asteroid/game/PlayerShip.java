@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class PlayerShip {
 
     private float shotCooldownTimer = 0f;
     private static float shotCooldown = 0.25f;
+    private int pulseCount = 0;
 
 
 
@@ -76,7 +78,13 @@ public class PlayerShip {
     }
 
     public void update(float delta) {
-        System.out.println(getInvulnerable());
+        //if the current power up type is invulnerability, turn off the collision function
+        if (getCurrentPowerUpType() == PowerUp.Type.INVULN){
+            setInvulnerable(true);
+        } else {
+            setInvulnerable(false);
+        }
+
         if (isPlayerDead && Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             respawnRequested = true;
         }
@@ -353,15 +361,7 @@ public class PlayerShip {
                     shootingSound.play();
                     break;
                 case PULSE_SHOT: //shooting bullets in sets of three
-                    // Set the speed of the rapid fire pulse shots
-                    float pulseCooldown = 0.05f;
-                    setShotCooldown(pulseCooldown);
-
-                    //shoots three bullets in a row
-                    for (int i = 0; i<3; i++){
-                        bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
-                        shootingSound.play();
-                    }
+                    handlePulseShooting();
                     break;
                 case WAVE_SHOT: //shooting a dense wave of bullets with a large delay between them
                     float waveCooldown = 1f;
@@ -377,20 +377,56 @@ public class PlayerShip {
                 case MULTI_SHOT: //shoot bullets like normal but in a dense wave of three (not to be confused with wave shot, as it's slower but way more bullets)
                     setShotCooldown(0.25f);
                     Vector2 bulletPosition = getPosition();
-                    for (int i = -1; i < 2; i++){
-                        Vector2 newBulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
-                        bullets.add(new Bullet(new Vector2(bulletPosition.x + i*50, bulletPosition.y), newBulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
-                    }
+                    // Calculate the base direction vector based on the ship's rotation angle
+                    Vector2 baseDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
+
+                    // Define the distance between the center bullet and the side bullets
+                    float distance = 15; // Adjust this value as needed
+
+                    // Calculate the offsets for the side bullets based on the ship's rotation angle
+                    float xOffsetLeft = -MathUtils.sinDeg(rotation) * distance;
+                    float yOffsetLeft = MathUtils.cosDeg(rotation) * distance;
+
+                    float xOffsetRight = MathUtils.sinDeg(rotation) * distance;
+                    float yOffsetRight = -MathUtils.cosDeg(rotation) * distance;
+
+                    // Create the center bullet at the ship's position
+                    bullets.add(new Bullet(
+                            bulletPosition,
+                            baseDirection, // Same direction for all bullets
+                            BULLET_SPEED,
+                            BULLET_RADIUS,
+                            Color.WHITE
+                    ));
+
+                    // Create the left bullet with the calculated offset
+                    bullets.add(new Bullet(
+                            new Vector2(bulletPosition.x + xOffsetLeft, bulletPosition.y + yOffsetLeft),
+                            baseDirection, // Same direction for all bullets
+                            BULLET_SPEED,
+                            BULLET_RADIUS,
+                            Color.WHITE
+                    ));
+
+                    // Create the right bullet with the calculated offset
+                    bullets.add(new Bullet(
+                            new Vector2(bulletPosition.x + xOffsetRight, bulletPosition.y + yOffsetRight),
+                            baseDirection, // Same direction for all bullets
+                            BULLET_SPEED,
+                            BULLET_RADIUS,
+                            Color.WHITE
+                    ));
+                    shootingSound.play();
                     break;
-                case INVULN://player cannot die from being hit by boss or asteroids
-                    setInvulnerable(true);
-                    break;
+//                case INVULN://player cannot die from being hit by boss or asteroids
+//                    setInvulnerable(true);
+//                    break;
                 default: //in case the bad juju happens
                     setShotCooldown(0.25f);
                     System.out.println("you shouldn't be seeing this message anyways but hey debug is a thing");
-//                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
 
-//                    shootingSound.play();
+                    shootingSound.play();
                     break;
             }
         } else {
@@ -415,5 +451,31 @@ public class PlayerShip {
         if (shotCooldownTimer < 0) {
             shotCooldownTimer = 0;
         }
+    }
+
+    private void handlePulseShooting(){
+        setShotCooldown(0.4f);
+        Timer.schedule(new Timer.Task(){
+            @Override
+            public void run() {
+                // Perform action every 0.05 seconds
+                if(pulseCount < 3) {
+                    Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    System.out.println("Performing action " + (pulseCount + 1));
+                    pulseCount++;
+                } else {
+                    // After performing the action three times, wait for 0.4 seconds
+                    Timer.schedule(new Timer.Task(){
+                        @Override
+                        public void run() {
+                            // Reset action count after cooldown
+                            pulseCount = 0;
+                        }
+                    }, 0.4f);
+                    this.cancel(); // Cancel the current task
+                }
+            }
+        }, 0, 0.05f);
     }
 }

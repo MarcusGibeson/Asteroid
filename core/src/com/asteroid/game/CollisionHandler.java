@@ -76,7 +76,7 @@ public class CollisionHandler {
                 Circle cometCircle = new Circle(comet.getPosition(), comet.COMET_RADIUS);
                 if(Intersector.overlaps(cometCircle, playerShipRectangle)) {
                     comets.remove(comet);
-                    playerShip.handleCollision(); //this
+//                    playerShip.handleCollision(); //this
                 }
             }
         }
@@ -94,7 +94,7 @@ public class CollisionHandler {
                     if(Intersector.overlaps(asteriodCircle, playerShipRectangle)) {
                         asteroidHandler.handleHitAsteroid(asteroid, asteroidsToAdd);
                         asteroids.remove(asteroid);
-                        playerShip.handleCollision(); //this
+//                        playerShip.handleCollision(); //this
                     }
                 }
                 asteroids.addAll(asteroidsToAdd);
@@ -155,6 +155,7 @@ public class CollisionHandler {
            }
        }
 
+        //Player touching a power up
         if (checkPowerUpPlayerCollision(playerShip, powerUps)){
             //if powerUps isn't empty
             if (!powerUps.isEmpty()){
