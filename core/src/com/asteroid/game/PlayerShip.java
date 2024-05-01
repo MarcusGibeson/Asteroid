@@ -90,6 +90,8 @@ public class PlayerShip {
         updateBullets(delta);
     }
 
+
+
     public void draw(ShapeRenderer shapeRenderer) {
         if (!isDestroyed) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

@@ -3,6 +3,7 @@ package com.asteroid.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,17 +37,22 @@ public class MainMenuScreen implements Screen {
     Texture highScoresButtonTexture = new Texture("Images/MainMenuHighScoresButton.png");
     ImageButton highScoresButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(highScoresButtonTexture)));
 
+    private final Sound mainMenuMusic;
+
+
     public MainMenuScreen(ScreenSwitch screenSwitch, SpriteBatch batch) {
         this.screenSwitch = screenSwitch;
         this.stage = new Stage(new ScreenViewport());
         this.backgroundTexture = new Texture("Images/MainMenuBackground.jpg");
         shapeRenderer = new ShapeRenderer();
+        mainMenuMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/BackgroundMenuMusic.mp3"));
         Gdx.input.setInputProcessor(stage);
         batch = new SpriteBatch();
         setupMenu();
     }
     private void setupMenu() {
         //Add UI elements to the stage
+        mainMenuMusic.loop();
         startButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2);
         settingsButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 200);
         highScoresButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 400);

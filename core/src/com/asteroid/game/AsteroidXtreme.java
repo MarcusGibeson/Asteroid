@@ -3,6 +3,7 @@ package com.asteroid.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,16 +34,18 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	private StageManager stageManager;
 	private ScreenSwitch screenSwitch;
 
+	private float volume = 0.05f;
+
 	public AsteroidXtreme() {
 	}
 
 	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch) {
 		this.spriteBatch = batch;
 		this.screenSwitch = screenSwitch;
+
 		initialize();
 	}
 	private void initialize() {
-
 		shapeRenderer = new ShapeRenderer();
 		scoreHandler = new ScoreHandler();
 		spriteBatch = new SpriteBatch();
