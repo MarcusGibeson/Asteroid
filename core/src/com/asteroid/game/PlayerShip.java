@@ -107,6 +107,8 @@ public class PlayerShip {
         updateBullets(delta);
     }
 
+
+
     public void draw(ShapeRenderer shapeRenderer) {
         if (!isDestroyed) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -171,8 +173,9 @@ public class PlayerShip {
     }
 
     public void respawn() {
-        lives--;
+
         if (lives > 0) {
+            lives--;
             setPosition(respawnPosition);
             isDestroyed = false;
             health = getMaxHealth();

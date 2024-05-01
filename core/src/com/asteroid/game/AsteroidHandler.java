@@ -1,7 +1,5 @@
 package com.asteroid.game;
 
-import static com.asteroid.game.Comet.COMET_SPEED;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,22 +11,32 @@ import com.badlogic.gdx.utils.Timer;
 
 public class AsteroidHandler {
     private List<Asteroid> asteroids;
-
     private PlayerShip playerShip;
+    private List<BossAsteroid> bossAsteroids;
     private ShapeRenderer shapeRenderer;
     private ScoreHandler scoreHandler;
-    final static int SPAWN_COOLDOWN_MIN = 2000;
-    final static int SPAWN_COOLDOWN_MAX = 3000;
+    private int asteroidsPerSpawn;
+
+
 
     public AsteroidHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
         this.playerShip = playerShip;
         this.asteroids = new ArrayList<>();
-
+        this.bossAsteroids = new ArrayList<>();
         this.shapeRenderer = shapeRenderer;
         this.scoreHandler = scoreHandler;
-        // Start spawning asteroids immediately
-        scheduleSpawn();
+
     }
+
+    public void setAsteroidsPerSpawn(int asteroidsPerSpawn) {
+        this.asteroidsPerSpawn = asteroidsPerSpawn;
+    }
+
+
+    public void startSpawning() {
+        spawnAsteroids(asteroidsPerSpawn);
+    }
+
 
     public void spawnAsteroid() {
         // Generate random spawn node and tier
@@ -38,15 +46,25 @@ public class AsteroidHandler {
         asteroids.add(new Asteroid(spawnNode, tier, playerShip));
     }
 
-    public void scheduleSpawn() {
-        int delay = MathUtils.random(SPAWN_COOLDOWN_MIN, SPAWN_COOLDOWN_MAX);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                spawnAsteroid();
-                scheduleSpawn(); // Reschedule spawning
-            }
-        }, delay / 1000f);
+    private void spawnAsteroids(int count) {
+        for(int i = 0; i < count; i++) {
+            spawnAsteroid();
+        }
+    }
+
+    public void spawnBossAsteroid(BossAsteroid bossAsteroid) {
+        bossAsteroids.add(bossAsteroid);
+    }
+
+    public List<BossAsteroid> getBossAsteroids() {
+        return bossAsteroids;
+    }
+
+    public void drawBoss(ShapeRenderer shapeRenderer) {
+        for (BossAsteroid bossAsteroid: bossAsteroids) {
+            bossAsteroid.draw(shapeRenderer);
+            bossAsteroid.drawComets(shapeRenderer);
+        }
     }
 
     public void update(float delta) {
@@ -55,15 +73,12 @@ public class AsteroidHandler {
         for (Asteroid asteroid : asteroids) {
             asteroid.update(delta);
         }
-
-
+        for (BossAsteroid bossAsteroid : bossAsteroids) {
+            bossAsteroid.update(delta);
+            bossAsteroid.updateComets(delta);
+        }
     }
 
-//    private void handleCollisions() {
-//        for (Asteroid asteroid : asteroids) {
-//            asteroid.detectCollision(); // Delegate collision detection to Asteroid class
-//        }
-//    }
 
     //refactored to make some code reusable for Collision Handler
     private void handleCollisions() {
@@ -123,6 +138,8 @@ public class AsteroidHandler {
             asteroid.draw(shapeRenderer); // Draw each asteroid
         }
         shapeRenderer.end();
+        drawBoss(shapeRenderer);
+
     }
 
     //Asteroid on Asteroid collision logic
@@ -132,10 +149,8 @@ public class AsteroidHandler {
         Vector2 combinedVelocity = new Vector2();
         combinedVelocity.x = Math.abs(asteroid1.getVelocity().x) + Math.abs(asteroid2.getVelocity().x);
         combinedVelocity.y = Math.abs(asteroid1.getVelocity().y) + Math.abs(asteroid2.getVelocity().y);
-        System.out.println("Combined velocity: " + combinedVelocity);
         //Determine impact magnitude
         float impactMagnitude = combinedVelocity.len();
-        System.out.println("Impact magnitude: " + impactMagnitude);
         float collisionThreshold =5.0f;
 
         if(impactMagnitude > collisionThreshold && asteroid1.getTierLevel() > 1 && asteroid2.getTierLevel() > 1) {
@@ -178,5 +193,14 @@ public class AsteroidHandler {
         }
     }
 
-
+    //Method to remove bosses
+    public void removeMarkedBosses(List<BossAsteroid> bossAsteroids) {
+        Iterator<BossAsteroid> iterator = bossAsteroids.iterator();
+        while(iterator.hasNext()) {
+            Asteroid asteroid = iterator.next();
+            if(asteroid.isToRemove()) {
+                iterator.remove();
+            }
+        }
+    }
 }

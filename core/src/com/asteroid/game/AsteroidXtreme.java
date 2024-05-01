@@ -2,6 +2,8 @@ package com.asteroid.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AsteroidXtreme extends ApplicationAdapter {
+public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	private ShapeRenderer shapeRenderer;
 	private Texture lifeTexture;
 	private TextureRegion lifeRegion;
-	BossAsteroid boss;
+
 	PlayerShip ship;
 	UFOShip ufo;
 	CollisionHandler collisionHandler;
@@ -28,11 +30,25 @@ public class AsteroidXtreme extends ApplicationAdapter {
 	ScoreHandler scoreHandler;
 
 	List<Asteroid> asteroids;
+	StageLevel stageLevel;
+
+	boolean gameOver;
+	private StageManager stageManager;
+	private ScreenSwitch screenSwitch;
 	List<PowerUp> powerUps;
 
+	private float volume = 0.05f;
 
-	@Override
-	public void create() {
+	public AsteroidXtreme() {
+	}
+
+	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch) {
+		this.spriteBatch = batch;
+		this.screenSwitch = screenSwitch;
+
+		initialize();
+	}
+	private void initialize() {
 		shapeRenderer = new ShapeRenderer();
 		scoreHandler = new ScoreHandler();
 		spriteBatch = new SpriteBatch();
@@ -41,60 +57,96 @@ public class AsteroidXtreme extends ApplicationAdapter {
 		font = new BitmapFont();
 		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
 		ufo = new UFOShip(200, 200, ship);
-		boss = new BossAsteroid(new Vector2(500,500),3, ship, 500);
 		collisionHandler = new CollisionHandler(scoreHandler);
 		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
+		stageManager = new StageManager(asteroidHandler, ship);
 		asteroids = asteroidHandler.getAsteroids();
+		stageLevel = stageManager.getCurrentStage();
+		gameOver = false;
+
 		powerUps = new ArrayList<>();
 	}
 
+
 	@Override
-	public void render() {
-		// Clear screen
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		float delta = Gdx.graphics.getDeltaTime();
+	public void render(float delta) {
+		if (!isGameOver()) {
+			// Clear screen
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//		float delta = Gdx.graphics.getDeltaTime();
 
-		//Update collision handler
-		collisionHandler.update(ship, ufo, boss, asteroidHandler, powerUps);
+			//Update collision handler
+			collisionHandler.update(ship, ufo, asteroidHandler);
 
-		// Update ship logic
-		ship.update(delta);
-		ufo.update(delta);
-		boss.setPlayerShip(ship);
-		boss.update(delta);
-		boss.updateComets(delta);
+			// Update ship logic
+			ship.update(delta);
+			ufo.update(delta);
 
-
-		//Update asteroids
-		asteroidHandler.update(delta);
-
-		// Draw ship
-		ship.draw(shapeRenderer);
-		ship.drawBullets(shapeRenderer);
-
-		//Draw ufo
-		ufo.draw(shapeRenderer);
-		ufo.drawBullets(shapeRenderer);
-
-		//Draw asteroids
-		asteroidHandler.render();
-
-		//Draw boss asteroid
-		boss.draw(shapeRenderer);
-
-		boss.drawComets(shapeRenderer);
-
-		//Respawn message
-		spriteBatch.begin();
-		ship.drawRespawnMessage(spriteBatch, font);
-		spriteBatch.end();
-
-		//Scoreboard
-		spriteBatch.begin();
-		font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+			//Update asteroids
+			asteroidHandler.update(delta);
 
 
-		//Draw lives
+
+			// Draw ship
+			ship.draw(shapeRenderer);
+			ship.drawBullets(shapeRenderer);
+
+			//Draw ufo
+			ufo.draw(shapeRenderer);
+			ufo.drawBullets(shapeRenderer);
+
+			//Draw asteroids
+			asteroidHandler.render();
+
+			//Respawn message
+			spriteBatch.begin();
+			ship.drawRespawnMessage(spriteBatch, font);
+			spriteBatch.end();
+
+			//Scoreboard
+			spriteBatch.begin();
+			font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+
+			//Draw lives
+			drawPlayerLives(spriteBatch);
+			spriteBatch.end();
+
+			//Check for stage transitions and update parameters
+			stageManager.update(delta);
+
+			//Game won message
+			spriteBatch.begin();
+			stageManager.drawGameWonMessage(spriteBatch, font);
+			spriteBatch.end();
+		} else {
+			//switch this to game over screen
+			screenSwitch.switchToMainMenu();
+		}
+	}
+
+	@Override
+	public void show() {
+
+	}
+
+//	@Override
+//	public void render(float delta) {
+//
+//	}
+
+	@Override
+	public void hide() {
+
+	}
+
+	@Override
+	public void dispose() {
+		shapeRenderer.dispose();
+		lifeTexture.dispose();
+	}
+
+
+	private void drawPlayerLives(SpriteBatch batch) {
 		int lives = ship.getLives();
 		float lifeImageWidth = lifeRegion.getRegionWidth();
 		float lifeImageHeight = lifeRegion.getRegionHeight();
@@ -107,10 +159,12 @@ public class AsteroidXtreme extends ApplicationAdapter {
 
 	}
 
-	@Override
-	public void dispose() {
-		shapeRenderer.dispose();
-		lifeTexture.dispose();
+	private boolean isGameOver() {
+		int playerLives = ship.getLives();
+		if (playerLives == 0) {
+			return true;
+		}
+		return false;
 	}
 
 }
