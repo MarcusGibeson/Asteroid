@@ -38,7 +38,7 @@ public class MainMenuScreen implements Screen {
     ImageButton highScoresButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(highScoresButtonTexture)));
 
     private final Sound mainMenuMusic;
-
+    private float volume = 0.5f;
 
     public MainMenuScreen(ScreenSwitch screenSwitch, SpriteBatch batch) {
         this.screenSwitch = screenSwitch;
@@ -52,7 +52,7 @@ public class MainMenuScreen implements Screen {
     }
     private void setupMenu() {
         //Add UI elements to the stage
-        mainMenuMusic.loop();
+        mainMenuMusic.loop(volume);
         startButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2);
         settingsButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 200);
         highScoresButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 400);
