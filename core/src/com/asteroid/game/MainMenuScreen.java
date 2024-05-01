@@ -38,7 +38,7 @@ public class MainMenuScreen implements Screen {
     ImageButton highScoresButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(highScoresButtonTexture)));
 
     private final Sound mainMenuMusic;
-    private float volume = 0.5f;
+    private float volume = 0.2f;
 
     public MainMenuScreen(ScreenSwitch screenSwitch, SpriteBatch batch) {
         this.screenSwitch = screenSwitch;

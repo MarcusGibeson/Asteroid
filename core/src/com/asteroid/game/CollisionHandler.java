@@ -20,7 +20,7 @@ public class CollisionHandler {
         this.scoreHandler = scoreHandler;
     }
 
-    public void update(PlayerShip playerShip, UFOShip ufo, AsteroidHandler asteroidHandler) {
+    public void update(PlayerShip playerShip, UFOShip ufo, AsteroidHandler asteroidHandler, List<PowerUp> powerUps) {
 
         //Asteroids bumping into each other
         if(checkAsteroidCollisionWithAnotherAsteroid(asteroidHandler)) {

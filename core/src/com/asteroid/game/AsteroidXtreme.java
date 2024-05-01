@@ -73,10 +73,10 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		if (!isGameOver()) {
 			// Clear screen
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		float delta = Gdx.graphics.getDeltaTime();
+			//float delta = Gdx.graphics.getDeltaTime();
 
 			//Update collision handler
-			collisionHandler.update(ship, ufo, asteroidHandler);
+			collisionHandler.update(ship, ufo, asteroidHandler, powerUps);
 
 			// Update ship logic
 			ship.update(delta);
@@ -109,7 +109,6 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 			//Draw lives
 			drawPlayerLives(spriteBatch);
-			spriteBatch.end();
 
 			//Check for stage transitions and update parameters
 			stageManager.update(delta);
