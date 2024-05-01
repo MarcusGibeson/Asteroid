@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -35,13 +38,35 @@ public class MainMenuScreen implements Screen {
         Texture startButtonTexture = new Texture("Images/startButton.png");
         ImageButton startButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(startButtonTexture)));
         startButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2);
+
+        //add hover effect
+        final Texture startButtonSelectedTexture = new Texture("Images/startButtonSelected.png");
+        final TextureRegionDrawable startButtonSelectedDrawable = new TextureRegionDrawable(new TextureRegion(startButtonSelectedTexture));
+        final TextureRegionDrawable startButtonDefaultDrawable = new TextureRegionDrawable(new TextureRegion(startButtonTexture));
+
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 screenSwitch.switchToAsteroidXtreme();
+                startButton.removeListener(this);
             }
         });
+        startButton.addListener(getHoverListener(startButton, startButtonDefaultDrawable, startButtonSelectedDrawable));
         stage.addActor(startButton);
+
+    }
+
+    private EventListener getHoverListener(final ImageButton button, final TextureRegionDrawable defaultDrawable,final TextureRegionDrawable selectedDrawable) {
+        return new ChangeListener(){
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(button.isOver()) {
+                    button.getStyle().imageUp = selectedDrawable;
+                }else {
+                    button.getStyle().imageUp = defaultDrawable;
+                }
+            }
+        };
     }
 
     @Override
@@ -98,4 +123,6 @@ public class MainMenuScreen implements Screen {
     }
 
     //other screen methods like pause, resume, dispose
+
+
 }

@@ -170,7 +170,6 @@ public class CollisionHandler {
         if (!playerShip.isPlayerDead()) {
             if(checkUFOBulletPlayerShipCollision(ufo, playerShip)) {
                 playerShip.handleCollision();
-
             }
         }
 
