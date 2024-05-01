@@ -63,58 +63,57 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	@Override
 	public void render(float delta) {
-		// Clear screen
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if (!isGameOver()) {
+			// Clear screen
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //		float delta = Gdx.graphics.getDeltaTime();
 
-		//Update collision handler
-		collisionHandler.update(ship, ufo, asteroidHandler);
+			//Update collision handler
+			collisionHandler.update(ship, ufo, asteroidHandler);
 
-		// Update ship logic
-		ship.update(delta);
-		ufo.update(delta);
+			// Update ship logic
+			ship.update(delta);
+			ufo.update(delta);
 
-		//Update asteroids
-		asteroidHandler.update(delta);
+			//Update asteroids
+			asteroidHandler.update(delta);
 
 
 
-		// Draw ship
-		ship.draw(shapeRenderer);
-		ship.drawBullets(shapeRenderer);
+			// Draw ship
+			ship.draw(shapeRenderer);
+			ship.drawBullets(shapeRenderer);
 
-		//Draw ufo
-		ufo.draw(shapeRenderer);
-		ufo.drawBullets(shapeRenderer);
+			//Draw ufo
+			ufo.draw(shapeRenderer);
+			ufo.drawBullets(shapeRenderer);
 
-		//Draw asteroids
-		asteroidHandler.render();
+			//Draw asteroids
+			asteroidHandler.render();
 
-		//Respawn message
-		spriteBatch.begin();
-		ship.drawRespawnMessage(spriteBatch, font);
-		spriteBatch.end();
+			//Respawn message
+			spriteBatch.begin();
+			ship.drawRespawnMessage(spriteBatch, font);
+			spriteBatch.end();
 
-		//Scoreboard
-		spriteBatch.begin();
-		font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+			//Scoreboard
+			spriteBatch.begin();
+			font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
 
-		//Draw lives
-		drawPlayerLives(spriteBatch);
-		spriteBatch.end();
+			//Draw lives
+			drawPlayerLives(spriteBatch);
+			spriteBatch.end();
 
-		//Check for stage transitions and update parameters
-		stageManager.update(delta);
+			//Check for stage transitions and update parameters
+			stageManager.update(delta);
 
-		//Game won message
-		spriteBatch.begin();
-		stageManager.drawGameWonMessage(spriteBatch, font);
-		spriteBatch.end();
-
-		//Game over
-		if(isGameOver()) {
+			//Game won message
+			spriteBatch.begin();
+			stageManager.drawGameWonMessage(spriteBatch, font);
+			spriteBatch.end();
+		} else {
+			//switch this to game over screen
 			screenSwitch.switchToMainMenu();
-			return;
 		}
 	}
 
