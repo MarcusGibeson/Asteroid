@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +67,21 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		gameOver = false;
 
 		powerUps = new ArrayList<>();
+
+		//initializing a timer to spawn new powerups
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				addNewPowerUp();
+			}
+		},5 ,5);
 	}
 
 
 	@Override
 	public void render(float delta) {
 		if (!isGameOver()) {
+			System.out.println(powerUps.size());
 			// Clear screen
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			//float delta = Gdx.graphics.getDeltaTime();
@@ -98,10 +109,17 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			//Draw asteroids
 			asteroidHandler.render();
 
+			// Draw all power-ups
+			for (PowerUp powerUp : powerUps) {
+				powerUp.draw(shapeRenderer);
+			}
+
 			//Respawn message
 			spriteBatch.begin();
 			ship.drawRespawnMessage(spriteBatch, font);
 			spriteBatch.end();
+
+
 
 			//Scoreboard
 			spriteBatch.begin();
@@ -164,6 +182,11 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			return true;
 		}
 		return false;
+	}
+
+	private void addNewPowerUp() {
+		PowerUp newPowerUp = new PowerUp();
+		powerUps.add(newPowerUp);
 	}
 
 }

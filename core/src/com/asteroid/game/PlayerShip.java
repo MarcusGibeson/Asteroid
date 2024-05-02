@@ -421,9 +421,7 @@ public class PlayerShip {
                     ));
                     shootingSound.play();
                     break;
-//                case INVULN://player cannot die from being hit by boss or asteroids
-//                    setInvulnerable(true);
-//                    break;
+
                 default: //in case the bad juju happens
                     setShotCooldown(0.25f);
                     System.out.println("you shouldn't be seeing this message anyways but hey debug is a thing");

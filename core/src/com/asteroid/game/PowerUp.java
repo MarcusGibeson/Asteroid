@@ -1,5 +1,6 @@
 package com.asteroid.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -26,9 +27,9 @@ public class PowerUp {
     public Vector2 position;
 
 
-    public PowerUp (Vector2 position){
+    public PowerUp (){
         setRandomType(); //Set a random power-up upon initialization
-        this.position = position;
+        randomizePosition(); //Set a random location upon initialization
         this.isTouchingShip = false;
     }
 
@@ -58,11 +59,24 @@ public class PowerUp {
     }
 
     public void draw(ShapeRenderer shapeRenderer){
+        shapeRenderer.setAutoShapeType(true);
+        shapeRenderer.begin();
         shapeRenderer.setColor(Color.PINK);
         shapeRenderer.rect(position.x, position.y, dimensions.x, dimensions.y);
+        shapeRenderer.end();
     }
 
     public Rectangle getCollisionRectangle() {
         return new Rectangle(position.x, position.y, dimensions.x, dimensions.y);
+    }
+
+    public void randomizePosition(){
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+
+        int randomX = MathUtils.random(100, screenWidth - 100);
+        int randomY = MathUtils.random(60, screenHeight - 60);
+
+        this.position = new Vector2(randomX, randomY);
     }
 }

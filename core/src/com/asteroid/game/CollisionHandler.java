@@ -223,16 +223,18 @@ public class CollisionHandler {
        }
 
         //Player touching a power up
-        if (checkPowerUpPlayerCollision(playerShip, powerUps)){
-            //if powerUps isn't empty
-            if (!powerUps.isEmpty()){
-                //for each powerUp on the screen
-                for (PowerUp powerUp : powerUps){
-                    //if it's touching the ship
-                    if (powerUp.isTouchingShip()){
-                        //apply it
-                        powerUp.applyToShip(playerShip);
-                    }
+        if (checkPowerUpPlayerCollision(playerShip, powerUps)) {
+            Iterator<PowerUp> iterator = powerUps.iterator(); //turning it into a modifiable object
+            //while it isn't empty
+            while (iterator.hasNext()) {
+                //powerup is the next powerup in the list
+                PowerUp powerUp = iterator.next();
+                //if it's touching the ship
+                if (powerUp.isTouchingShip()) {
+                    //apply it
+                    powerUp.applyToShip(playerShip);
+                    //remove it
+                    iterator.remove();
                 }
             }
         }
