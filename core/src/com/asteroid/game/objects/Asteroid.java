@@ -1,4 +1,4 @@
-package com.asteroid.game;
+package com.asteroid.game.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -30,7 +30,7 @@ public class Asteroid {
     private static final float MAX_SPEED = 5f;
 
     // Defining spawn node coordinates so they can easily be assigned
-    static final int[][] spawnCoordinates = {
+    public static final int[][] spawnCoordinates = {
             {160, 719},
             {480, 719},
             {800, 719},

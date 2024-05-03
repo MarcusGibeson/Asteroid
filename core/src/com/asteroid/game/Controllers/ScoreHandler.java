@@ -1,4 +1,4 @@
-package com.asteroid.game;
+package com.asteroid.game.Controllers;
 
 public class ScoreHandler {
     private int score;

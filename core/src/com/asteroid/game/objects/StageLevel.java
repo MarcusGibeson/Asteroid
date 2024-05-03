@@ -1,4 +1,6 @@
-package com.asteroid.game;
+package com.asteroid.game.objects;
+
+import com.asteroid.game.objects.BossAsteroid;
 
 import java.util.ArrayList;
 import java.util.List;

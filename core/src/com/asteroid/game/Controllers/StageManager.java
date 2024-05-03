@@ -1,5 +1,8 @@
-package com.asteroid.game;
+package com.asteroid.game.Controllers;
 
+import com.asteroid.game.objects.StageLevel;
+import com.asteroid.game.objects.BossAsteroid;
+import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

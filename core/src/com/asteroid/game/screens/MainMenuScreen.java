@@ -1,4 +1,4 @@
-package com.asteroid.game;
+package com.asteroid.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -38,7 +38,7 @@ public class MainMenuScreen implements Screen {
     ImageButton highScoresButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(highScoresButtonTexture)));
 
     private final Sound mainMenuMusic;
-    private float volume = 0.5f;
+    private float volume = 0.2f;
 
     public MainMenuScreen(ScreenSwitch screenSwitch, SpriteBatch batch) {
         this.screenSwitch = screenSwitch;
@@ -130,7 +130,7 @@ public class MainMenuScreen implements Screen {
 
         //Handle user input to start the game
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-            screenSwitch.switchToAsteroidXtreme();
+            screenSwitch.switchToGameOver();
         }
 
         drawSelectedAreaOutline(shapeRenderer, startButton);

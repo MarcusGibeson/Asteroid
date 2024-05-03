@@ -1,5 +1,6 @@
 package com.asteroid.game;
 
+import com.asteroid.game.screens.ScreenSwitch;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 

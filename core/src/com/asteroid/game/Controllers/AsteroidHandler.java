@@ -1,13 +1,15 @@
-package com.asteroid.game;
+package com.asteroid.game.Controllers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.asteroid.game.objects.Asteroid;
+import com.asteroid.game.objects.BossAsteroid;
+import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer;
 
 public class AsteroidHandler {
     private List<Asteroid> asteroids;
@@ -25,6 +27,7 @@ public class AsteroidHandler {
         this.bossAsteroids = new ArrayList<>();
         this.shapeRenderer = shapeRenderer;
         this.scoreHandler = scoreHandler;
+
 
     }
 

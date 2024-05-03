@@ -3,7 +3,7 @@ package com.asteroid.game.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.asteroid.game.AsteroidXtreme;
+import com.asteroid.game.screens.AsteroidXtreme;
 
 public class HtmlLauncher extends GwtApplication {
 

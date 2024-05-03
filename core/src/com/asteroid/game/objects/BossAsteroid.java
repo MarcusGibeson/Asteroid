@@ -1,6 +1,6 @@
-package com.asteroid.game;
+package com.asteroid.game.objects;
 
-import static com.asteroid.game.Comet.COMET_SPEED;
+import static com.asteroid.game.objects.Comet.COMET_SPEED;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class BossAsteroid extends Asteroid{
+public class BossAsteroid extends Asteroid {
 
     public static final float BOSS_RADIUS = 150.0f;
     private final float width = 300;

@@ -1,13 +1,12 @@
-package com.asteroid.game;
+package com.asteroid.game.objects;
 
-import static com.asteroid.game.Bullet.BULLET_RADIUS;
-import static com.asteroid.game.Bullet.BULLET_SPEED;
+import static com.asteroid.game.objects.Bullet.BULLET_RADIUS;
+import static com.asteroid.game.objects.Bullet.BULLET_SPEED;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -162,7 +161,7 @@ public class PlayerShip {
 
     public void drawRespawnMessage(SpriteBatch spriteBatch, BitmapFont font) {
         if (isPlayerDead) {
-            font.draw(spriteBatch, "You have died, press Enter to continue. You have " + lives + " lives remaining.", Gdx.graphics.getWidth() / 2 -150, Gdx.graphics.getHeight() /2 );
+            font.draw(spriteBatch, "You have died, press Enter to continue. You have " + (lives - 1) + " lives remaining.", Gdx.graphics.getWidth() / 2 -150, Gdx.graphics.getHeight() /2 );
         }
     }
     private int getMaxHealth() {

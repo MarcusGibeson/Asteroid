@@ -1,14 +1,19 @@
-package com.asteroid.game;
+package com.asteroid.game.Controllers;
 
-import static com.asteroid.game.BossAsteroid.BOSS_RADIUS;
-import static com.asteroid.game.Bullet.BULLET_RADIUS;
-import static com.asteroid.game.Comet.COMET_RADIUS;
+import static com.asteroid.game.objects.BossAsteroid.BOSS_RADIUS;
+import static com.asteroid.game.objects.Bullet.BULLET_RADIUS;
+import static com.asteroid.game.objects.Comet.COMET_RADIUS;
 
+import com.asteroid.game.objects.UFOShip;
+import com.asteroid.game.objects.Asteroid;
+import com.asteroid.game.objects.BossAsteroid;
+import com.asteroid.game.objects.Bullet;
+import com.asteroid.game.objects.Comet;
+import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 

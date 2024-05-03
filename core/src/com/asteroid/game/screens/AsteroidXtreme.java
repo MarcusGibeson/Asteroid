@@ -1,16 +1,26 @@
-package com.asteroid.game;
+package com.asteroid.game.screens;
 
+import com.asteroid.game.objects.StageLevel;
+import com.asteroid.game.Controllers.StageManager;
+import com.asteroid.game.objects.UFOShip;
+import com.asteroid.game.Controllers.AsteroidHandler;
+import com.asteroid.game.Controllers.CollisionHandler;
+import com.asteroid.game.Controllers.ScoreHandler;
+import com.asteroid.game.objects.Asteroid;
+import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.awt.Shape;
 import java.util.List;
 
 
@@ -29,61 +39,57 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	List<Asteroid> asteroids;
 	StageLevel stageLevel;
-
 	boolean gameOver;
 	private StageManager stageManager;
 	private ScreenSwitch screenSwitch;
+	private GameLoop gameLoop;
+
+
 
 	private float volume = 0.05f;
+	private Stage stage;
 
 	public AsteroidXtreme() {
 	}
 
-	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch) {
+	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch, CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo, AsteroidHandler asteroidHandler, StageManager stageManager, ShapeRenderer shapeRenderer) {
 		this.spriteBatch = batch;
 		this.screenSwitch = screenSwitch;
-
+		this.stage = new Stage(new ScreenViewport());
+		this.collisionHandler = collisionHandler;
+		this.ship = ship;
+		this.ufo = ufo;
+		this.asteroidHandler = asteroidHandler;
+		this.stageManager = stageManager;
+		this.shapeRenderer = shapeRenderer;
 		initialize();
 	}
-	private void initialize() {
-		shapeRenderer = new ShapeRenderer();
+	public void initialize() {
 		scoreHandler = new ScoreHandler();
-		spriteBatch = new SpriteBatch();
 		lifeTexture = new Texture(Gdx.files.internal("Images/Player_Ship_Lives.png"));
 		lifeRegion = new TextureRegion(lifeTexture);
 		font = new BitmapFont();
-		ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
-		ufo = new UFOShip(200, 200, ship);
-		collisionHandler = new CollisionHandler(scoreHandler);
-		asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
-		stageManager = new StageManager(asteroidHandler, ship);
+
 		asteroids = asteroidHandler.getAsteroids();
 		stageLevel = stageManager.getCurrentStage();
 		gameOver = false;
+		gameLoop = screenSwitch.getGameLoop();
 
 	}
 
 
 	@Override
 	public void render(float delta) {
-		if (!isGameOver()) {
+
+
+		if (shapeRenderer != null && spriteBatch != null && font != null &&!isGameOver()) {
 			// Clear screen
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		float delta = Gdx.graphics.getDeltaTime();
 
-			//Update collision handler
-			collisionHandler.update(ship, ufo, asteroidHandler);
-
-			// Update ship logic
-			ship.update(delta);
-			ufo.update(delta);
-
-			//Update asteroids
-			asteroidHandler.update(delta);
-
-
+			gameLoop.update(delta);
 
 			// Draw ship
+
 			ship.draw(shapeRenderer);
 			ship.drawBullets(shapeRenderer);
 
@@ -107,16 +113,11 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			drawPlayerLives(spriteBatch);
 			spriteBatch.end();
 
-			//Check for stage transitions and update parameters
-			stageManager.update(delta);
-
 			//Game won message
 			spriteBatch.begin();
 			stageManager.drawGameWonMessage(spriteBatch, font);
 			spriteBatch.end();
-		} else {
-			//switch this to game over screen
-			screenSwitch.switchToMainMenu();
+
 		}
 	}
 
@@ -125,11 +126,6 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	}
 
-//	@Override
-//	public void render(float delta) {
-//
-//	}
-
 	@Override
 	public void hide() {
 
@@ -137,8 +133,32 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	@Override
 	public void dispose() {
-		shapeRenderer.dispose();
-		lifeTexture.dispose();
+		gameLoop.stop();
+		// Dispose resources in reverse order of creation
+		if (font != null) {
+			font.dispose();
+			font = null;
+		}
+		if (spriteBatch != null) {
+			spriteBatch.dispose();
+			spriteBatch = null;
+		}
+		if (shapeRenderer != null) {
+			shapeRenderer.dispose();
+			shapeRenderer = null;
+		}
+		if (lifeTexture != null) {
+			lifeTexture.dispose();
+			lifeTexture = null;
+		}
+		if (asteroids != null) {
+			asteroids.clear();
+			asteroids = null;
+		}
+		if (stage != null) {
+			stage.dispose();
+			stage = null;
+		}
 	}
 
 
@@ -153,11 +173,8 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		}
 	}
 
-	private boolean isGameOver() {
+	public boolean isGameOver() {
 		int playerLives = ship.getLives();
-		if (playerLives == 0) {
-			return true;
-		}
-		return false;
-	}
+        return playerLives == 0;
+    }
 }
