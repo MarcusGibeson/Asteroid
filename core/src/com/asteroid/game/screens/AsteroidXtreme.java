@@ -44,6 +44,8 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	private ScreenSwitch screenSwitch;
 	private GameLoop gameLoop;
 
+	public ShapeRenderer shape;
+	public SpriteBatch batch;
 
 
 	private float volume = 0.05f;
@@ -66,6 +68,8 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		initialize();
 	}
 	public void initialize() {
+		shape = new ShapeRenderer();
+		batch = new SpriteBatch();
 		scoreHandler = new ScoreHandler();
 		lifeTexture = new Texture(Gdx.files.internal("Images/Player_Ship_Lives.png"));
 		lifeRegion = new TextureRegion(lifeTexture);
@@ -91,7 +95,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 				screenSwitch.switchToGameOver();
 				return;
 			}
-			if (shapeRenderer != null && spriteBatch != null && font != null &&!isGameOver()) {
+			if (shape != null && batch != null && font != null &&!isGameOver()) {
 				gameLoop.update(delta);
 
 				// Clear screen
@@ -99,33 +103,33 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 				// Draw ship
 
-				ship.draw(shapeRenderer);
-				ship.drawBullets(shapeRenderer);
+				ship.draw(shape);
+				ship.drawBullets(shape);
 
 				//Draw ufo
-				ufo.draw(shapeRenderer);
-				ufo.drawBullets(shapeRenderer);
+				ufo.draw(shape);
+				ufo.drawBullets(shape);
 
 				//Draw asteroids
 				asteroidHandler.render();
 
 				//Respawn message
-				spriteBatch.begin();
-				ship.drawRespawnMessage(spriteBatch, font);
-				spriteBatch.end();
+				batch.begin();
+				ship.drawRespawnMessage(batch, font);
+				batch.end();
 
 				//Scoreboard
-				spriteBatch.begin();
-				font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+				batch.begin();
+				font.draw(batch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
 
 				//Draw lives
-				drawPlayerLives(spriteBatch);
-				spriteBatch.end();
+				drawPlayerLives(batch);
+				batch.end();
 
 				//Game won message
-				spriteBatch.begin();
-				stageManager.drawGameWonMessage(spriteBatch, font);
-				spriteBatch.end();
+				batch.begin();
+				stageManager.drawGameWonMessage(batch, font);
+				batch.end();
 
 
 
@@ -159,7 +163,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		float startX = 10;
 		float startY = Gdx.graphics.getHeight() - 80;
 		for (int i = 0; i < lives; i++) {
-			spriteBatch.draw(lifeRegion, startX + i * (lifeImageWidth + 5), startY, lifeImageWidth, lifeImageHeight);
+			batch.draw(lifeRegion, startX + i * (lifeImageWidth + 5), startY, lifeImageWidth, lifeImageHeight);
 		}
 	}
 
@@ -177,15 +181,30 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		renderingEnabled = enabled;
     }
 
+	public GameLoop getGameLoop() {
+		return gameLoop;
+	}
+
 	public void disposeResources() {
 		// Dispose resources in reverse order of creation
 		if (font != null) {
 			font.dispose();
 			font = null;
 		}
+
 		if (lifeTexture != null) {
 			lifeTexture.dispose();
 			lifeTexture = null;
+		}
+
+		if (shape != null) {
+			shape.dispose();
+			shape = null;
+		}
+
+		if (batch != null) {
+			batch.dispose();
+			batch = null;
 		}
 	}
 }

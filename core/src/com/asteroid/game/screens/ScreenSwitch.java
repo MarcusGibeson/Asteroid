@@ -53,11 +53,13 @@ public class ScreenSwitch extends Game {
     @Override
     public void dispose() {
         super.dispose();
-        shapeRenderer.dispose();
-        batch.dispose();
     }
 
     public void switchToAsteroidXtreme() {
+        if(getScreen() instanceof MainMenuScreen) {
+            mainMenuScreen = getScreen();
+            mainMenuScreen.dispose();
+        }
         setScreen(new AsteroidXtreme((ScreenSwitch) Gdx.app.getApplicationListener(), batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer));
     }
 
@@ -66,15 +68,18 @@ public class ScreenSwitch extends Game {
     }
 
     public void switchToGameOver(){
+        Screen currentScreen = getScreen();
 
-        if (getScreen() instanceof AsteroidXtreme) {
-            asteroidXtreme = (AsteroidXtreme) getScreen();
+        if (currentScreen instanceof AsteroidXtreme) {
+            AsteroidXtreme asteroidXtreme = (AsteroidXtreme) currentScreen;
+            GameLoop gameLoop = asteroidXtreme.getGameLoop();
             gameLoop.stop();
             asteroidXtreme.setRenderingEnabled(false);
+            asteroidXtreme.hide();
             asteroidXtreme.dispose();
         }
 
-        setScreen(new GameOverScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
+        setScreen(new GameOverScreen(this, batch));
 
     }
 

@@ -161,7 +161,6 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         backgroundTexture.dispose();
         stage.dispose();
-        batch.dispose();
     }
 
     //other screen methods like pause, resume, dispose
