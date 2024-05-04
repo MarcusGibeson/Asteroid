@@ -71,7 +71,7 @@ public class ScreenSwitch extends Game {
         Screen currentScreen = getScreen();
 
         if (currentScreen instanceof AsteroidXtreme) {
-            AsteroidXtreme asteroidXtreme = (AsteroidXtreme) currentScreen;
+            asteroidXtreme = (AsteroidXtreme) currentScreen;
             GameLoop gameLoop = asteroidXtreme.getGameLoop();
             gameLoop.stop();
             asteroidXtreme.setRenderingEnabled(false);

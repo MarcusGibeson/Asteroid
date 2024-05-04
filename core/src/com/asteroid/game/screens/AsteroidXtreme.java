@@ -206,5 +206,10 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			batch.dispose();
 			batch = null;
 		}
+
+		if(stage != null) {
+			stage.dispose();
+			stage = null;
+		}
 	}
 }
