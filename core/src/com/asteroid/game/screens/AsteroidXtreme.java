@@ -48,6 +48,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	private float volume = 0.05f;
 	private Stage stage;
+	private boolean renderingEnabled = true;
 
 	public AsteroidXtreme() {
 	}
@@ -81,44 +82,58 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	@Override
 	public void render(float delta) {
 
-
-		if (shapeRenderer != null && spriteBatch != null && font != null &&!isGameOver()) {
-			// Clear screen
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-			gameLoop.update(delta);
-
-			// Draw ship
-
-			ship.draw(shapeRenderer);
-			ship.drawBullets(shapeRenderer);
-
-			//Draw ufo
-			ufo.draw(shapeRenderer);
-			ufo.drawBullets(shapeRenderer);
-
-			//Draw asteroids
-			asteroidHandler.render();
-
-			//Respawn message
-			spriteBatch.begin();
-			ship.drawRespawnMessage(spriteBatch, font);
-			spriteBatch.end();
-
-			//Scoreboard
-			spriteBatch.begin();
-			font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
-
-			//Draw lives
-			drawPlayerLives(spriteBatch);
-			spriteBatch.end();
-
-			//Game won message
-			spriteBatch.begin();
-			stageManager.drawGameWonMessage(spriteBatch, font);
-			spriteBatch.end();
-
+		if (!renderingEnabled) {
+			return;
 		}
+
+		if(!gameOver) {
+			if (isGameOver()) {
+				screenSwitch.switchToGameOver();
+				return;
+			}
+			if (shapeRenderer != null && spriteBatch != null && font != null &&!isGameOver()) {
+				gameLoop.update(delta);
+
+				// Clear screen
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+				// Draw ship
+
+				ship.draw(shapeRenderer);
+				ship.drawBullets(shapeRenderer);
+
+				//Draw ufo
+				ufo.draw(shapeRenderer);
+				ufo.drawBullets(shapeRenderer);
+
+				//Draw asteroids
+				asteroidHandler.render();
+
+				//Respawn message
+				spriteBatch.begin();
+				ship.drawRespawnMessage(spriteBatch, font);
+				spriteBatch.end();
+
+				//Scoreboard
+				spriteBatch.begin();
+				font.draw(spriteBatch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+
+				//Draw lives
+				drawPlayerLives(spriteBatch);
+				spriteBatch.end();
+
+				//Game won message
+				spriteBatch.begin();
+				stageManager.drawGameWonMessage(spriteBatch, font);
+				spriteBatch.end();
+
+
+
+
+			}
+		}
+
+
 	}
 
 	@Override
@@ -128,37 +143,12 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	@Override
 	public void hide() {
-
+		disposeResources();
 	}
 
 	@Override
 	public void dispose() {
-		gameLoop.stop();
-		// Dispose resources in reverse order of creation
-		if (font != null) {
-			font.dispose();
-			font = null;
-		}
-		if (spriteBatch != null) {
-			spriteBatch.dispose();
-			spriteBatch = null;
-		}
-		if (shapeRenderer != null) {
-			shapeRenderer.dispose();
-			shapeRenderer = null;
-		}
-		if (lifeTexture != null) {
-			lifeTexture.dispose();
-			lifeTexture = null;
-		}
-		if (asteroids != null) {
-			asteroids.clear();
-			asteroids = null;
-		}
-		if (stage != null) {
-			stage.dispose();
-			stage = null;
-		}
+		disposeResources();
 	}
 
 
@@ -175,6 +165,27 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	public boolean isGameOver() {
 		int playerLives = ship.getLives();
-        return playerLives == 0;
+        if (playerLives == 0) {
+			gameOver = true;
+			return true;
+		}
+		gameOver = false;
+		return false;
     }
+
+	public void setRenderingEnabled(boolean enabled) {
+		renderingEnabled = enabled;
+    }
+
+	public void disposeResources() {
+		// Dispose resources in reverse order of creation
+		if (font != null) {
+			font.dispose();
+			font = null;
+		}
+		if (lifeTexture != null) {
+			lifeTexture.dispose();
+			lifeTexture = null;
+		}
+	}
 }

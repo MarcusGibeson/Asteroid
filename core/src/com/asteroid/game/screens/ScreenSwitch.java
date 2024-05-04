@@ -68,10 +68,12 @@ public class ScreenSwitch extends Game {
     public void switchToGameOver(){
 
         if (getScreen() instanceof AsteroidXtreme) {
-            asteroidXtreme = (AsteroidXtreme)getScreen();
+            asteroidXtreme = (AsteroidXtreme) getScreen();
             gameLoop.stop();
+            asteroidXtreme.setRenderingEnabled(false);
             asteroidXtreme.dispose();
         }
+
         setScreen(new GameOverScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
 
     }

@@ -79,9 +79,6 @@ public class GameLoop {
         //Check for stage transitions and update parameters
         stageManager.update(delta);
 
-        if (asteroidXtreme.isGameOver()) {
-            screenSwitch.switchToGameOver();
-        }
 
     }
 

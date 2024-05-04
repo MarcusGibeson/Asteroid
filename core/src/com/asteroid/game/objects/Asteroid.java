@@ -128,7 +128,6 @@ public class Asteroid {
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
         }
-        System.out.println("Asteroid tier: " + tier);
     }
 
     private float randomNonZeroValue(int minValue, int maxValue) {
