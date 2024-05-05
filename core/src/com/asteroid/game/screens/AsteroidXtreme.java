@@ -96,7 +96,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 				screenSwitch.switchToGameOver();
 				return;
 			}
-			if (shape != null && batch != null && font != null &&!isGameOver()) {
+			if (!isGameOver()) {
 				gameLoop.update(delta);
 
 				// Clear screen

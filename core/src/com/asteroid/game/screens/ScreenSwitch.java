@@ -76,11 +76,13 @@ public class ScreenSwitch extends Game {
             gameLoop.stop();
             asteroidXtreme.setRenderingEnabled(false);
             asteroidXtreme.hide();
+            asteroidXtreme.dispose();
 
-            return;
         }
 
-        setScreen(new GameOverScreen(this, batch));
+        setScreen(new GameOverScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
+        gameOverScreen.show();
+
 
     }
 

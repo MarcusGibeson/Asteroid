@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class GameOverScreen implements Screen {
 
@@ -16,27 +17,32 @@ public class GameOverScreen implements Screen {
     private BitmapFont font;
     private ScreenSwitch screenSwitch;
     private Stage stage;
+    private SpriteBatch batch;
 
     public GameOverScreen(ScreenSwitch screenSwitch, SpriteBatch batch) {
         this.screenSwitch = screenSwitch;
+        this.stage = new Stage(new ScreenViewport());
         font = new BitmapFont();
         font.setColor(Color.RED);
         font.getData().setScale(2);
+        this.batch = batch;
         isGameOver = true;
         isHighScoreEntered = false;
         playerName="";
+        Gdx.input.setInputProcessor(stage);
     }
 
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
         if(isGameOver) {
-            SpriteBatch batch = screenSwitch.batch;
             batch.begin();
             font.draw(batch, "Game Over", Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2 + 50);
             font.draw(batch, "Enter your name: " + playerName, Gdx.graphics.getWidth() /2 -150, Gdx.graphics.getHeight() / 2);
@@ -78,7 +84,7 @@ public class GameOverScreen implements Screen {
     }
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width,height,true);
     }
 
     @Override
