@@ -11,6 +11,7 @@ import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -47,8 +48,6 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	public ShapeRenderer shape;
 	public SpriteBatch batch;
 
-
-	private float volume = 0.05f;
 	private Stage stage;
 	private boolean renderingEnabled = true;
 
@@ -74,6 +73,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		scoreHandler = new ScoreHandler();
 		lifeTexture = new Texture(Gdx.files.internal("Images/Player_Ship_Lives.png"));
 		lifeRegion = new TextureRegion(lifeTexture);
+
 		font = new BitmapFont();
 
 		asteroids = asteroidHandler.getAsteroids();
@@ -97,6 +97,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 				return;
 			}
 			if (!isGameOver()) {
+
 				gameLoop.update(delta);
 
 				// Clear screen

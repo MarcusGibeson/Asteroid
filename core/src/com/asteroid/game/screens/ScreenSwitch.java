@@ -9,6 +9,7 @@ import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -26,6 +27,9 @@ public class ScreenSwitch extends Game {
     private StageManager stageManager;
     private ScoreHandler scoreHandler;
     private ShapeRenderer shapeRenderer;
+    private Sound backgroundMusic;
+
+    private float volume = 0.05f;
 
     @Override
     public void create() {
@@ -40,9 +44,9 @@ public class ScreenSwitch extends Game {
 
         asteroidXtreme = new AsteroidXtreme(this, batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer);
         gameLoop = new GameLoop(this, batch, asteroidXtreme, collisionHandler, ship, ufo, asteroidHandler, stageManager);
-
+        backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/BackgroundGameMusic.mp3"));
         mainMenuScreen = new MainMenuScreen(this, batch);
-        gameOverScreen = new GameOverScreen(this, batch);
+        gameOverScreen = new GameOverScreen(this, batch, scoreHandler);
         setScreen(mainMenuScreen);
     }
 
@@ -56,10 +60,12 @@ public class ScreenSwitch extends Game {
     }
 
     public void switchToAsteroidXtreme() {
+
         if(getScreen() instanceof MainMenuScreen) {
             mainMenuScreen = getScreen();
             mainMenuScreen.dispose();
         }
+        backgroundMusic.loop(volume);
         setScreen(new AsteroidXtreme((ScreenSwitch) Gdx.app.getApplicationListener(), batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer));
     }
 
@@ -77,10 +83,10 @@ public class ScreenSwitch extends Game {
             asteroidXtreme.setRenderingEnabled(false);
             asteroidXtreme.hide();
             asteroidXtreme.dispose();
+            backgroundMusic.dispose();
 
         }
-
-        setScreen(new GameOverScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
+        setScreen(new GameOverScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch, scoreHandler));
         gameOverScreen.show();
 
 

@@ -159,6 +159,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
+        mainMenuMusic.dispose();
         backgroundTexture.dispose();
         stage.dispose();
     }
