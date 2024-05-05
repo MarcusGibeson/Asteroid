@@ -53,6 +53,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	private boolean renderingEnabled = true;
 
 	public AsteroidXtreme() {
+
 	}
 
 	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch, CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo, AsteroidHandler asteroidHandler, StageManager stageManager, ShapeRenderer shapeRenderer) {
