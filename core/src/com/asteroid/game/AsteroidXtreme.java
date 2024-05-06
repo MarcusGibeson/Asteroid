@@ -74,14 +74,13 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			public void run() {
 				addNewPowerUp();
 			}
-		},5 ,5);
+		},10 ,30);
 	}
 
 
 	@Override
 	public void render(float delta) {
 		if (!isGameOver()) {
-			System.out.println(powerUps.size());
 			// Clear screen
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			//float delta = Gdx.graphics.getDeltaTime();

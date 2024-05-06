@@ -271,30 +271,30 @@ public class PlayerShip {
                     resetCooldownTimer();
                 }
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
-                setTouchingPowerUp(true);
-                setCurrentPowerUpType(PowerUp.Type.RAPID_FIRE);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)){
-                setTouchingPowerUp(true);
-                setCurrentPowerUpType(PowerUp.Type.PULSE_SHOT);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
-                setTouchingPowerUp(true);
-                setCurrentPowerUpType(PowerUp.Type.WAVE_SHOT);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)){
-                setTouchingPowerUp(true);
-                setCurrentPowerUpType(PowerUp.Type.KILL_AURA);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)){
-                setTouchingPowerUp(true);
-                setCurrentPowerUpType(PowerUp.Type.MULTI_SHOT);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_6)){
-                setTouchingPowerUp(true);
-                setCurrentPowerUpType(PowerUp.Type.INVULN);
-            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.RAPID_FIRE);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.PULSE_SHOT);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.WAVE_SHOT);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.KILL_AURA);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.MULTI_SHOT);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_6)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.INVULN);
+//            }
         }
     }
 
@@ -463,17 +463,18 @@ public class PlayerShip {
                 if(pulseCount < 3) {
                     Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
                     bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    shootingSound.play();
                     System.out.println("Performing action " + (pulseCount + 1));
                     pulseCount++;
                 } else {
-                    // After performing the action three times, wait for 0.4 seconds
+                    // After performing the action three times, wait for 0.3 seconds
                     Timer.schedule(new Timer.Task(){
                         @Override
                         public void run() {
                             // Reset action count after cooldown
                             pulseCount = 0;
                         }
-                    }, 0.4f);
+                    }, 0.3f);
                     this.cancel(); // Cancel the current task
                 }
             }

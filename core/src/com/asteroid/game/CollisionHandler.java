@@ -418,17 +418,20 @@ public class CollisionHandler {
 
     //check collision between the ship and any active powerups
     public static boolean checkPowerUpPlayerCollision(PlayerShip playerShip, List<PowerUp> powerUps) {
-        Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
-        if (!powerUps.isEmpty()) {
-            for (PowerUp powerUp : powerUps) {
-                Rectangle powerUpRectangle = powerUp.getCollisionRectangle();
-                if (Intersector.overlaps(playerShipRectangle, powerUpRectangle)) {
-                    powerUp.setTouchingShip(true);
-                    return true; // Collision detected, return true
+        // No collision detected, return false
+        if (!playerShip.isTouchingPowerUp()) {
+            Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+            if (!powerUps.isEmpty()) {
+                for (PowerUp powerUp : powerUps) {
+                    Rectangle powerUpRectangle = powerUp.getCollisionRectangle();
+                    if (Intersector.overlaps(playerShipRectangle, powerUpRectangle)) {
+                        powerUp.setTouchingShip(true);
+                        return true; // Collision detected, return true
+                    }
                 }
             }
         }
-        return false; // No collision detected, return false
+        return false;
     }
 
     //check collision between a kill aura circle and asteroids
