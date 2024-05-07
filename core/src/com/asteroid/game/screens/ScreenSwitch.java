@@ -70,6 +70,9 @@ public class ScreenSwitch extends Game {
     }
 
     public void switchToMainMenu() {
+        if(getScreen() instanceof GameOverScreen) {
+            gameOverScreen.dispose();
+        }
         setScreen(new MainMenuScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
     }
 
