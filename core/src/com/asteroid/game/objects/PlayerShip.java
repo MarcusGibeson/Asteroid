@@ -10,9 +10,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,12 @@ public class PlayerShip {
     private static final int MAX_HEALTH = 1;
 
     private float shotCooldownTimer = 0f;
-    private static final float SHOT_COOLDOWN = 0.25f;
+    private static float shotCooldown = 0.25f;
+    private int pulseCount = 0;
+
+
+
+
 
     private final List<Bullet> bullets;
     private final Sound shootingSound;
@@ -41,6 +48,7 @@ public class PlayerShip {
     private float volume = 0.25f;
 
     private boolean isDestroyed;
+    private boolean isInvulnerable;
 
     private int health;
     private int lives;
@@ -48,6 +56,9 @@ public class PlayerShip {
     private Vector2 respawnPosition;
     private boolean respawnRequested = false;
     private boolean isRespawning = false;
+
+    private boolean isTouchingPowerUp;
+    private PowerUp.Type currentPowerUpType;
 
 
 
@@ -67,6 +78,13 @@ public class PlayerShip {
     }
 
     public void update(float delta) {
+        //if the current power up type is invulnerability, turn off the collision function
+        if (getCurrentPowerUpType() == PowerUp.Type.INVULN){
+            setInvulnerable(true);
+        } else {
+            setInvulnerable(false);
+        }
+
         if (isPlayerDead && Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             respawnRequested = true;
         }
@@ -118,6 +136,14 @@ public class PlayerShip {
 
             // Reset transformation matrix
             shapeRenderer.identity();
+
+            //draw the kill aura for the powerup
+            if (getCurrentPowerUpType() != null){
+                if (getCurrentPowerUpType() == PowerUp.Type.KILL_AURA){
+                    shapeRenderer.setColor(Color.ORANGE);
+                    shapeRenderer.circle(position.x, position.y, 200);
+                }
+            }
             shapeRenderer.end();
             if (isAccelerating) {
                 //Draw the jet fire effect while accelerating
@@ -126,16 +152,19 @@ public class PlayerShip {
                 Vector2 firePosition = new Vector2(position.x + offsetX, position.y + offsetY);
                 jetFireEffect.draw(shapeRenderer, firePosition, rotation);
             }
+
+
         }
 
     }
 
     public void handleCollision() {
-        health--;
-        if (health <= 0) {
-            destroy();
-            isPlayerDead = true;
-
+        if (!isInvulnerable){
+            health--;
+            if (health <= 0) {
+                destroy();
+                isPlayerDead = true;
+            }
         }
     }
 
@@ -176,6 +205,17 @@ public class PlayerShip {
         shipExplosion.play();
     }
 
+
+
+    public boolean isTouchingPowerUp() {return isTouchingPowerUp;}
+    public void setTouchingPowerUp(boolean touchingPowerUp) {isTouchingPowerUp = touchingPowerUp;}
+    public PowerUp.Type getCurrentPowerUpType() {return currentPowerUpType;}
+    public void setCurrentPowerUpType(PowerUp.Type currentPowerUpType) {this.currentPowerUpType = currentPowerUpType;}
+
+    public boolean getInvulnerable() {return isInvulnerable;}
+    public void setInvulnerable(boolean vulnerability) {this.isInvulnerable = vulnerability;}
+    public static float getShotCooldown() {return shotCooldown;}
+    public static void setShotCooldown(float shotCooldown) {PlayerShip.shotCooldown = shotCooldown;}
     public int getHealth() {
         return health;
     }
@@ -190,6 +230,9 @@ public class PlayerShip {
     }
     public Rectangle getCollisionRectangle() {
         return new Rectangle(position.x, position.y, width, height);
+    }
+    public Circle getKillAuraCircle(){
+        return new Circle(position.x, position.y, 200);
     }
     public List<Bullet> getBullets() {
         return bullets;
@@ -229,6 +272,30 @@ public class PlayerShip {
                     resetCooldownTimer();
                 }
             }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.RAPID_FIRE);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.PULSE_SHOT);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.WAVE_SHOT);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.KILL_AURA);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.MULTI_SHOT);
+//            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.NUM_6)){
+//                setTouchingPowerUp(true);
+//                setCurrentPowerUpType(PowerUp.Type.INVULN);
+//            }
         }
     }
 
@@ -287,10 +354,90 @@ public class PlayerShip {
     }
 
     public void shoot() {
-        Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
-        bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+        if (isTouchingPowerUp) {
+            float originalCooldown = getShotCooldown();
+            Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
+            switch (getCurrentPowerUpType()) {
+                case RAPID_FIRE: //rapidly shooting bullets
+                    //setting the shot cooldown to about 60% faster
+                    setShotCooldown(0.1f);
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    shootingSound.play();
+                    break;
+                case PULSE_SHOT: //shooting bullets in sets of three
+                    handlePulseShooting();
+                    break;
+                case WAVE_SHOT: //shooting a dense wave of bullets with a large delay between them
+                    float waveCooldown = 1f;
+                    setShotCooldown(waveCooldown);
+                    for (int i = -5; i < 5; i++){
+                        Vector2 newBulletDirection = new Vector2(MathUtils.cosDeg(rotation + i * 4), MathUtils.sinDeg(rotation + i * 4));
+                        bullets.add(new Bullet(new Vector2(position), newBulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                        shootingSound.play();
+                    }
+                    break;
+                case KILL_AURA: //area around player that damages every couple of seconds or so
+                    break;
+                case MULTI_SHOT: //shoot bullets like normal but in a dense wave of three (not to be confused with wave shot, as it's slower but way more bullets)
+                    setShotCooldown(0.25f);
+                    Vector2 bulletPosition = getPosition();
+                    // Calculate the base direction vector based on the ship's rotation angle
+                    Vector2 baseDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
 
-        shootingSound.play();
+                    // Define the distance between the center bullet and the side bullets
+                    float distance = 15; // Adjust this value as needed
+
+                    // Calculate the offsets for the side bullets based on the ship's rotation angle
+                    float xOffsetLeft = -MathUtils.sinDeg(rotation) * distance;
+                    float yOffsetLeft = MathUtils.cosDeg(rotation) * distance;
+
+                    float xOffsetRight = MathUtils.sinDeg(rotation) * distance;
+                    float yOffsetRight = -MathUtils.cosDeg(rotation) * distance;
+
+                    // Create the center bullet at the ship's position
+                    bullets.add(new Bullet(
+                            bulletPosition,
+                            baseDirection, // Same direction for all bullets
+                            BULLET_SPEED,
+                            BULLET_RADIUS,
+                            Color.WHITE
+                    ));
+
+                    // Create the left bullet with the calculated offset
+                    bullets.add(new Bullet(
+                            new Vector2(bulletPosition.x + xOffsetLeft, bulletPosition.y + yOffsetLeft),
+                            baseDirection, // Same direction for all bullets
+                            BULLET_SPEED,
+                            BULLET_RADIUS,
+                            Color.WHITE
+                    ));
+
+                    // Create the right bullet with the calculated offset
+                    bullets.add(new Bullet(
+                            new Vector2(bulletPosition.x + xOffsetRight, bulletPosition.y + yOffsetRight),
+                            baseDirection, // Same direction for all bullets
+                            BULLET_SPEED,
+                            BULLET_RADIUS,
+                            Color.WHITE
+                    ));
+                    shootingSound.play();
+                    break;
+
+                default: //in case the bad juju happens
+                    setShotCooldown(0.25f);
+                    System.out.println("you shouldn't be seeing this message anyways but hey debug is a thing");
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+
+                    shootingSound.play();
+                    break;
+            }
+        } else {
+            setShotCooldown(0.25f);
+            Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
+            bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+
+            shootingSound.play();
+        }
     }
 
     private boolean canShoot() {
@@ -298,7 +445,7 @@ public class PlayerShip {
     }
 
     private void resetCooldownTimer() {
-        shotCooldownTimer = SHOT_COOLDOWN;
+        shotCooldownTimer = shotCooldown;
     }
 
     private void updateCooldownTimer(float delta) {
@@ -306,5 +453,32 @@ public class PlayerShip {
         if (shotCooldownTimer < 0) {
             shotCooldownTimer = 0;
         }
+    }
+
+    private void handlePulseShooting(){
+        setShotCooldown(0.4f);
+        Timer.schedule(new Timer.Task(){
+            @Override
+            public void run() {
+                // Perform action every 0.05 seconds
+                if(pulseCount < 3) {
+                    Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    shootingSound.play();
+                    System.out.println("Performing action " + (pulseCount + 1));
+                    pulseCount++;
+                } else {
+                    // After performing the action three times, wait for 0.3 seconds
+                    Timer.schedule(new Timer.Task(){
+                        @Override
+                        public void run() {
+                            // Reset action count after cooldown
+                            pulseCount = 0;
+                        }
+                    }, 0.3f);
+                    this.cancel(); // Cancel the current task
+                }
+            }
+        }, 0, 0.05f);
     }
 }
