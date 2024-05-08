@@ -8,6 +8,7 @@ import com.asteroid.game.Controllers.CollisionHandler;
 import com.asteroid.game.Controllers.ScoreHandler;
 import com.asteroid.game.objects.Asteroid;
 import com.asteroid.game.objects.PlayerShip;
+import com.asteroid.game.objects.PowerUp;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -19,9 +20,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.awt.Shape;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -51,11 +54,13 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	private Stage stage;
 	private boolean renderingEnabled = true;
 
+	List<PowerUp> powerUps;
+
 	public AsteroidXtreme() {
 
 	}
 
-	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch, CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo, AsteroidHandler asteroidHandler, StageManager stageManager, ShapeRenderer shapeRenderer) {
+	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch, CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo, AsteroidHandler asteroidHandler, StageManager stageManager, ShapeRenderer shapeRenderer, List<PowerUp> powerUps) {
 		this.spriteBatch = batch;
 		this.screenSwitch = screenSwitch;
 		this.stage = new Stage(new ScreenViewport());
@@ -65,6 +70,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		this.asteroidHandler = asteroidHandler;
 		this.stageManager = stageManager;
 		this.shapeRenderer = shapeRenderer;
+		this.powerUps = powerUps;
 		initialize();
 	}
 	public void initialize() {
@@ -81,6 +87,14 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		gameOver = false;
 		gameLoop = screenSwitch.getGameLoop();
 
+		powerUps = new ArrayList<>();
+		//initializing a timer to spawn new powerups
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				addNewPowerUp();
+			}
+		},1 ,1);
 	}
 
 
@@ -114,6 +128,11 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 				//Draw asteroids
 				asteroidHandler.render();
+
+				// Draw all power-ups
+				for (PowerUp powerUp : powerUps) {
+					powerUp.draw(shape);
+				}
 
 				//Respawn message
 				batch.begin();
@@ -213,5 +232,10 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			stage.dispose();
 			stage = null;
 		}
+	}
+
+	private void addNewPowerUp() {
+		PowerUp newPowerUp = new PowerUp();
+		powerUps.add(newPowerUp);
 	}
 }

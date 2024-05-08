@@ -2,6 +2,7 @@ package com.asteroid.game.screens;
 
 import com.asteroid.game.Controllers.ScoreHandler;
 import com.asteroid.game.Controllers.StageManager;
+import com.asteroid.game.objects.PowerUp;
 import com.asteroid.game.objects.UFOShip;
 import com.asteroid.game.Controllers.AsteroidHandler;
 import com.asteroid.game.Controllers.CollisionHandler;
@@ -12,6 +13,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScreenSwitch extends Game {
     public SpriteBatch batch;
@@ -28,6 +32,7 @@ public class ScreenSwitch extends Game {
     private ScoreHandler scoreHandler;
     private ShapeRenderer shapeRenderer;
     private Sound backgroundMusic;
+    private List<PowerUp> powerUps;
 
     private float volume = 0.05f;
 
@@ -41,9 +46,10 @@ public class ScreenSwitch extends Game {
         ufo = new UFOShip(200, 200, ship);
         asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
         stageManager = new StageManager(asteroidHandler, ship);
+        powerUps = new ArrayList<>();
 
-        asteroidXtreme = new AsteroidXtreme(this, batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer);
-        gameLoop = new GameLoop(this, batch, asteroidXtreme, collisionHandler, ship, ufo, asteroidHandler, stageManager);
+        asteroidXtreme = new AsteroidXtreme(this, batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer, powerUps);
+        gameLoop = new GameLoop(this, batch, asteroidXtreme, collisionHandler, ship, ufo, asteroidHandler, stageManager, powerUps);
         backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/BackgroundGameMusic.mp3"));
         mainMenuScreen = new MainMenuScreen(this, batch);
         gameOverScreen = new GameOverScreen(this, batch, scoreHandler);
@@ -66,7 +72,7 @@ public class ScreenSwitch extends Game {
             mainMenuScreen.dispose();
         }
         backgroundMusic.loop(volume);
-        setScreen(new AsteroidXtreme((ScreenSwitch) Gdx.app.getApplicationListener(), batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer));
+        setScreen(new AsteroidXtreme((ScreenSwitch) Gdx.app.getApplicationListener(), batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer, powerUps));
     }
 
     public void switchToMainMenu() {

@@ -4,8 +4,11 @@ import com.asteroid.game.Controllers.AsteroidHandler;
 import com.asteroid.game.Controllers.CollisionHandler;
 import com.asteroid.game.Controllers.StageManager;
 import com.asteroid.game.objects.PlayerShip;
+import com.asteroid.game.objects.PowerUp;
 import com.asteroid.game.objects.UFOShip;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.List;
 
 public class GameLoop {
 
@@ -17,12 +20,13 @@ public class GameLoop {
     private AsteroidHandler asteroidHandler;
     private StageManager stageManager;
     private SpriteBatch batch;
+    private List<PowerUp> powerUps;
 
     private boolean running;
 
     public GameLoop(ScreenSwitch screenSwitch, SpriteBatch batch, AsteroidXtreme asteroidXtreme,
                     CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo,
-                    AsteroidHandler asteroidHandler, StageManager stageManager) {
+                    AsteroidHandler asteroidHandler, StageManager stageManager, List<PowerUp> powerUps) {
         this.batch = batch;
         this.screenSwitch = screenSwitch;
         this.asteroidXtreme = asteroidXtreme;
@@ -31,6 +35,7 @@ public class GameLoop {
         this.ufo = ufo;
         this.asteroidHandler = asteroidHandler;
         this.stageManager = stageManager;
+        this.powerUps = powerUps;
         running = true;
     }
 
@@ -67,7 +72,7 @@ public class GameLoop {
 
     public void update(float delta) {
         //Update collision handler
-        collisionHandler.update(ship, ufo, asteroidHandler);
+        collisionHandler.update(ship, ufo, asteroidHandler, powerUps);
 
         // Update ship logic
         ship.update(delta);
