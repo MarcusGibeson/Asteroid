@@ -133,4 +133,8 @@ public class StageManager {
     public StageLevel getCurrentStage() {
         return currentStageLevel;
     }
+
+    public void resetStageLevels() {
+        currentStageIndex = 0;
+    }
 }

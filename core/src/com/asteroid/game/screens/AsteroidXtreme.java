@@ -66,6 +66,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		this.stageManager = stageManager;
 		this.shapeRenderer = shapeRenderer;
 		initialize();
+		resetGameState();
 	}
 	public void initialize() {
 		shape = new ShapeRenderer();
@@ -213,5 +214,12 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			stage.dispose();
 			stage = null;
 		}
+	}
+
+	public void resetGameState() {
+		gameOver = false;
+		ship.resetLives();
+		scoreHandler.resetScore();
+		stageManager.resetStageLevels();
 	}
 }

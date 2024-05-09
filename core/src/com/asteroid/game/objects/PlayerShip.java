@@ -160,6 +160,10 @@ public class PlayerShip {
         }
     }
 
+    public void resetLives() {
+        lives = 5;
+    }
+
     public void drawRespawnMessage(SpriteBatch spriteBatch, BitmapFont font) {
         if (isPlayerDead) {
             font.draw(spriteBatch, "You have died, press Enter to continue. You have " + (lives - 1) + " lives remaining.", Gdx.graphics.getWidth() / 2 -150, Gdx.graphics.getHeight() /2 );

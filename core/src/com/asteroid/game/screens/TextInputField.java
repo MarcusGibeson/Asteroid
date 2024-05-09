@@ -63,4 +63,10 @@ public class TextInputField extends Table {
     public String getText() {
         return textField.getText();
     }
+
+    public void setText(String s) {
+    }
+
+    public void setAlignment(int left) {
+    }
 };

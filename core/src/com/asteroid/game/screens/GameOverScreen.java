@@ -24,7 +24,8 @@ public class GameOverScreen implements Screen {
     private Stage stage;
     private SpriteBatch batch;
     private ScoreHandler scoreHandler;
-    private Label playNameLabel;
+
+    private Label playerNameLabel;
 
     public GameOverScreen(ScreenSwitch screenSwitch, SpriteBatch batch, ScoreHandler scoreHandler) {
         this.screenSwitch = screenSwitch;
@@ -38,12 +39,14 @@ public class GameOverScreen implements Screen {
         isGameOver = true;
         isHighScoreEntered = false;
         playerName="";
-        playNameLabel = new Label("", new Label.LabelStyle(font, Color.RED));
-        playNameLabel.setAlignment(Align.left);
-        playNameLabel.setPosition(300,300);
+        playerNameLabel = new Label("", new Label.LabelStyle(font, Color.RED));
+        playerNameLabel.setAlignment(Align.left);
+        playerNameLabel.setPosition(300,300);
         Gdx.input.setInputProcessor(stage);
         stage.addActor(inputField);
         inputField.setFocus();
+
+//        resetGameState();
     }
 
 
@@ -72,7 +75,7 @@ public class GameOverScreen implements Screen {
     }
 
     public void update() {
-        playNameLabel.setText("Name: " + inputField.getPlayerName());
+        playerNameLabel.setText("Name: " + inputField.getPlayerName());
         if (isHighScoreEntered && playerName.isEmpty() && Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
             Gdx.input.getTextInput(new NameInputListener(), "Enter your name", "", "");
         }
@@ -124,5 +127,13 @@ public class GameOverScreen implements Screen {
     @Override
     public void dispose() {
         font.dispose();
+    }
+
+    public void resetGameState() {
+        isGameOver = false;
+        isHighScoreEntered = false;
+        playerName="";
+        inputField.setText("");
+        playerNameLabel.setText("");
     }
 }
