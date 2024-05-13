@@ -19,6 +19,7 @@ public class StageManager {
     private int currentStageIndex;
     private StageLevel currentStageLevel;
     private AsteroidHandler asteroidHandler;
+    private UFOHandler ufoHandler;
     PlayerShip playerShip;
     public boolean gameWon = false;
     private static final int STAGE_TRANSITION_COOLDOWN_MIN = 2000;
@@ -27,8 +28,9 @@ public class StageManager {
     private static final float MAX_STAGES = 50;
 
 
-    public StageManager(AsteroidHandler asteroidHandler, PlayerShip playerShip) {
+    public StageManager(AsteroidHandler asteroidHandler, UFOHandler ufoHandler, PlayerShip playerShip) {
         this.asteroidHandler = asteroidHandler;
+        this.ufoHandler = ufoHandler;
         this.playerShip = playerShip;
         this.stageLevels = new ArrayList<>();
         this.currentStageIndex = 0;
@@ -79,10 +81,11 @@ public class StageManager {
         int initialAsteroidCount = 1;
         for(int i = 1; i <= MAX_STAGES; i++) {
             int asteroidCount = initialAsteroidCount + ((i-1) * 2); //increment asteroids by 2 each stage
+            int UFOCount = determineUFOCount(i);
             int bossCount = determineBossCount(i); //determine how many bosses
             int bossHealth = 500;
 
-            StageLevel stageLevel = new StageLevel(i, asteroidCount, bossCount, bossHealth);
+            StageLevel stageLevel = new StageLevel(i, asteroidCount, UFOCount, bossCount, bossHealth);
             stageLevels.add(stageLevel);
             for (int j = 0; j < bossCount; j++) {
                 Vector2 bossSpawnPosition = new Vector2(MathUtils.random(500,500), MathUtils.random(550,650));
@@ -104,11 +107,27 @@ public class StageManager {
             return 0;
         }
     }
+    private int determineUFOCount(int stageIndex) {
+        if (stageIndex > 1) {
+            return 1;
+        } else if (stageIndex > 20) {
+            return 2;
+        } else if (stageIndex > 40) {
+            return 3;
+        } else if (stageIndex > 75) {
+            return 4;
+        } else {
+            return 0;
+        }
+    }
 
     private void startCurrentStage() {
         currentStageLevel = stageLevels.get(currentStageIndex);
         asteroidHandler.setAsteroidsPerSpawn(currentStageLevel.getAsteroidCount());
         asteroidHandler.startSpawning();
+        ufoHandler.setUFOsPerSpawn(currentStageLevel.getUFOCount());
+        ufoHandler.startSpawning();
+
     }
 
 
@@ -133,6 +152,8 @@ public class StageManager {
     public StageLevel getCurrentStage() {
         return currentStageLevel;
     }
+
+    public int getCurrentStageIndex() {return currentStageIndex;}
 
     public void resetStageLevels() {
         currentStageIndex = 0;

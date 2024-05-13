@@ -1,5 +1,6 @@
 package com.asteroid.game.screens;
 
+import com.asteroid.game.Controllers.UFOHandler;
 import com.asteroid.game.objects.StageLevel;
 import com.asteroid.game.Controllers.StageManager;
 import com.asteroid.game.objects.UFOShip;
@@ -37,6 +38,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	BitmapFont font;
 	AsteroidHandler asteroidHandler;
 	ScoreHandler scoreHandler;
+	UFOHandler ufoHandler;
 
 	List<Asteroid> asteroids;
 	StageLevel stageLevel;
@@ -55,14 +57,14 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	}
 
-	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch, CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo, AsteroidHandler asteroidHandler, StageManager stageManager, ShapeRenderer shapeRenderer) {
+	public AsteroidXtreme(ScreenSwitch screenSwitch, SpriteBatch batch, CollisionHandler collisionHandler, PlayerShip ship, UFOHandler ufoHandler, AsteroidHandler asteroidHandler, StageManager stageManager, ShapeRenderer shapeRenderer) {
 		this.spriteBatch = batch;
 		this.screenSwitch = screenSwitch;
 		this.stage = new Stage(new ScreenViewport());
 		this.collisionHandler = collisionHandler;
 		this.ship = ship;
-		this.ufo = ufo;
 		this.asteroidHandler = asteroidHandler;
+		this.ufoHandler = ufoHandler;
 		this.stageManager = stageManager;
 		this.shapeRenderer = shapeRenderer;
 		initialize();
@@ -110,8 +112,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 				ship.drawBullets(shape);
 
 				//Draw ufo
-				ufo.draw(shape);
-				ufo.drawBullets(shape);
+				ufoHandler.draw(shape);
 
 				//Draw asteroids
 				asteroidHandler.render();
@@ -127,6 +128,11 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 				//Draw lives
 				drawPlayerLives(batch);
+				batch.end();
+
+				//Stage
+				batch.begin();
+				font.draw(batch, "Stage: " + (stageManager.getCurrentStageIndex() + 1), Gdx.graphics.getWidth()- 100, Gdx.graphics.getHeight() - 20);
 				batch.end();
 
 				//Game won message

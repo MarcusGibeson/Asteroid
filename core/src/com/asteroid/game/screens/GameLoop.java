@@ -3,6 +3,7 @@ package com.asteroid.game.screens;
 import com.asteroid.game.Controllers.AsteroidHandler;
 import com.asteroid.game.Controllers.CollisionHandler;
 import com.asteroid.game.Controllers.StageManager;
+import com.asteroid.game.Controllers.UFOHandler;
 import com.asteroid.game.objects.PlayerShip;
 import com.asteroid.game.objects.UFOShip;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,7 +14,7 @@ public class GameLoop {
     private AsteroidXtreme asteroidXtreme;
     private CollisionHandler collisionHandler;
     private PlayerShip ship;
-    private UFOShip ufo;
+    private UFOHandler ufoHandler;
     private AsteroidHandler asteroidHandler;
     private StageManager stageManager;
     private SpriteBatch batch;
@@ -21,14 +22,14 @@ public class GameLoop {
     private boolean running;
 
     public GameLoop(ScreenSwitch screenSwitch, SpriteBatch batch, AsteroidXtreme asteroidXtreme,
-                    CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo,
+                    CollisionHandler collisionHandler, PlayerShip ship, UFOHandler ufoHandler,
                     AsteroidHandler asteroidHandler, StageManager stageManager) {
         this.batch = batch;
         this.screenSwitch = screenSwitch;
         this.asteroidXtreme = asteroidXtreme;
         this.collisionHandler = collisionHandler;
         this.ship = ship;
-        this.ufo = ufo;
+        this.ufoHandler = ufoHandler;
         this.asteroidHandler = asteroidHandler;
         this.stageManager = stageManager;
         running = true;
@@ -67,11 +68,11 @@ public class GameLoop {
 
     public void update(float delta) {
         //Update collision handler
-        collisionHandler.update(ship, ufo, asteroidHandler);
+        collisionHandler.update(ship, ufoHandler, asteroidHandler);
 
         // Update ship logic
         ship.update(delta);
-        ufo.update(delta);
+        ufoHandler.update(delta);
 
         //Update asteroids
         asteroidHandler.update(delta);

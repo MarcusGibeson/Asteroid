@@ -24,7 +24,7 @@ public class CollisionHandler {
         this.scoreHandler = scoreHandler;
     }
 
-    public void update(PlayerShip playerShip, UFOShip ufo, AsteroidHandler asteroidHandler) {
+    public void update(PlayerShip playerShip, UFOHandler ufoHandler, AsteroidHandler asteroidHandler) {
 
         //Asteroids bumping into each other
         if(checkAsteroidCollisionWithAnotherAsteroid(asteroidHandler)) {
@@ -157,111 +157,130 @@ public class CollisionHandler {
 
 
         //Player ship and UFO collidiing
-        if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
-            if(checkPlayerShipUFOCollision(playerShip, ufo)) {
-                Rectangle ufoRectangle = ufo.getCollisionRectangle();
-                Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
-                if (Intersector.overlaps(playerShipRectangle, ufoRectangle)) {
-                    playerShip.handleCollision();
-                    ufo.destroy();
-                }
-            }
-        }
-
-        //UFO getting shot by player ship
-        if (!ufo.isDestroyed()) {
-            if(checkPlayerBulletUFOCollision(playerShip, ufo)) {
-                List<Bullet> playerShipBullets = playerShip.getBullets();
-                Rectangle ufoRectangle = ufo.getCollisionRectangle();
-                for (int i = 0; i < playerShipBullets.size(); i++) {
-                    Bullet playerBullet = playerShipBullets.get(i);
-                    Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
-                    if (Intersector.overlaps(playerBulletCircle, ufoRectangle)) {
+        for (UFOShip ufo : ufoHandler.getUfoShips()) {
+            if (!ufo.isDestroyed() && !playerShip.isPlayerDead()) {
+                if(checkPlayerShipUFOCollision(playerShip, ufoHandler)) {
+                    Rectangle ufoRectangle = ufo.getCollisionRectangle();
+                    Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+                    if (Intersector.overlaps(playerShipRectangle, ufoRectangle)) {
+                        playerShip.handleCollision();
                         ufo.destroy();
-                        scoreHandler.increaseScore(100);
-                        playerShipBullets.remove(playerBullet);
                     }
                 }
             }
         }
+
+
+        //UFO getting shot by player ship
+        for (UFOShip ufo : ufoHandler.getUfoShips()) {
+            if (!ufo.isDestroyed()) {
+                if(checkPlayerBulletUFOCollision(playerShip, ufoHandler)) {
+                    List<Bullet> playerShipBullets = playerShip.getBullets();
+                    Rectangle ufoRectangle = ufo.getCollisionRectangle();
+                    for (int i = 0; i < playerShipBullets.size(); i++) {
+                        Bullet playerBullet = playerShipBullets.get(i);
+                        Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+                        if (Intersector.overlaps(playerBulletCircle, ufoRectangle)) {
+                            ufo.destroy();
+                            scoreHandler.increaseScore(100);
+                            playerShipBullets.remove(playerBullet);
+                        }
+                    }
+                }
+            }
+        }
+
 
         //UFO and Player ship colliding
         if (!playerShip.isPlayerDead()) {
-            if(checkUFOBulletPlayerShipCollision(ufo, playerShip)) {
-                List<Bullet> ufoBullets = ufo.getBullets();
-                Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+            for (UFOShip ufo : ufoHandler.getUfoShips()) {
+                if(checkUFOBulletPlayerShipCollision(ufoHandler, playerShip)) {
+                    List<Bullet> ufoBullets = ufo.getBullets();
+                    Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
 
-                for (int i = 0; i < ufoBullets.size(); i++) {
-                    Bullet ufoBullet = ufoBullets.get(i);
-                    Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
-                    if(Intersector.overlaps(ufoBulletCircle, playerShipRectangle)) {
-                        playerShip.handleCollision();
-                        ufoBullets.remove(ufoBullet);
+                    for (int i = 0; i < ufoBullets.size(); i++) {
+                        Bullet ufoBullet = ufoBullets.get(i);
+                        Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
+                        if(Intersector.overlaps(ufoBulletCircle, playerShipRectangle)) {
+                            playerShip.handleCollision();
+                            ufoBullets.remove(ufoBullet);
+                        }
+
                     }
-
                 }
             }
+
         }
 
         //Player ship getting shot by UFO
-       if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufo)) {
+       if (checkPlayerShipBulletUFOBulletCollision(playerShip, ufoHandler)) {
            List<Bullet> playerShipBullets = playerShip.getBullets();
-           List<Bullet> ufoBullets = ufo.getBullets();
+           for (UFOShip ufoShip : ufoHandler.getUfoShips()) {
+               List<Bullet> ufoBullets = ufoShip.getBullets();
 
-           for (int i = 0; i < playerShipBullets.size(); i++) {
-               Bullet playerBullet = playerShipBullets.get(i);
-               Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+               for (int i = 0; i < playerShipBullets.size(); i++) {
+                   Bullet playerBullet = playerShipBullets.get(i);
+                   Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
 
-               for (int j = 0; j < ufoBullets.size(); j++) {
-                   Bullet ufoBullet = ufoBullets.get(j);
-                   Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
+                   for (int j = 0; j < ufoBullets.size(); j++) {
+                       Bullet ufoBullet = ufoBullets.get(j);
+                       Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), ufoBullet.BULLET_RADIUS);
 
-                   if (Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
-                       playerShipBullets.remove(playerBullet);
-                       ufoBullets.remove(ufoBullet);
-                       i--;
-                       break;
+                       if (Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
+                           playerShipBullets.remove(playerBullet);
+                           ufoBullets.remove(ufoBullet);
+                           i--;
+                           break;
+                       }
                    }
                }
            }
+
        }
     }
 
     //Method to check collision between UFO bullets and player ship
-    public static boolean checkUFOBulletPlayerShipCollision(UFOShip ufo, PlayerShip playerShip) {
-        for (Bullet bullet : ufo.getBullets()) {
-            Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
-            Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
-            if (Intersector.overlaps(bulletCircle, playerShipRectangle)) {
-                //collision detected
-                return true;
-
+    public static boolean checkUFOBulletPlayerShipCollision(UFOHandler ufoHandler, PlayerShip playerShip) {
+        for (UFOShip ufoShip : ufoHandler.getUfoShips()) {
+            for (Bullet bullet : ufoShip.getBullets()) {
+                Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
+                Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
+                if (Intersector.overlaps(bulletCircle, playerShipRectangle)) {
+                    //collision detected
+                    return true;
+                }
             }
         }
         return false;
     }
 
     //Method to check collision between Player ship bullets and UFO
-    public static boolean checkPlayerBulletUFOCollision(PlayerShip playerShip, UFOShip ufo) {
+    public static boolean checkPlayerBulletUFOCollision(PlayerShip playerShip, UFOHandler ufoHandler) {
         for (Bullet bullet : playerShip.getBullets()) {
             Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
-            Rectangle ufoRectangle = ufo.getCollisionRectangle();
-            if (Intersector.overlaps(bulletCircle, ufoRectangle)) {
-                //collision detected
-                return true;
+            for (UFOShip ufoShip : ufoHandler.getUfoShips()) {
+                Rectangle ufoRectangle = ufoShip.getCollisionRectangle();
+                if (Intersector.overlaps(bulletCircle, ufoRectangle)) {
+                    //collision detected
+                    return true;
+                }
             }
+
         }
         return false;
     }
 
     //Method to check collision between Player ship and UFO
-    public static boolean checkPlayerShipUFOCollision(PlayerShip playerShip, UFOShip ufo) {
+    public static boolean checkPlayerShipUFOCollision(PlayerShip playerShip, UFOHandler ufoHandler) {
         Rectangle playerShipRectangle = playerShip.getCollisionRectangle();
-        Rectangle ufoRectangle = ufo.getCollisionRectangle();
-        if (Intersector.overlaps(playerShipRectangle, ufoRectangle)) {
-            //collision detected
-            return true;
+        for (UFOShip ufoShip : ufoHandler.getUfoShips()) {
+            Rectangle ufoRectangle = ufoShip.getCollisionRectangle();
+            if (Intersector.overlaps(playerShipRectangle, ufoRectangle)) {
+                //collision detected
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -279,19 +298,21 @@ public class CollisionHandler {
         return false;
     }
 
-    public static boolean checkPlayerShipBulletUFOBulletCollision(PlayerShip playerShip, UFOShip ufo) {
+    public static boolean checkPlayerShipBulletUFOBulletCollision(PlayerShip playerShip, UFOHandler ufoHandler) {
         List<Bullet> playerShipBullets = playerShip.getBullets();
-        List<Bullet> ufoBullets = ufo.getBullets();
+        for (UFOShip ufo : ufoHandler.getUfoShips()) {
+            List<Bullet> ufoBullets = ufo.getBullets();
 
-        for (Bullet playerBullet : playerShipBullets) {
-            Circle playerBulletCircle = new Circle(playerBullet.getPosition(), BULLET_RADIUS);
+            for (Bullet playerBullet : playerShipBullets) {
+                Circle playerBulletCircle = new Circle(playerBullet.getPosition(), BULLET_RADIUS);
 
-            for (Bullet ufoBullet : ufoBullets) {
-                Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), BULLET_RADIUS);
+                for (Bullet ufoBullet : ufoBullets) {
+                    Circle ufoBulletCircle = new Circle(ufoBullet.getPosition(), BULLET_RADIUS);
 
-                if(Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
-                    //collision detected
-                    return true;
+                    if(Intersector.overlaps(playerBulletCircle, ufoBulletCircle)) {
+                        //collision detected
+                        return true;
+                    }
                 }
             }
         }

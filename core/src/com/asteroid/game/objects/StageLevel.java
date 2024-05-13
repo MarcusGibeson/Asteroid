@@ -9,12 +9,14 @@ public class StageLevel {
     private int stageNumber;
     private int asteroidCount;
     private int bossCount;
+    private int ufoCount;
     private int bossHealth;
     private List<BossAsteroid> bossAsteroids;
 
-    public StageLevel(int stageNumber, int asteroidCount, int bossCount, int bossHealth) {
+    public StageLevel(int stageNumber, int asteroidCount, int ufoCount, int bossCount, int bossHealth) {
         this.stageNumber = stageNumber;
         this.asteroidCount = asteroidCount;
+        this.ufoCount = ufoCount;
         this.bossCount = bossCount;
         this.bossHealth = bossHealth;
         this.bossAsteroids = new ArrayList<>();
@@ -26,6 +28,7 @@ public class StageLevel {
     public int getAsteroidCount() {
         return asteroidCount;
     }
+    public int getUFOCount() {return  ufoCount;}
 
     public int getStageNumber() {
         return stageNumber;
@@ -34,6 +37,7 @@ public class StageLevel {
     public int getBossCount() {
         return bossCount;
     }
+
 
 
     public List<BossAsteroid> getBossAsteroids() {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -45,6 +46,7 @@ public class UFOShip {
     private final Sound bulletUFO;
     private final Sound ufoExplosion;
     private boolean isDestroyed;
+    float speed = 100;
 
     public UFOShip(float x, float y, PlayerShip playerShip) {
         this.position = new Vector2(x, y);
@@ -52,7 +54,6 @@ public class UFOShip {
         this.velocity = new Vector2(0,0);
         this.playerShip = playerShip;
         bullets = new ArrayList<>();
-        spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         bulletUFO = Gdx.audio.newSound(Gdx.files.internal("Audio/Bullet_UFO.mp3"));
         ufoExplosion = Gdx.audio.newSound(Gdx.files.internal("Audio/ufo_explosion.mp3"));
         isDestroyed = false;
@@ -64,24 +65,16 @@ public class UFOShip {
             position.x += velocity.x * delta;
             position.y += velocity.y * delta;
 
-            if(isOutOfBounds()) {
-                respawn(delta);
-            } else {
-                shootTimer += delta;
-                if (!playerShip.isPlayerDead()) {
-                    if (shootTimer >= SHOOT_INTERVAL) {
-                        shoot();
-                        bulletUFO.play();
-                        shootTimer = 0;
-                    }
+            shootTimer += delta;
+            if (!playerShip.isPlayerDead()) {
+                if (shootTimer >= SHOOT_INTERVAL) {
+                    shoot();
+                    bulletUFO.play();
+                    shootTimer = 0;
                 }
-
             }
         }
         updateBullets(delta);
-        if (isDestroyed) {
-            respawn(delta);
-        }
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -102,6 +95,8 @@ public class UFOShip {
             //Draw UFO wings
             shapeRenderer.setColor(Color.WHITE);
             shapeRenderer.rect(-wingWidth /2, -bodyHeight /2, wingWidth, wingHeight);
+
+
 
             //Draw triangular shapes on each side
             float triangleBase = bodyWidth * 0.2f;
@@ -163,65 +158,13 @@ public class UFOShip {
     }
     //Movement function
 
-    float speed = 100;
 
-    private boolean isOutOfBounds() {
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
-        return position.x < 0 || position.x > screenWidth || position.y < 0 || position.y > screenHeight;
-    }
 
-    public void spawnOffScreen(float screenWidth, float screenHeight) {
-        //Randomly select a side of the screen to spawn the UFO
-        int side = MathUtils.random(4); //0 top, 1 bottom, 2 left, 3 right
 
-        //Initialize UFO position off-screen
-        float spawnX = 0, spawnY = 0;
-        switch(side) {
-            case 0: //Top
-                spawnX = MathUtils.random(0, screenWidth);
-                spawnY = screenHeight;
-                break;
-            case 1: //Bottom
-                spawnX = MathUtils.random(0, screenWidth);
-                spawnY = 0;
-                break;
-            case 2: //Left
-                spawnX = 0;
-                spawnY = MathUtils.random(0, screenHeight);
-                break;
-            case 3: //Right
-                spawnX = screenWidth;
-                spawnY = MathUtils.random(0, screenHeight);
-                break;
-        }
 
-        //Set UFO position
-        position.set(spawnX, spawnY);
 
-        //Calculate velocity towards the center of the screen
-        float centerX = MathUtils.random(0, screenWidth);
-        float centerY = MathUtils.random(0, screenHeight);
-        velocity.set(centerX - spawnX, centerY - spawnY).nor().scl(speed);
-    }
 
-    public void respawn(float delta) {
 
-        if (!isWaitingToRespawn) {
-            //Start the respawn timer
-            respawnTimer = RESPAWN_DELAY;
-            isWaitingToRespawn = true;
-            isDestroyed = false;
-        } else {
-            //Update the respawn timer
-            respawnTimer -= delta;
-            if (respawnTimer <= 0) {
-                //Respawn ufo off-screen
-                spawnOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-                isWaitingToRespawn = false;
-            }
-        }
-    }
 
 
     //getters and setters
@@ -253,5 +196,15 @@ public class UFOShip {
         return new Rectangle(position.x, position.y, width, height);
     }
 
+    public boolean getIsDestroyed() {
+        return isDestroyed;
+    }
+    public void setDestroyed(boolean destroyed) {
+        this.isDestroyed = destroyed;
+    }
+
+    public float getSpeed() {
+        return  speed;
+    }
 
 }
