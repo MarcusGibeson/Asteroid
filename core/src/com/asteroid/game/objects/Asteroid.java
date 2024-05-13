@@ -20,6 +20,8 @@ public class Asteroid {
     private boolean hitByBullet;
     private PlayerShip playerShip;
     public boolean toRemove;
+    private float asteroidMultiplier;
+    private int asteroidType;
 
     public static final float SMALL_ASTEROID_RADIUS = 20;
     public static final float MEDIUM_ASTEROID_RADIUS = 80;
@@ -59,6 +61,7 @@ public class Asteroid {
         this.position = spawnNodes.get(node);
         assignTierParameters(tier);
         toRemove = false;
+        asteroidType = MathUtils.random(1,3);
     }
 
     //Constructor for child/sibling asteroids
@@ -85,10 +88,64 @@ public class Asteroid {
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
+        //region cross asteroid spawn coordinates
+        final float[] crossCoordinates = {
+                position.x, position.y,
+                position.x + 13*asteroidMultiplier, position.y,
+                position.x + 13*asteroidMultiplier, position.y - 13*asteroidMultiplier,
+                position.x + 26*asteroidMultiplier, position.y - 13*asteroidMultiplier,
+                position.x + 26*asteroidMultiplier, position.y,
+                position.x + 40*asteroidMultiplier, position.y,
+                position.x + 40*asteroidMultiplier, position.y + 13*asteroidMultiplier,
+                position.x + 26*asteroidMultiplier, position.y + 13*asteroidMultiplier,
+                position.x + 26*asteroidMultiplier, position.y + 26*asteroidMultiplier,
+                position.x + 13*asteroidMultiplier, position.y + 26*asteroidMultiplier,
+                position.x + 13*asteroidMultiplier, position.y + 13*asteroidMultiplier,
+                position.x, position.y + 13*asteroidMultiplier
+        };
+        //endregion
+
+        //region skull-type spawn coordinates
+        final float[] skullCoordinates = {
+                position.x, position.y,
+                position.x + 10*asteroidMultiplier, position.y,
+                position.x + 10*asteroidMultiplier, position.y - 15*asteroidMultiplier,
+                position.x + 30*asteroidMultiplier, position.y - 15*asteroidMultiplier,
+                position.x + 30*asteroidMultiplier, position.y,
+                position.x + 40*asteroidMultiplier, position.y,
+                position.x + 40*asteroidMultiplier, position.y + 10*asteroidMultiplier,
+                position.x + 30*asteroidMultiplier, position.y + 25*asteroidMultiplier,
+                position.x + 10*asteroidMultiplier, position.y + 25*asteroidMultiplier,
+                position.x, position.y + 10*asteroidMultiplier
+        };
+        //endregion
+
+        //region weird type spawn coordinates (shield? idk)
+        final float[] weirdShieldCoordinates = {
+                position.x, position.y,
+                position.x + 20*asteroidMultiplier, position.y + 12*asteroidMultiplier,
+                position.x + 40*asteroidMultiplier, position.y,
+                position.x + 40*asteroidMultiplier, position.y + 25*asteroidMultiplier,
+                position.x + 30*asteroidMultiplier, position.y + 40*asteroidMultiplier,
+                position.x + 20*asteroidMultiplier, position.y + 40*asteroidMultiplier,
+                position.x, position.y + 25*asteroidMultiplier
+        };
+        //endregion
         shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.circle(position.x, position.y, width/2);
-
-
+        switch(asteroidType){
+            case 1: //cross type
+                shapeRenderer.polygon(crossCoordinates);
+                break;
+            case 2: //skull type
+                shapeRenderer.polygon(skullCoordinates);
+                break;
+            case 3: //shield type
+                shapeRenderer.polygon(weirdShieldCoordinates);
+                break;
+            default: //in case something breaks still make it a circle
+                shapeRenderer.circle(position.x, position.y, width/2);
+                break;
+        }
     }
 
     public float getRadius() {
@@ -108,6 +165,7 @@ public class Asteroid {
                 velocity = new Vector2(randomNonZeroValue(-4, 4), randomNonZeroValue(-4,4));
                 tierLevel = 1;
                 asteroidRadius = SMALL_ASTEROID_RADIUS;
+                asteroidMultiplier = 1;
                 break;
             case 2: //Medium asteroid
 //                health = 2;
@@ -116,6 +174,7 @@ public class Asteroid {
                 velocity = new Vector2(randomNonZeroValue(-2,2), randomNonZeroValue(-2,2));
                 tierLevel = 2;
                 asteroidRadius = MEDIUM_ASTEROID_RADIUS;
+                asteroidMultiplier = 4;
                 break;
             case 3: //Large asteroid
 //                health = 3;
@@ -124,6 +183,7 @@ public class Asteroid {
                 velocity = new Vector2(randomNonZeroValue(-1,1), randomNonZeroValue(-1,1));
                 tierLevel = 3;
                 asteroidRadius = LARGE_ASTEROID_RADIUS;
+                asteroidMultiplier = 8;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
