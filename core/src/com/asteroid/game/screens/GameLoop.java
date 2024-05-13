@@ -20,13 +20,13 @@ public class GameLoop {
     private AsteroidHandler asteroidHandler;
     private StageManager stageManager;
     private SpriteBatch batch;
-    private List<PowerUp> powerUps;
+
 
     private boolean running;
 
     public GameLoop(ScreenSwitch screenSwitch, SpriteBatch batch, AsteroidXtreme asteroidXtreme,
                     CollisionHandler collisionHandler, PlayerShip ship, UFOShip ufo,
-                    AsteroidHandler asteroidHandler, StageManager stageManager, List<PowerUp> powerUps) {
+                    AsteroidHandler asteroidHandler, StageManager stageManager ) {
         this.batch = batch;
         this.screenSwitch = screenSwitch;
         this.asteroidXtreme = asteroidXtreme;
@@ -35,11 +35,11 @@ public class GameLoop {
         this.ufo = ufo;
         this.asteroidHandler = asteroidHandler;
         this.stageManager = stageManager;
-        this.powerUps = powerUps;
+
         running = true;
     }
 
-    public void start() {
+    public void start(List<PowerUp> powerUps) {
         running = true;
         long lastTime = System.nanoTime();
         double amountOfTicks = 60.0;
@@ -53,7 +53,7 @@ public class GameLoop {
             delta += (now-lastTime) / ns;
             lastTime = now;
             while (delta >= 1) {
-                update(delta);
+                update(delta, powerUps);
                 updates++;
                 delta--;
             }
@@ -70,7 +70,7 @@ public class GameLoop {
     }
 
 
-    public void update(float delta) {
+    public void update(float delta, List<PowerUp> powerUps) {
         //Update collision handler
         collisionHandler.update(ship, ufo, asteroidHandler, powerUps);
 

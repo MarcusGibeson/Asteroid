@@ -49,7 +49,7 @@ public class ScreenSwitch extends Game {
         powerUps = new ArrayList<>();
 
         asteroidXtreme = new AsteroidXtreme(this, batch, collisionHandler, ship, ufo, asteroidHandler, stageManager, shapeRenderer, powerUps);
-        gameLoop = new GameLoop(this, batch, asteroidXtreme, collisionHandler, ship, ufo, asteroidHandler, stageManager, powerUps);
+        gameLoop = new GameLoop(this, batch, asteroidXtreme, collisionHandler, ship, ufo, asteroidHandler, stageManager);
         backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/BackgroundGameMusic.mp3"));
         mainMenuScreen = new MainMenuScreen(this, batch);
         gameOverScreen = new GameOverScreen(this, batch, scoreHandler);

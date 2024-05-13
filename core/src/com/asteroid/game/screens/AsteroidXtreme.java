@@ -94,7 +94,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			public void run() {
 				addNewPowerUp();
 			}
-		},1 ,1);
+		},10 ,30);
 	}
 
 
@@ -112,7 +112,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 			}
 			if (!isGameOver()) {
 
-				gameLoop.update(delta);
+				gameLoop.update(delta, powerUps);
 
 				// Clear screen
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
