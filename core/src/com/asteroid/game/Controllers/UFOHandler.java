@@ -32,8 +32,8 @@ public class UFOHandler {
     public void update(float delta) {
         for (UFOShip ufoShip : ufoShips) {
             if (!ufoShip.isDestroyed()) {
-                if (isOutOfBounds(ufoShip)) {
-                    respawnUFO(ufoShip);
+                if (isOutOfBounds(ufoShip) && !isWaitingToRespawn) {
+                    destroyUFO(ufoShip);
                 }
                 if (isWaitingToRespawn) {
                     respawnTimer -= delta;
@@ -43,10 +43,13 @@ public class UFOHandler {
                         isWaitingToRespawn = false;
                     }
                 }
-            }
-            if (ufoShip.getIsDestroyed()) {
+                ufoShip.update(delta);
+
+            } else {
                 respawnUFO(ufoShip);
+
             }
+            ufoShip.updateBullets(delta);
         }
     }
 
@@ -58,10 +61,14 @@ public class UFOHandler {
     public void draw(ShapeRenderer shapeRenderer) {
         for (UFOShip ufoShip: ufoShips) {
             ufoShip.draw(shapeRenderer);
-            ufoShip.drawBullets(shapeRenderer);
         }
     }
 
+    public void drawBullets(ShapeRenderer shapeRenderer) {
+        for (UFOShip ufoShip : ufoShips){
+            ufoShip.drawBullets(shapeRenderer);
+        }
+}
     public void setUFOsPerSpawn(int ufosPerSpawn) {
         this.ufosPerSpawn = ufosPerSpawn;
     }
@@ -79,10 +86,15 @@ public class UFOHandler {
 
     }
 
+    public void destroyUFO(UFOShip ufoShip) {
+        ufoShip.setDestroyed(true);
+    }
+
     public void respawnUFO(UFOShip ufoShip) {
         respawnTimer = RESPAWN_DELAY;
         isWaitingToRespawn = true;
         ufoShip.setDestroyed(false);
+
     }
 
     public void spawnOffScreen(UFOShip ufoShip) {

@@ -46,7 +46,7 @@ public class UFOShip {
     private final Sound bulletUFO;
     private final Sound ufoExplosion;
     private boolean isDestroyed;
-    float speed = 100;
+    private float speed = 100.0f;
 
     public UFOShip(float x, float y, PlayerShip playerShip) {
         this.position = new Vector2(x, y);
@@ -74,7 +74,6 @@ public class UFOShip {
                 }
             }
         }
-        updateBullets(delta);
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -121,7 +120,7 @@ public class UFOShip {
     }
 
 
-    private void updateBullets(float delta) {
+    public void updateBullets(float delta) {
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             bullet.update(delta);

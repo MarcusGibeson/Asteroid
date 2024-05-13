@@ -113,6 +113,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 				//Draw ufo
 				ufoHandler.draw(shape);
+				ufoHandler.drawBullets(shape);
 
 				//Draw asteroids
 				asteroidHandler.render();
