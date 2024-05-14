@@ -19,9 +19,11 @@ public class UFOHandler {
     private float respawnTimer;
     private boolean isWaitingToRespawn;
     private static final float RESPAWN_DELAY = 20;
+    private static final float SPAWN_DELAY = 3;
+    private float spawnDelayTimer = SPAWN_DELAY;
 
 
-    public UFOHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer, ScoreHandler scoreHandler) {
+    public UFOHandler(PlayerShip playerShip, ShapeRenderer shapeRenderer) {
         this.playerShip = playerShip;
         this.ufoShips = new ArrayList<>();
         this.shapeRenderer = shapeRenderer;
@@ -30,6 +32,10 @@ public class UFOHandler {
     }
 
     public void update(float delta) {
+        if (spawnDelayTimer > 0) {
+            spawnDelayTimer -= delta;
+            return;
+        }
         for (UFOShip ufoShip : ufoShips) {
             if (!ufoShip.isDestroyed()) {
                 if (isOutOfBounds(ufoShip) && !isWaitingToRespawn) {

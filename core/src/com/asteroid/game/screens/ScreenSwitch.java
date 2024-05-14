@@ -23,7 +23,6 @@ public class ScreenSwitch extends Game {
 
     private CollisionHandler collisionHandler;
     private PlayerShip ship;
-    private UFOShip ufo;
     private AsteroidHandler asteroidHandler;
     private StageManager stageManager;
     private ScoreHandler scoreHandler;
@@ -40,9 +39,8 @@ public class ScreenSwitch extends Game {
         scoreHandler = new ScoreHandler();
         ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 1);
         collisionHandler = new CollisionHandler(scoreHandler);
-        ufo = new UFOShip(200, 200, ship);
         asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
-        ufoHandler = new UFOHandler(ship, shapeRenderer, scoreHandler);
+        ufoHandler = new UFOHandler(ship, shapeRenderer);
         stageManager = new StageManager(asteroidHandler, ufoHandler, ship);
 
         asteroidXtreme = new AsteroidXtreme(this, batch, collisionHandler, ship, ufoHandler, asteroidHandler, stageManager, shapeRenderer);
