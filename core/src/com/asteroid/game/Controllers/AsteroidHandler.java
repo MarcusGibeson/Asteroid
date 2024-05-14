@@ -206,4 +206,12 @@ public class AsteroidHandler {
             }
         }
     }
+
+    public void resetAsteroids() {
+        asteroids.clear();
+    }
+
+    public void resetBossAsteroids() {
+        bossAsteroids.clear();
+    }
 }

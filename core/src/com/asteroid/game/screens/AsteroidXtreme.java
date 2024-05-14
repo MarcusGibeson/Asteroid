@@ -252,5 +252,11 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		ship.resetLives();
 		scoreHandler.resetScore();
 		stageManager.resetStageLevels();
+		asteroidHandler.resetAsteroids();
+		asteroidHandler.resetBossAsteroids();
+		ufoHandler.resetUFOs();
+		powerUps.clear();
+		stageManager.setCurrentStageIndex(0);
+
 	}
 }

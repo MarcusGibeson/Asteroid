@@ -158,4 +158,8 @@ public class StageManager {
     public void resetStageLevels() {
         currentStageIndex = 0;
     }
+
+    public void setCurrentStageIndex(int currentStageIndex) {
+        this.currentStageIndex = currentStageIndex;
+    }
 }

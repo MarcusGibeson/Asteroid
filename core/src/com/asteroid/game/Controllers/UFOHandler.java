@@ -156,4 +156,7 @@ public class UFOHandler {
         return ufoShips;
     }
 
+    public void resetUFOs() {
+        ufoShips.clear();
+    }
 }
