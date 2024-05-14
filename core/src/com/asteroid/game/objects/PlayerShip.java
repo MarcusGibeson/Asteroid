@@ -427,7 +427,7 @@ public class PlayerShip {
                     shootingSound.play();
                     break;
 
-                default: //in case the bad juju happens
+                default: //in case the bad juju happens //the invuln shield is hitting this as well
                     setShotCooldown(0.25f);
                     System.out.println("you shouldn't be seeing this message anyways but hey debug is a thing");
                     bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
