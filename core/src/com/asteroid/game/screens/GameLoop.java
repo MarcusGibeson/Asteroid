@@ -5,8 +5,11 @@ import com.asteroid.game.Controllers.CollisionHandler;
 import com.asteroid.game.Controllers.StageManager;
 import com.asteroid.game.Controllers.UFOHandler;
 import com.asteroid.game.objects.PlayerShip;
+import com.asteroid.game.objects.PowerUp;
 import com.asteroid.game.objects.UFOShip;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.List;
 
 public class GameLoop {
 
@@ -19,11 +22,12 @@ public class GameLoop {
     private StageManager stageManager;
     private SpriteBatch batch;
 
+
     private boolean running;
 
     public GameLoop(ScreenSwitch screenSwitch, SpriteBatch batch, AsteroidXtreme asteroidXtreme,
                     CollisionHandler collisionHandler, PlayerShip ship, UFOHandler ufoHandler,
-                    AsteroidHandler asteroidHandler, StageManager stageManager) {
+                    AsteroidHandler asteroidHandler, StageManager stageManager ) {
         this.batch = batch;
         this.screenSwitch = screenSwitch;
         this.asteroidXtreme = asteroidXtreme;
@@ -32,10 +36,11 @@ public class GameLoop {
         this.ufoHandler = ufoHandler;
         this.asteroidHandler = asteroidHandler;
         this.stageManager = stageManager;
+
         running = true;
     }
 
-    public void start() {
+    public void start(List<PowerUp> powerUps) {
         running = true;
         long lastTime = System.nanoTime();
         double amountOfTicks = 60.0;
@@ -49,7 +54,7 @@ public class GameLoop {
             delta += (now-lastTime) / ns;
             lastTime = now;
             while (delta >= 1) {
-                update(delta);
+                update(delta, powerUps);
                 updates++;
                 delta--;
             }
@@ -66,9 +71,9 @@ public class GameLoop {
     }
 
 
-    public void update(float delta) {
+    public void update(float delta, List<PowerUp> powerUps) {
         //Update collision handler
-        collisionHandler.update(ship, ufoHandler, asteroidHandler);
+        collisionHandler.update(ship, ufoHandler, asteroidHandler, powerUps);
 
         // Update ship logic
         ship.update(delta);

@@ -23,7 +23,7 @@ public class Asteroid {
 
     public static final float SMALL_ASTEROID_RADIUS = 20;
     public static final float MEDIUM_ASTEROID_RADIUS = 80;
-    public static final float LARGE_ASTEROID_RADIUS = 150;
+    public static final float LARGE_ASTEROID_RADIUS = 160;
     private float asteroidRadius;
     private static final float SCREEN_HEIGHT = 720f;
     private static final float SCREEN_WIDTH = 1280f;
