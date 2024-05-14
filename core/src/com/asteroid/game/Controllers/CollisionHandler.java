@@ -265,6 +265,19 @@ public class CollisionHandler {
                 }
             }
         }
+
+        if (checkKillAuraCollisionsWithUFOs(playerShip, ufoHandler)) {
+            Circle killAuraCircle = playerShip.getKillAuraCircle();
+            for (UFOShip ufo : ufoHandler.getUfoShips()) {
+                Rectangle ufoRectangle = ufo.getCollisionRectangle();
+                if (Intersector.overlaps(killAuraCircle, ufoRectangle)) {
+                    ufo.setDestroyed(true);
+                    scoreHandler.increaseScore(100);
+                }
+            }
+        }
+
+
     }
 
     //Method to check collision between UFO bullets and player ship
@@ -477,15 +490,18 @@ public class CollisionHandler {
     }
 
     //check collision between kill aura circle and ufo
-    public static boolean checkKillAuraCollisionsWithUFOs(PlayerShip playerShip, UFOShip ufo){
+    public static boolean checkKillAuraCollisionsWithUFOs(PlayerShip playerShip, UFOHandler ufoHandler){
         Circle killAuraCircle = playerShip.getKillAuraCircle();
-        Rectangle ufoRectangle = ufo.getCollisionRectangle();
+        for (UFOShip ufo : ufoHandler.getUfoShips()) {
+            Rectangle ufoRectangle = ufo.getCollisionRectangle();
 
-        if (playerShip.getCurrentPowerUpType() != null){
-            if (playerShip.getCurrentPowerUpType() == PowerUp.Type.KILL_AURA){
-                return Intersector.overlaps(killAuraCircle, ufoRectangle);
+            if (playerShip.getCurrentPowerUpType() != null){
+                if (playerShip.getCurrentPowerUpType() == PowerUp.Type.KILL_AURA){
+                    return Intersector.overlaps(killAuraCircle, ufoRectangle);
+                }
             }
         }
+
         return false;
     }
 
