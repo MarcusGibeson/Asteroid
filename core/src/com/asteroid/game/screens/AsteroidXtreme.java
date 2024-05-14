@@ -256,7 +256,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 		asteroidHandler.resetBossAsteroids();
 		ufoHandler.resetUFOs();
 		powerUps.clear();
-		stageManager.setCurrentStageIndex(0);
+		stageManager.setCurrentStageIndex(-1);
 
 	}
 }
