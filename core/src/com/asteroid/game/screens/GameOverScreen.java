@@ -1,5 +1,6 @@
 package com.asteroid.game.screens;
 
+
 import com.asteroid.game.Controllers.ScoreHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -7,86 +8,96 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class GameOverScreen implements Screen {
 
-    private TextInputField inputField;
     private boolean isGameOver;
     private boolean isHighScoreEntered;
     private String playerName;
     private BitmapFont font;
     private ScreenSwitch screenSwitch;
-    private Stage stage;
     private SpriteBatch batch;
     private ScoreHandler scoreHandler;
 
-    private Label playerNameLabel;
+
+    private ShapeRenderer shapeRenderer;
+    private GlyphLayout glyphLayout;
 
     public GameOverScreen(ScreenSwitch screenSwitch, SpriteBatch batch, ScoreHandler scoreHandler) {
         this.screenSwitch = screenSwitch;
         this.scoreHandler = scoreHandler;
-        this.stage = new Stage(new ScreenViewport());
-        font = new BitmapFont();
-        font.setColor(Color.RED);
-        font.getData().setScale(2);
+        this.shapeRenderer = new ShapeRenderer();
+        this.font = new BitmapFont(Gdx.files.internal("Fonts/default.fnt"));
+        this.font.setColor(Color.RED);
+        this.font.getData().setScale(2);
         this.batch = batch;
-        inputField = new TextInputField("Enter your name: ");
-        isGameOver = true;
-        isHighScoreEntered = false;
-        playerName="";
-        playerNameLabel = new Label("", new Label.LabelStyle(font, Color.RED));
-        playerNameLabel.setAlignment(Align.left);
-        playerNameLabel.setPosition(300,300);
-        Gdx.input.setInputProcessor(stage);
-        stage.addActor(inputField);
-        inputField.setFocus();
-
-//        resetGameState();
+        this.isGameOver = true;
+        this.isHighScoreEntered = false;
+        this.playerName = "";
+        this.glyphLayout = new GlyphLayout();
     }
 
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void render(float delta) {
-        update();
-        stage.act(delta);
-        stage.draw();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if(isGameOver) {
-            batch.begin();
-            font.draw(batch, "Score: " + scoreHandler.getScore(), Gdx.graphics.getWidth() /2 -150, Gdx.graphics.getHeight() /2 + 150);
-            font.draw(batch, "Game Over!", Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2 + 50);
-            font.draw(batch, "Name: " + inputField.getPlayerName(), Gdx.graphics.getWidth() /2 -150, Gdx.graphics.getHeight() / 2);
-//            if(isHighScoreEntered) {
-                font.draw(batch, "Press Space to return the the main menu",Gdx.graphics.getWidth() /4 + 50, 50);
-//            }
-            batch.end();
-        }
 
+        update(delta);
+
+        batch.begin();
+        if (isGameOver) {
+            font.draw(batch, "Score: " + scoreHandler.getScore(), Gdx.graphics.getWidth() / 2 - 50, Gdx.graphics.getHeight() / 2 + 200);
+            font.getData().setScale(3);
+            font.draw(batch, "Game Over!", Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2 + 100);
+            font.getData().setScale(2);
+            font.draw(batch, "Enter your name: " + playerName, Gdx.graphics.getWidth() / 2 - 200, Gdx.graphics.getHeight() / 2 - 100);
+            if (isHighScoreEntered) {
+                font.draw(batch, "Press space to return to the main menu", Gdx.graphics.getWidth() / 4  + 50, 50);
+            }
+        }
+        batch.end();
     }
 
-    public void update() {
-        playerNameLabel.setText("Name: " + inputField.getPlayerName());
-        if (isHighScoreEntered && playerName.isEmpty() && Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
-            Gdx.input.getTextInput(new NameInputListener(), "Enter your name", "", "");
+    public void update(float delta) {
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+            isHighScoreEntered = true;
         }
+
+        if (isHighScoreEntered && playerName.isEmpty() && Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
+            Gdx.input.getTextInput(new NameInputListener(), "Enter your name ", "", "");
+        }
+
         if (isGameOver && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            resetGameState();
             restartGame();
+        }
+
+        handleTextInput();
+    }
+
+    private void handleTextInput() {
+        for (int i = Input.Keys.A; i <= Input.Keys.Z; i ++) {
+            if(Gdx.input.isKeyJustPressed(i)) {
+                playerName += Input.Keys.toString(i);
+            }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE) && playerName.length() > 0) {
+            playerName = playerName.substring(0, playerName.length() - 1);
         }
     }
 
     public void gameOver() {
         isGameOver = true;
     }
+
     private void restartGame() {
         screenSwitch.switchToMainMenu();
     }
@@ -104,9 +115,10 @@ public class GameOverScreen implements Screen {
             isHighScoreEntered = false;
         }
     }
+
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width,height,true);
+
     }
 
     @Override
@@ -132,8 +144,6 @@ public class GameOverScreen implements Screen {
     public void resetGameState() {
         isGameOver = false;
         isHighScoreEntered = false;
-        playerName="";
-        inputField.setText("");
-        playerNameLabel.setText("");
+        playerName = "";
     }
 }

@@ -145,8 +145,11 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 				//Scoreboard
 				batch.begin();
 				font.draw(batch, "Score: " + scoreHandler.getScore(), 20, Gdx.graphics.getHeight()-20);
+				batch.end();
+
 
 				//Draw lives
+				batch.begin();
 				drawPlayerLives(batch);
 				batch.end();
 

@@ -190,7 +190,7 @@ public class PlayerShip {
     }
 
     public void resetLives() {
-        lives = 5;
+        lives = 1;
     }
 
     public void drawRespawnMessage(SpriteBatch spriteBatch, BitmapFont font) {

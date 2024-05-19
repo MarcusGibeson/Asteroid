@@ -108,13 +108,13 @@ public class StageManager {
         }
     }
     private int determineUFOCount(int stageIndex) {
-        if (stageIndex > 75) {
+        if (stageIndex > 50) {
             return 4;
-        } else if (stageIndex > 40) {
-            return 3;
         } else if (stageIndex > 20) {
-            return 2;
+            return 3;
         } else if (stageIndex > 10) {
+            return 2;
+        } else if (stageIndex > 5) {
             return 1;
         } else {
             return 0;
