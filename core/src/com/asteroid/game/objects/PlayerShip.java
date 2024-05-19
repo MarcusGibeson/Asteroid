@@ -59,14 +59,16 @@ public class PlayerShip {
 
     private boolean isTouchingPowerUp;
     private PowerUp.Type currentPowerUpType;
+    private int initialLives;
 
 
 
     public PlayerShip(float x, float y,int initialHealth, int initialLives) {
         position = new Vector2(x, y);
         this.health = initialHealth;
+        this.initialLives = initialLives;
         this.lives = initialLives;
-        this.respawnPosition = new Vector2((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2);
+        this.respawnPosition = new Vector2(x, y);
         velocity = new Vector2();
         rotation = 0;
         bullets = new ArrayList<>();
@@ -176,12 +178,13 @@ public class PlayerShip {
 
         if (lives > 0) {
             lives--;
-            setPosition(respawnPosition);
             isDestroyed = false;
             health = getMaxHealth();
             isPlayerDead = false;
             respawnRequested = false;
             isRespawning = false;
+            respawnPosition.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+            setPosition(respawnPosition);
 
         } else {
             //game over logic
@@ -190,7 +193,11 @@ public class PlayerShip {
     }
 
     public void resetLives() {
-        lives = 1;
+        lives = getInitialLives();
+    }
+
+    private int getInitialLives() {
+        return initialLives;
     }
 
     public void drawRespawnMessage(SpriteBatch spriteBatch, BitmapFont font) {

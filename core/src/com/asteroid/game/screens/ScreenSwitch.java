@@ -42,7 +42,7 @@ public class ScreenSwitch extends Game {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         scoreHandler = new ScoreHandler();
-        ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 1);
+        ship = new PlayerShip((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 1, 5);
         collisionHandler = new CollisionHandler(scoreHandler);
         asteroidHandler = new AsteroidHandler(ship, shapeRenderer, scoreHandler);
         ufoHandler = new UFOHandler(ship, shapeRenderer);
