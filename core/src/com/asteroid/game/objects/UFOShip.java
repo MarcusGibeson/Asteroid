@@ -141,7 +141,7 @@ public class UFOShip {
         //Calculate direction towards player ship
         Vector2 direction = new Vector2(playerShip.getPosition()).sub(position).nor();
         // Create a new bullet
-        Bullet bullet = new Bullet(new Vector2(position), direction, velocity, Bullet.BULLET_SPEED, Bullet.BULLET_RADIUS, Color.RED);
+        Bullet bullet = new Bullet(new Vector2(position), direction, Bullet.BULLET_SPEED, Bullet.BULLET_RADIUS, Color.RED);
         bullets.add(bullet);
 
     }

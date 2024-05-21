@@ -13,19 +13,18 @@ public class Bullet {
     private Vector2 velocity;
     private float radius;
     private Color color;
-    private static final float BULLET_LIFESPAN = 1.25f;
+    private static final float BULLET_LIFESPAN = 1.5f;
 
     public static final float BULLET_SPEED = 500;
     public static final float BULLET_RADIUS = 2;
     private float lifespanTimer;
-    private Circle boundingCircle;
+
     private Vector2 initialVelocity;
 
-    public Bullet(Vector2 position, Vector2 direction, Vector2 initalVelocity, float speed, float radius, Color color)  {
+    public Bullet(Vector2 position, Vector2 direction, float speed, float radius, Color color)  {
         this.position = new Vector2(position);
-        this.velocity = new Vector2(direction.nor().scl(speed).add(initalVelocity)); //Normalize direction and scale by speed
+        this.velocity = new Vector2(direction.nor().scl(speed)); //Normalize direction and scale by speed
         this.radius = radius;
-        this.boundingCircle = new Circle(position.x, position.y, radius);
         this.color = color;
         this.lifespanTimer = BULLET_LIFESPAN;
     }
@@ -33,9 +32,10 @@ public class Bullet {
     public Vector2 getPosition() {
         return position;
     }
-    public Circle getBoundingCircle() {
-        return boundingCircle;
+
+    public Vector2 getVelocity() { return  velocity;
     }
+
     public boolean isExpired() {
         return lifespanTimer <=0;
     }
@@ -44,7 +44,6 @@ public class Bullet {
         position.add(velocity.x * delta, velocity.y * delta); // Update position based on velocity
 
         lifespanTimer -= delta;
-        boundingCircle.setPosition(position);
         handleScreenWrapping();
     }
 
