@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -26,7 +27,8 @@ public class MainMenuScreen implements Screen {
     SpriteBatch batch;
     private int width = Gdx.graphics.getWidth();
     private int height = Gdx.graphics.getHeight();
-    ShapeRenderer shapeRenderer;
+    private ShapeRenderer shapeRenderer;
+    private OrthographicCamera camera;
 
     Texture startButtonTexture = new Texture("Images/MainMenuStartButton.png");
     ImageButton startButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(startButtonTexture)));
@@ -44,6 +46,8 @@ public class MainMenuScreen implements Screen {
         this.screenSwitch = screenSwitch;
         this.stage = new Stage(new ScreenViewport());
         this.backgroundTexture = new Texture("Images/MainMenuBackground.jpg");
+        this.camera = new OrthographicCamera();
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shapeRenderer = new ShapeRenderer();
         mainMenuMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/BackgroundMenuMusic.mp3"));
         Gdx.input.setInputProcessor(stage);
@@ -66,6 +70,14 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 screenSwitch.switchToAsteroidXtreme();
+                startButton.removeListener(this);
+            }
+        });
+
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                screenSwitch.switchToHowToPlayScreen();
                 startButton.removeListener(this);
             }
         });
@@ -107,6 +119,13 @@ public class MainMenuScreen implements Screen {
         shapeRenderer.end();
     }
 
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
 
     @Override
     public void show() {

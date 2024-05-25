@@ -12,6 +12,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -34,6 +35,9 @@ public class ScreenSwitch extends Game {
     private Sound backgroundMusic;
     private List<PowerUp> powerUps;
     private UFOHandler ufoHandler;
+    private HowToPlayScreen howToPlayScreen;
+    private Screen currentScreen;
+    private OrthographicCamera camera;
 
     private float volume = 0.05f;
 
@@ -53,8 +57,36 @@ public class ScreenSwitch extends Game {
         gameLoop = new GameLoop(this, batch, asteroidXtreme, collisionHandler, ship, ufoHandler, asteroidHandler, stageManager);
         backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/BackgroundGameMusic.mp3"));
         mainMenuScreen = new MainMenuScreen(this, batch);
+        howToPlayScreen = new HowToPlayScreen(this, shapeRenderer, batch, powerUps);
         gameOverScreen = new GameOverScreen(this, batch, scoreHandler);
         setScreen(mainMenuScreen);
+    }
+
+    public Screen getCurrentScreen() {
+        return currentScreen;
+    }
+
+    public OrthographicCamera getCurrentScreenCamera() {
+        if (currentScreen instanceof MainMenuScreen) {
+            return ((MainMenuScreen) currentScreen).getCamera();
+        } else if (currentScreen instanceof HowToPlayScreen) {
+            return ((HowToPlayScreen) currentScreen).getCamera();
+        }
+        return null;
+    }
+
+    @Override
+    public void setScreen(Screen screen) {
+        currentScreen = screen;
+        super.setScreen(screen);
+
+        if (screen instanceof MainMenuScreen) {
+            Gdx.input.setInputProcessor(((MainMenuScreen) screen).getStage());
+        } else if (screen instanceof HowToPlayScreen) {
+            Gdx.input.setInputProcessor(null);
+        } else {
+            Gdx.input.setInputProcessor(null);
+        }
     }
 
     public GameLoop getGameLoop() {
@@ -64,6 +96,13 @@ public class ScreenSwitch extends Game {
     @Override
     public void dispose() {
         super.dispose();
+        batch.dispose();
+        shapeRenderer.dispose();
+        backgroundMusic.dispose();
+        if (mainMenuScreen != null) mainMenuScreen.dispose();
+        if (gameOverScreen != null) gameOverScreen.dispose();
+        if (asteroidXtreme != null) asteroidXtreme.dispose();
+        if (howToPlayScreen != null) howToPlayScreen.dispose();
     }
 
     public void switchToAsteroidXtreme() {
@@ -81,6 +120,15 @@ public class ScreenSwitch extends Game {
             gameOverScreen.dispose();
         }
         setScreen(new MainMenuScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
+    }
+
+    public Screen getMainMenuScreen() {
+        return mainMenuScreen;
+    }
+
+    public void switchToHowToPlayScreen() {
+        currentScreen = getScreen();
+        setScreen(new HowToPlayScreen((ScreenSwitch) Gdx.app.getApplicationListener(), shapeRenderer, batch, powerUps));
     }
 
     public void switchToGameOver(){
