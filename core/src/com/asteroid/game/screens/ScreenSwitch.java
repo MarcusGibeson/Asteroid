@@ -91,7 +91,9 @@ public class ScreenSwitch extends Game {
         if (screen instanceof MainMenuScreen) {
             Gdx.input.setInputProcessor(((MainMenuScreen) screen).getStage());
         } else if (screen instanceof HowToPlayScreen) {
-            Gdx.input.setInputProcessor(null);
+            Gdx.input.setInputProcessor(((HowToPlayScreen) screen).getStage());
+        } else if (screen instanceof EscapeMenuScreen) {
+            Gdx.input.setInputProcessor(((EscapeMenuScreen) screen).getStage());
         } else {
             Gdx.input.setInputProcessor(null);
         }

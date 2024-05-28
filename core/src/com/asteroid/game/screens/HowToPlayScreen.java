@@ -3,12 +3,15 @@ package com.asteroid.game.screens;
 import com.asteroid.game.objects.PowerUp;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class HowToPlayScreen implements Screen {
     private BitmapFont font;
     private int popupWidth;
     private int popupHeight;
+    private Stage stage;
 
 
     public HowToPlayScreen(ScreenSwitch screenSwitch, ShapeRenderer shapeRenderer, SpriteBatch batch, List<PowerUp> powerUps) {
@@ -30,6 +34,8 @@ public class HowToPlayScreen implements Screen {
         this.powerUps = powerUps;
         this.shapeRenderer = shapeRenderer;
         this.font = new BitmapFont();
+
+        this.stage = new Stage(new ScreenViewport());
 
         // size of pop-up
         this.popupWidth = Gdx.graphics.getWidth();
@@ -46,7 +52,7 @@ public class HowToPlayScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(null);
+        Gdx.input.setInputProcessor(stage);
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
@@ -114,4 +120,7 @@ public class HowToPlayScreen implements Screen {
 
     }
 
+    public InputProcessor getStage() {
+        return stage;
+    }
 }
