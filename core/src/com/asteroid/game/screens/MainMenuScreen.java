@@ -39,6 +39,10 @@ public class MainMenuScreen implements Screen {
     Texture highScoresButtonTexture = new Texture("Images/MainMenuHighScoresButton.png");
     ImageButton highScoresButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(highScoresButtonTexture)));
 
+    Texture quitButtonTexture = new Texture("Images/MainMenuQuitButton.png");
+    ImageButton quitButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(quitButtonTexture)));
+
+
     private final Sound mainMenuMusic;
     private float volume = 0.2f;
 
@@ -57,14 +61,16 @@ public class MainMenuScreen implements Screen {
     private void setupMenu() {
         //Add UI elements to the stage
         mainMenuMusic.loop(volume);
-        startButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2);
-        settingsButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 200);
-        highScoresButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 400);
+        startButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 + 50);
+        settingsButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 125);
+        highScoresButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 275);
+        quitButton.setPosition(width * 3/4 +75 - startButton.getWidth() / 2, height  * 3/4  - startButton.getHeight() / 2 - 450);
 
         //add hover effects
         addHoverEffect(startButton);
         addHoverEffect(settingsButton);
         addHoverEffect(highScoresButton);
+        addHoverEffect(quitButton);
 
         startButton.addListener(new ClickListener() {
             @Override
@@ -82,9 +88,17 @@ public class MainMenuScreen implements Screen {
             }
         });
 
+        quitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
         stage.addActor(startButton);
         stage.addActor(settingsButton);
         stage.addActor(highScoresButton);
+        stage.addActor(quitButton);
 
     }
 
