@@ -108,8 +108,14 @@ public class ScreenSwitch extends Game {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (getScreen() != escMenuScreen) {
                 previousScreen = getScreen();
+                if (previousScreen instanceof AsteroidXtreme) {
+                    ((AsteroidXtreme) previousScreen).pause();
+                }
                 setScreen(escMenuScreen);
             } else {
+                if (previousScreen instanceof AsteroidXtreme) {
+                    ((AsteroidXtreme) previousScreen).resume();
+                }
                 setScreen(previousScreen);
             }
         }
@@ -141,6 +147,13 @@ public class ScreenSwitch extends Game {
     public void switchToMainMenu() {
         if(getScreen() instanceof GameOverScreen) {
             gameOverScreen.dispose();
+        } else if (getScreen() instanceof EscapeMenuScreen) {
+            if(getPreviousScreen() instanceof AsteroidXtreme) {
+                asteroidXtreme.dispose();
+            }
+        }
+        if (mainMenuScreen == null) {
+            mainMenuScreen = new MainMenuScreen(this, batch);
         }
         setScreen(new MainMenuScreen((ScreenSwitch) Gdx.app.getApplicationListener(), batch));
     }

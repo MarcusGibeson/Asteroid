@@ -24,6 +24,8 @@ public class GameLoop {
 
 
     private boolean running;
+    private boolean isRunning;
+    private boolean isPaused;
 
     public GameLoop(ScreenSwitch screenSwitch, SpriteBatch batch, AsteroidXtreme asteroidXtreme,
                     CollisionHandler collisionHandler, PlayerShip ship, UFOHandler ufoHandler,
@@ -36,6 +38,8 @@ public class GameLoop {
         this.ufoHandler = ufoHandler;
         this.asteroidHandler = asteroidHandler;
         this.stageManager = stageManager;
+        this.isRunning = false;
+        this.isPaused = false;
 
         running = true;
     }
@@ -72,6 +76,9 @@ public class GameLoop {
 
 
     public void update(float delta, List<PowerUp> powerUps) {
+        if (!isRunning || isPaused) {
+            return;
+        }
         //Update collision handler
         collisionHandler.update(ship, ufoHandler, asteroidHandler, powerUps);
 
@@ -90,5 +97,27 @@ public class GameLoop {
 
     public void stop() {
         running = false;
+        this.isRunning = false;
+    }
+
+    public void start() {
+        this.isRunning = true;
+        this.isPaused = false;
+    }
+
+    public void pause() {
+        this.isPaused = true;
+    }
+
+    public void resume() {
+        this.isPaused = false;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 }

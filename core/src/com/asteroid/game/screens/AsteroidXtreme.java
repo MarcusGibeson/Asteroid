@@ -174,11 +174,24 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 
 	@Override
 	public void show() {
-
+		gameLoop.start();
 	}
 
 	@Override
+	public void pause() {
+		gameLoop.pause();
+	}
+
+	@Override
+	public void resume() {
+		gameLoop.resume();
+	}
+
+
+
+	@Override
 	public void hide() {
+		gameLoop.stop();
 		disposeResources();
 	}
 
