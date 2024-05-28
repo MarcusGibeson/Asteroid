@@ -76,7 +76,6 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 screenSwitch.switchToAsteroidXtreme();
-                startButton.removeListener(this);
             }
         });
 
@@ -84,7 +83,6 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 screenSwitch.switchToHowToPlayScreen();
-                startButton.removeListener(this);
             }
         });
 

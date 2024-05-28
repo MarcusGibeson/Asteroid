@@ -106,6 +106,9 @@ public class ScreenSwitch extends Game {
     @Override
     public void render() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if(getScreen() == mainMenuScreen || getScreen() == gameOverScreen || getScreen() == howToPlayScreen) {
+                return;
+            }
             if (getScreen() != escMenuScreen) {
                 previousScreen = getScreen();
                 if (previousScreen instanceof AsteroidXtreme) {
@@ -138,7 +141,7 @@ public class ScreenSwitch extends Game {
 
         if(getScreen() instanceof MainMenuScreen) {
             mainMenuScreen = getScreen();
-            mainMenuScreen.dispose();
+            mainMenuScreen.hide();
         }
         backgroundMusic.loop(volume);
         setScreen(new AsteroidXtreme((ScreenSwitch) Gdx.app.getApplicationListener(), batch, collisionHandler, ship, ufoHandler, asteroidHandler, stageManager, shapeRenderer, powerUps));
