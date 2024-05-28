@@ -58,11 +58,6 @@ public class EscapeMenuScreen implements Screen {
         settingsButton.setPosition(Gdx.graphics.getWidth() /2 - settingsButton.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         quitButton.setPosition(Gdx.graphics.getWidth() /2 - quitButton.getWidth() / 2, Gdx.graphics.getHeight() / 2 - 50);
 
-        //Log button position and size
-        Gdx.app.log("Button debug", "Resume button - x : " + resumeButton.getX() + ", y: " + resumeButton.getY() + ", width: " + resumeButton.getWidth() + ", height: " + resumeButton.getHeight());
-        Gdx.app.log("Button debug", "Settings button - x : " + settingsButton.getX() + ", y: " + settingsButton.getY() + ", width: " + settingsButton.getWidth() + ", height: " + settingsButton.getHeight());
-        Gdx.app.log("Button debug", "Quit button - x : " + quitButton.getX() + ", y: " + quitButton.getY() + ", width: " + quitButton.getWidth() + ", height: " + quitButton.getHeight());
-
         //add buttons to stage
         stage.addActor(resumeButton);
         stage.addActor(settingsButton);
@@ -72,15 +67,13 @@ public class EscapeMenuScreen implements Screen {
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("Button Click", "resume clicked");
-                screenSwitch.setScreen(screenSwitch.getPreviousScreen());
+                screenSwitch.setScreen(screenSwitch.getSavedScreen());
             }
         });
 
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("Button click", "settings clicked");
                 screenSwitch.setScreen(screenSwitch.getSettingsScreen());
             }
         });
@@ -88,7 +81,6 @@ public class EscapeMenuScreen implements Screen {
         quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("Button clicked", "Quit clicked");
                 screenSwitch.setScreen(screenSwitch.getMainMenuScreen());
             }
         });
@@ -96,9 +88,7 @@ public class EscapeMenuScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.app.log("EscapeMenuScreen", "show() called, setting input processor to stage");
         Gdx.input.setInputProcessor(stage);
-
     }
 
     @Override
@@ -118,8 +108,6 @@ public class EscapeMenuScreen implements Screen {
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
-
-        Gdx.app.log("Input processor", "Current: " + Gdx.input.getInputProcessor());
     }
 
     @Override

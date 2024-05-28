@@ -39,6 +39,7 @@ public class ScreenSwitch extends Game {
     private HowToPlayScreen howToPlayScreen;
     private Screen currentScreen;
     private Screen previousScreen;
+    private Screen savedScreen;
     private EscapeMenuScreen escMenuScreen;
     private OrthographicCamera camera;
 
@@ -63,12 +64,15 @@ public class ScreenSwitch extends Game {
         howToPlayScreen = new HowToPlayScreen(this, shapeRenderer, batch, powerUps);
         gameOverScreen = new GameOverScreen(this, batch, scoreHandler);
         escMenuScreen = new EscapeMenuScreen(this, batch, shapeRenderer);
+        previousScreen = mainMenuScreen;
         setScreen(mainMenuScreen);
+
     }
 
     public Screen getCurrentScreen() {
         return currentScreen;
     }
+    public Screen getSavedScreen() { return savedScreen;}
 
     public Screen getPreviousScreen() {
         return previousScreen;
@@ -105,26 +109,47 @@ public class ScreenSwitch extends Game {
 
     @Override
     public void render() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if(getScreen() == mainMenuScreen || getScreen() == gameOverScreen || getScreen() == howToPlayScreen) {
-                return;
-            }
-            if (getScreen() != escMenuScreen) {
-                previousScreen = getScreen();
-                if (previousScreen instanceof AsteroidXtreme) {
-                    ((AsteroidXtreme) previousScreen).pause();
-                }
-                setScreen(escMenuScreen);
-            } else {
-                if (previousScreen instanceof AsteroidXtreme) {
-                    ((AsteroidXtreme) previousScreen).resume();
-                }
-                setScreen(previousScreen);
-            }
-        }
+        checkEscKeyPressed();
         super.render();
     }
 
+    public void checkEscKeyPressed() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if(getScreen() == mainMenuScreen || getScreen() == gameOverScreen) {
+                return;
+            }
+
+            if(getScreen() == howToPlayScreen) {
+                if (previousScreen instanceof MainMenuScreen) {
+                    setScreen(previousScreen);
+                } else {
+                    setScreen(escMenuScreen);
+                }
+            }
+
+            previousScreen = getScreen();
+            if (getScreen() != escMenuScreen) {
+                previousScreen = getScreen();
+                savedScreen = getScreen();
+                if (previousScreen instanceof AsteroidXtreme) {
+                    ((AsteroidXtreme) savedScreen).pause();
+                }
+                setScreen(escMenuScreen);
+            } else {
+                if (savedScreen != null) {
+                    if (savedScreen instanceof AsteroidXtreme) {
+                        ((AsteroidXtreme) savedScreen).resume();
+                    }
+                    setScreen(savedScreen);
+                } else {
+                    if (previousScreen instanceof AsteroidXtreme) {
+                        ((AsteroidXtreme) previousScreen).resume();
+                    }
+                    setScreen(previousScreen);
+                }
+            }
+        }
+    }
     @Override
     public void dispose() {
         super.dispose();
@@ -138,7 +163,6 @@ public class ScreenSwitch extends Game {
     }
 
     public void switchToAsteroidXtreme() {
-
         if(getScreen() instanceof MainMenuScreen) {
             mainMenuScreen = getScreen();
             mainMenuScreen.hide();
@@ -162,6 +186,7 @@ public class ScreenSwitch extends Game {
     }
 
     public Screen getMainMenuScreen() {
+        savedScreen = null;
         return mainMenuScreen;
     }
 
@@ -170,13 +195,13 @@ public class ScreenSwitch extends Game {
     }
 
     public void switchToHowToPlayScreen() {
-        currentScreen = getScreen();
+        previousScreen = getScreen();
+        savedScreen = mainMenuScreen;
         setScreen(new HowToPlayScreen((ScreenSwitch) Gdx.app.getApplicationListener(), shapeRenderer, batch, powerUps));
     }
 
     public void switchToGameOver(){
         Screen currentScreen = getScreen();
-
         if (currentScreen instanceof AsteroidXtreme) {
             asteroidXtreme = (AsteroidXtreme) currentScreen;
             GameLoop gameLoop = asteroidXtreme.getGameLoop();

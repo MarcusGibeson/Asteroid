@@ -184,14 +184,25 @@ public class PlayerShip {
             isPlayerDead = false;
             respawnRequested = false;
             isRespawning = false;
-            respawnPosition.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
-            setPosition(respawnPosition);
+            setRespawnPosition();
 
         } else {
             //game over logic
 
         }
     }
+
+    public void setRespawnPosition() {
+        respawnPosition.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        setPosition(respawnPosition);
+        setVelocity(0,0);
+        rotation = 0;
+    }
+
+    public void setVelocity(float x, float y) {
+        velocity.set(x,y);
+    }
+
 
     public void resetLives() {
         lives = getInitialLives();

@@ -265,6 +265,7 @@ public class AsteroidXtreme extends ApplicationAdapter implements Screen {
 	public void resetGameState() {
 		gameOver = false;
 		ship.resetLives();
+		ship.setRespawnPosition();
 		scoreHandler.resetScore();
 		stageManager.resetStageLevels();
 		asteroidHandler.resetAsteroids();

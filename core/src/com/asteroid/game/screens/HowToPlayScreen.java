@@ -80,11 +80,11 @@ public class HowToPlayScreen implements Screen {
         batch.begin();
         font.draw(batch, "How to Play", popupWidth  - 40, popupHeight - 20);
         font.draw(batch, "Press esc to close", popupWidth  - 50, popupHeight - 40);
+
+        font.draw(batch, "Welcome to Asteroids Xtreme. Controls are simple:", popupWidth - 150, popupHeight - 100);
+
         batch.end();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            screenSwitch.setScreen(screenSwitch.getMainMenuScreen());
-        }
     }
 
     public void update(float delta) {
