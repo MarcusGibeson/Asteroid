@@ -32,8 +32,8 @@ public class HowToPlayScreen implements Screen {
         this.font = new BitmapFont();
 
         // size of pop-up
-        this.popupWidth = Gdx.graphics.getWidth() / 2;
-        this.popupHeight = Gdx.graphics.getHeight() / 2;
+        this.popupWidth = Gdx.graphics.getWidth();
+        this.popupHeight = Gdx.graphics.getHeight();
 
         //camera to control view
         this.camera = new OrthographicCamera();
@@ -68,7 +68,7 @@ public class HowToPlayScreen implements Screen {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0,0,0,0.7f);
-        shapeRenderer.rect((Gdx.graphics.getWidth() - popupWidth / 2), (Gdx.graphics.getHeight() - popupHeight) / 2, popupWidth, popupHeight);
+        shapeRenderer.rect((popupWidth / 2), (popupHeight) / 2, popupWidth, popupHeight);
         shapeRenderer.end();
 
         batch.begin();
@@ -89,7 +89,7 @@ public class HowToPlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         popupWidth = width / 2;
-        popupHeight = height / 2;
+        popupHeight = height;
         camera.setToOrtho(false, width, height);
         camera.update();
     }

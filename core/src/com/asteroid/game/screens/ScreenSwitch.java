@@ -10,6 +10,7 @@ import com.asteroid.game.Controllers.CollisionHandler;
 import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -37,6 +38,8 @@ public class ScreenSwitch extends Game {
     private UFOHandler ufoHandler;
     private HowToPlayScreen howToPlayScreen;
     private Screen currentScreen;
+    private Screen previousScreen;
+    private EscapeMenuScreen escMenuScreen;
     private OrthographicCamera camera;
 
     private float volume = 0.05f;
@@ -59,11 +62,16 @@ public class ScreenSwitch extends Game {
         mainMenuScreen = new MainMenuScreen(this, batch);
         howToPlayScreen = new HowToPlayScreen(this, shapeRenderer, batch, powerUps);
         gameOverScreen = new GameOverScreen(this, batch, scoreHandler);
+        escMenuScreen = new EscapeMenuScreen(this, batch, shapeRenderer);
         setScreen(mainMenuScreen);
     }
 
     public Screen getCurrentScreen() {
         return currentScreen;
+    }
+
+    public Screen getPreviousScreen() {
+        return previousScreen;
     }
 
     public OrthographicCamera getCurrentScreenCamera() {
@@ -91,6 +99,19 @@ public class ScreenSwitch extends Game {
 
     public GameLoop getGameLoop() {
         return gameLoop;
+    }
+
+    @Override
+    public void render() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if (getScreen() != escMenuScreen) {
+                previousScreen = getScreen();
+                setScreen(escMenuScreen);
+            } else {
+                setScreen(previousScreen);
+            }
+        }
+        super.render();
     }
 
     @Override
@@ -124,6 +145,10 @@ public class ScreenSwitch extends Game {
 
     public Screen getMainMenuScreen() {
         return mainMenuScreen;
+    }
+
+    public Screen getSettingsScreen() {
+        return howToPlayScreen;
     }
 
     public void switchToHowToPlayScreen() {
