@@ -113,9 +113,10 @@ public class AsteroidHandler {
 
     public void splitAsteroid(Asteroid asteroid, List<Asteroid> asteroidsToAdd) {
         Vector2 asteroidPosition = asteroid.getPosition();
+        int asteroidType = asteroid.getAsteroidType();
         int newTierLevel = asteroid.getTierLevel();
         for (int i = 0; i < 2; i++) {
-            asteroidsToAdd.add(new Asteroid(asteroidPosition, newTierLevel, playerShip));
+            asteroidsToAdd.add(new Asteroid(asteroidPosition, newTierLevel, playerShip, asteroidType));
         }
     }
 
