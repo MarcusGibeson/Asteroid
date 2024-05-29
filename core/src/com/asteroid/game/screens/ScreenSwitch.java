@@ -115,38 +115,27 @@ public class ScreenSwitch extends Game {
 
     public void checkEscKeyPressed() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if(getScreen() == mainMenuScreen || getScreen() == gameOverScreen) {
-                return;
+            currentScreen = getScreen();
+
+            if (currentScreen instanceof MainMenuScreen || currentScreen instanceof GameOverScreen) {
+                return; //do nothing if on main menu or game over
             }
 
-            if(getScreen() == howToPlayScreen) {
-                if (previousScreen instanceof MainMenuScreen) {
-                    setScreen(previousScreen);
-                } else {
-                    setScreen(escMenuScreen);
+            if (currentScreen instanceof HowToPlayScreen) {
+                setScreen(previousScreen); //return to previous Screen (main menu)
+            } else if (currentScreen instanceof EscapeMenuScreen) {
+                if (savedScreen instanceof AsteroidXtreme) {
+                    ((AsteroidXtreme) savedScreen).resume();
                 }
-            }
-
-            previousScreen = getScreen();
-            if (getScreen() != escMenuScreen) {
-                previousScreen = getScreen();
-                savedScreen = getScreen();
+                setScreen(savedScreen); //return to game
+            } else {
+                //For any other screen, go to escape menu
+                previousScreen = currentScreen;
+                savedScreen = currentScreen;
                 if (previousScreen instanceof AsteroidXtreme) {
                     ((AsteroidXtreme) savedScreen).pause();
                 }
                 setScreen(escMenuScreen);
-            } else {
-                if (savedScreen != null) {
-                    if (savedScreen instanceof AsteroidXtreme) {
-                        ((AsteroidXtreme) savedScreen).resume();
-                    }
-                    setScreen(savedScreen);
-                } else {
-                    if (previousScreen instanceof AsteroidXtreme) {
-                        ((AsteroidXtreme) previousScreen).resume();
-                    }
-                    setScreen(previousScreen);
-                }
             }
         }
     }
