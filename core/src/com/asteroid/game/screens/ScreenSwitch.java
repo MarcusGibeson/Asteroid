@@ -118,7 +118,7 @@ public class ScreenSwitch extends Game {
             currentScreen = getScreen();
 
             if (currentScreen instanceof MainMenuScreen || currentScreen instanceof GameOverScreen) {
-                return; //do nothing if on main menu or game over
+                return; //do nothing if on main menu or game over --modify this for more screens that you don't want to have an effect on--
             }
 
             if (currentScreen instanceof HowToPlayScreen) {
