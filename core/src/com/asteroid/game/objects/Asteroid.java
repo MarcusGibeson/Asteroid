@@ -130,7 +130,7 @@ public class Asteroid {
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.polygon(polygonVertices);
-//        handleRotation(polygonVertices, position);
+//        handleRotation(polygonVertices, position); //this works but treat with caution, once a asteroid loops it bugs out
         shapeRenderer.circle(position.x, position.y, 10);
     }
 
