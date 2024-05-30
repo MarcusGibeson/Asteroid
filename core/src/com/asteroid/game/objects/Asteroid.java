@@ -122,6 +122,7 @@ public class Asteroid {
             polygonVertices[i] += velocity.x;
             polygonVertices[i + 1] += velocity.y;
         }
+        System.out.println(polygonVertices[0] + ", " + polygonVertices[1]);
 
         loopOffScreenMovement();
     }
@@ -129,6 +130,7 @@ public class Asteroid {
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.polygon(polygonVertices);
+//        handleRotation(polygonVertices, position);
         shapeRenderer.circle(position.x, position.y, 10);
     }
 
@@ -176,7 +178,7 @@ public class Asteroid {
         //changes position based on location so ship remains on screen
         if (position.x < 0) {
             position.x = Gdx.graphics.getWidth();
-        } else if (position.x > Gdx.graphics.getWidth() + width) {
+        } else if (position.x > Gdx.graphics.getWidth()) {
             position.x = 0; //moves ship to left side of screen if exits right
         }
         if (position.y < 0) {
@@ -288,4 +290,5 @@ public class Asteroid {
                 break;
         }
     }
+
 }
