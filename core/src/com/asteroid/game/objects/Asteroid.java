@@ -26,14 +26,14 @@ public class Asteroid {
     private int asteroidType;
     public float[] polygonVertices;
 
-    public static final float SMALL_ASTEROID_RADIUS = 20;
-    public static final float MEDIUM_ASTEROID_RADIUS = 80;
-    public static final float LARGE_ASTEROID_RADIUS = 160;
+//    public static final float SMALL_ASTEROID_RADIUS = 20;
+//    public static final float MEDIUM_ASTEROID_RADIUS = 80;
+//    public static final float LARGE_ASTEROID_RADIUS = 160;
+//
+//    private static final float SCREEN_HEIGHT = 720f;
+//    private static final float SCREEN_WIDTH = 1280f;
+//    private static final float MAX_SPEED = 5f;
     private float asteroidRadius;
-    private static final float SCREEN_HEIGHT = 720f;
-    private static final float SCREEN_WIDTH = 1280f;
-    private static final float MAX_SPEED = 5f;
-
     // Defining spawn node coordinates so they can easily be assigned
 
     public static final int[][] spawnCoordinates = {
