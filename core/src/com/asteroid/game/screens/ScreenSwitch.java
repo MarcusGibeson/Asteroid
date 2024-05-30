@@ -35,6 +35,7 @@ public class ScreenSwitch extends Game {
     private ShapeRenderer shapeRenderer;
     private Sound backgroundMusic;
     private List<PowerUp> powerUps;
+    private List<PowerUp> allPowerUps;
     private UFOHandler ufoHandler;
     private HowToPlayScreen howToPlayScreen;
     private Screen currentScreen;
@@ -56,17 +57,27 @@ public class ScreenSwitch extends Game {
         ufoHandler = new UFOHandler(ship, shapeRenderer);
         stageManager = new StageManager(asteroidHandler, ufoHandler, ship);
         powerUps = new ArrayList<>();
+        allPowerUps = new ArrayList<>();
+        createAllPowerUpsList();
 
         asteroidXtreme = new AsteroidXtreme(this, batch, collisionHandler, ship, ufoHandler, asteroidHandler, stageManager, shapeRenderer, powerUps);
         gameLoop = new GameLoop(this, batch, asteroidXtreme, collisionHandler, ship, ufoHandler, asteroidHandler, stageManager);
         backgroundMusic = Gdx.audio.newSound(Gdx.files.internal("Audio/BackgroundGameMusic.mp3"));
         mainMenuScreen = new MainMenuScreen(this, batch);
-        howToPlayScreen = new HowToPlayScreen(this, shapeRenderer, batch, powerUps);
+        howToPlayScreen = new HowToPlayScreen(this, shapeRenderer, batch, allPowerUps);
         gameOverScreen = new GameOverScreen(this, batch, scoreHandler);
         escMenuScreen = new EscapeMenuScreen(this, batch, shapeRenderer);
         previousScreen = mainMenuScreen;
         setScreen(mainMenuScreen);
 
+    }
+
+    private void createAllPowerUpsList() {
+        for (PowerUp.Type type : PowerUp.Type.values()) {
+            PowerUp powerUp = new PowerUp();
+            powerUp.setType(type);
+            allPowerUps.add(powerUp);
+        }
     }
 
     public Screen getCurrentScreen() {
@@ -186,7 +197,7 @@ public class ScreenSwitch extends Game {
     public void switchToHowToPlayScreen() {
         previousScreen = getScreen();
         savedScreen = mainMenuScreen;
-        setScreen(new HowToPlayScreen((ScreenSwitch) Gdx.app.getApplicationListener(), shapeRenderer, batch, powerUps));
+        setScreen(new HowToPlayScreen((ScreenSwitch) Gdx.app.getApplicationListener(), shapeRenderer, batch, allPowerUps));
     }
 
     public void switchToGameOver(){

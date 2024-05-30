@@ -34,12 +34,31 @@ public class PowerUp {
         this.isTouchingShip = false;
     }
 
+    public PowerUp(Type type) {
+        this.type = type;
+        this.position = new Vector2(0,0);
+        this.isTouchingShip = false;
+        //region Defining vertices and values for custom powerup decals
+        shieldVertices = new float[] {
+                position.x + 20, position.y + 5, //bottom of shield
+                position.x + 5, position.y + 15, //bottom left
+                position.x + 5, position.y + 35, //top left
+                position.x + 20, position.y + 30, //top middle (the dip)
+                position.x + 35, position.y + 35, //top right
+                position.x + 35, position.y + 15 //bottom right
+        };
+        //endregion
+    }
+
     public Type getType() {return type;}
     public void setType(Type type) {this.type = type;}
     public float getEffectDuration() {return EFFECT_DURATION;}
     public void setTouchingShip(boolean touchingShip) {isTouchingShip = touchingShip;}
     public boolean isTouchingShip() {return isTouchingShip;}
     public float getSpawnCooldown() {return SPAWN_COOLDOWN;}
+    public void setPosition(float x, float y) {
+        position.set(x,y);
+    }
 
     public void setRandomType(){
         this.type = Type.values()[MathUtils.random(Type.values().length - 1)];
