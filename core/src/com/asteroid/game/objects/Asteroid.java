@@ -125,6 +125,7 @@ public class Asteroid {
         System.out.println(polygonVertices[0] + ", " + polygonVertices[1]);
 
         loopOffScreenMovement();
+//        updatePolygonVertices();
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -185,6 +186,25 @@ public class Asteroid {
             position.y = Gdx.graphics.getHeight(); //moves ship to top side of screen if exits bottom
         } else if (position.y > Gdx.graphics.getHeight()){
             position.y = 0; //moves ship to bottom of screen if exits top
+        }
+    }
+
+    private void updatePolygonVertices() {
+        // Wrap vertices around the screen if they go out of bounds
+        for (int i = 0; i < polygonVertices.length; i += 2) {
+            // Update x-coordinate
+            if (polygonVertices[i] < 0) {
+                polygonVertices[i] += Gdx.graphics.getWidth();
+            } else if (polygonVertices[i] > Gdx.graphics.getWidth()) {
+                polygonVertices[i] -= Gdx.graphics.getWidth();
+            }
+
+            // Update y-coordinate
+            if (polygonVertices[i + 1] < 0) {
+                polygonVertices[i + 1] += Gdx.graphics.getHeight();
+            } else if (polygonVertices[i + 1] > Gdx.graphics.getHeight()) {
+                polygonVertices[i + 1] -= Gdx.graphics.getHeight();
+            }
         }
     }
 
