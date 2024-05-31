@@ -73,7 +73,7 @@ public class Asteroid {
         asteroidType = MathUtils.random(1,3);
         assignPolygonVertices(asteroidType);
         this.rotationAngle = 0;
-        this.rotationSpeed = MathUtils.random(-200f, 200f);
+
     }
 
     //Constructor for child/sibling asteroids
@@ -234,6 +234,7 @@ public class Asteroid {
                 tierLevel = 1;
 //                asteroidRadius = SMALL_ASTER  OID_RADIUS;
                 asteroidMultiplier = 1;
+                rotationSpeed = MathUtils.random(-200f, 200f);
                 break;
             case 2: //Medium asteroid
                 height = 160;
@@ -242,6 +243,7 @@ public class Asteroid {
                 tierLevel = 2;
 //                asteroidRadius = MEDIUM_ASTEROID_RADIUS;
                 asteroidMultiplier = 4;
+                rotationSpeed = MathUtils.random(-100f, 100f);
                 break;
             case 3: //Large asteroid
                 height = 320;
@@ -250,6 +252,7 @@ public class Asteroid {
                 tierLevel = 3;
 //                asteroidRadius = LARGE_ASTEROID_RADIUS;
                 asteroidMultiplier = 8;
+                rotationSpeed = MathUtils.random(-50f, 50f);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tier value: " + tier);
