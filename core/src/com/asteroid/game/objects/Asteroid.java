@@ -125,14 +125,51 @@ public class Asteroid {
         System.out.println(polygonVertices[0] + ", " + polygonVertices[1]);
 
         loopOffScreenMovement();
-//        updatePolygonVertices();
+        updatePolygonVertices();
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.WHITE);
+
+        // Draw the main polygon
         shapeRenderer.polygon(polygonVertices);
-//        handleRotation(polygonVertices, position); //this works but treat with caution, once a asteroid loops it bugs out
-        shapeRenderer.circle(position.x, position.y, 10);
+
+        // Draw wrapped polygons if close to the screen edges
+        if (position.x < asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, SCREEN_WIDTH, 0);
+        }
+        if (position.x > SCREEN_WIDTH - asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, -SCREEN_WIDTH, 0);
+        }
+        if (position.y < asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, 0, SCREEN_HEIGHT);
+        }
+        if (position.y > SCREEN_HEIGHT - asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, 0, -SCREEN_HEIGHT);
+        }
+
+        // Handle corner cases
+        if (position.x < asteroidRadius && position.y < asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+        }
+        if (position.x < asteroidRadius && position.y > SCREEN_HEIGHT - asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, SCREEN_WIDTH, -SCREEN_HEIGHT);
+        }
+        if (position.x > SCREEN_WIDTH - asteroidRadius && position.y < asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, -SCREEN_WIDTH, SCREEN_HEIGHT);
+        }
+        if (position.x > SCREEN_WIDTH - asteroidRadius && position.y > SCREEN_HEIGHT - asteroidRadius) {
+            drawWrappedPolygon(shapeRenderer, -SCREEN_WIDTH, -SCREEN_HEIGHT);
+        }
+    }
+
+    private void drawWrappedPolygon(ShapeRenderer shapeRenderer, float offsetX, float offsetY) {
+        float[] wrappedVertices = new float[polygonVertices.length];
+        for (int i = 0; i < polygonVertices.length; i += 2) {
+            wrappedVertices[i] = polygonVertices[i] + offsetX;
+            wrappedVertices[i + 1] = polygonVertices[i + 1] + offsetY;
+        }
+        shapeRenderer.polygon(wrappedVertices);
     }
 
     public void assignTierParameters(int tier){
@@ -176,19 +213,17 @@ public class Asteroid {
 
     //yes I did just copy your loop method from player class lol
     public void loopOffScreenMovement() {
-        //changes position based on location so ship remains on screen
-        if (position.x < 0) {
-            position.x = Gdx.graphics.getWidth();
-        } else if (position.x > Gdx.graphics.getWidth()) {
-            position.x = 0; //moves ship to left side of screen if exits right
+        if (position.x < -asteroidRadius) {
+            position.x = SCREEN_WIDTH + asteroidRadius;
+        } else if (position.x > SCREEN_WIDTH + asteroidRadius) {
+            position.x = -asteroidRadius;
         }
-        if (position.y < 0) {
-            position.y = Gdx.graphics.getHeight(); //moves ship to top side of screen if exits bottom
-        } else if (position.y > Gdx.graphics.getHeight()){
-            position.y = 0; //moves ship to bottom of screen if exits top
+        if (position.y < -asteroidRadius) {
+            position.y = SCREEN_HEIGHT + asteroidRadius;
+        } else if (position.y > SCREEN_HEIGHT + asteroidRadius) {
+            position.y = -asteroidRadius;
         }
     }
-
     private void updatePolygonVertices() {
         // Wrap vertices around the screen if they go out of bounds
         for (int i = 0; i < polygonVertices.length; i += 2) {
