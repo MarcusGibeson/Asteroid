@@ -25,6 +25,8 @@ public class Asteroid {
     private float asteroidMultiplier;
     private int asteroidType;
     public float[] polygonVertices;
+    private float rotationAngle;
+    private float rotationSpeed;
 
     public static final float SMALL_ASTEROID_RADIUS = 20;
     public static final float MEDIUM_ASTEROID_RADIUS = 80;
@@ -70,6 +72,8 @@ public class Asteroid {
         toRemove = false;
         asteroidType = MathUtils.random(1,3);
         assignPolygonVertices(asteroidType);
+        this.rotationAngle = 0;
+        this.rotationSpeed = MathUtils.random(-200f, 200f);
     }
 
     //Constructor for child/sibling asteroids
@@ -86,6 +90,8 @@ public class Asteroid {
         asteroidType = parentType;
         toRemove = false;
         assignPolygonVertices(asteroidType);
+        this.rotationAngle = 0;
+        this.rotationSpeed = MathUtils.random(-200f,200f);
     }
 
     //region **GETTERS AND SETTERS**
@@ -116,6 +122,8 @@ public class Asteroid {
     public void update(float delta) {
         position.x += velocity.x;
         position.y += velocity.y;
+
+        rotationAngle += rotationSpeed * delta;
 
         loopOffScreenMovement();
 
@@ -179,8 +187,16 @@ public class Asteroid {
         float[] baseVertices = getBaseVerticesForAsteroidType(asteroidType);
 
         for (int i = 0; i < baseVertices.length; i += 2) {
-            polygonVertices[i] = centerX + baseVertices[i] * asteroidMultiplier;
-            polygonVertices[i + 1] = centerY + baseVertices[i + 1] * asteroidMultiplier;
+            float x = baseVertices[i] * asteroidMultiplier;
+            float y = baseVertices[i + 1] * asteroidMultiplier;
+
+            //Apply rotation transformation
+            float rotatedX = x * MathUtils.cosDeg(rotationAngle) - y * MathUtils.sinDeg(rotationAngle);
+            float rotatedY = x * MathUtils.sinDeg(rotationAngle) + y * MathUtils.cosDeg(rotationAngle);
+
+
+            polygonVertices[i] = centerX + rotatedX;
+            polygonVertices[i + 1] = centerY + rotatedY;
         }
     }
 
@@ -216,7 +232,7 @@ public class Asteroid {
                 width = 40;
                 setVelocity(new Vector2(randomNonZeroValue(-4, 4), randomNonZeroValue(-4,4)));
                 tierLevel = 1;
-//                asteroidRadius = SMALL_ASTEROID_RADIUS;
+//                asteroidRadius = SMALL_ASTER  OID_RADIUS;
                 asteroidMultiplier = 1;
                 break;
             case 2: //Medium asteroid
