@@ -117,7 +117,6 @@ public class Asteroid {
         position.x += velocity.x;
         position.y += velocity.y;
 
-
         loopOffScreenMovement();
 
         // Update polygon vertices based on the new position
@@ -129,7 +128,6 @@ public class Asteroid {
 
         // Draw the main polygon
         shapeRenderer.polygon(polygonVertices);
-
 
         // Draw wrapped polygons if close to the screen edges
         drawWrappedPolygons(shapeRenderer);
