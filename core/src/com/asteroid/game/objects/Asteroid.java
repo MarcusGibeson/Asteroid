@@ -117,14 +117,10 @@ public class Asteroid {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        // Update polygon vertices based on the new position
-        for (int i = 0; i < polygonVertices.length; i += 2) {
-            polygonVertices[i] += velocity.x;
-            polygonVertices[i + 1] += velocity.y;
-        }
-        System.out.println(polygonVertices[0] + ", " + polygonVertices[1]);
 
         loopOffScreenMovement();
+
+        // Update polygon vertices based on the new position
         updatePolygonVertices();
     }
 
@@ -134,7 +130,12 @@ public class Asteroid {
         // Draw the main polygon
         shapeRenderer.polygon(polygonVertices);
 
+
         // Draw wrapped polygons if close to the screen edges
+        drawWrappedPolygons(shapeRenderer);
+    }
+
+    private void drawWrappedPolygons(ShapeRenderer shapeRenderer) {
         if (position.x < asteroidRadius) {
             drawWrappedPolygon(shapeRenderer, SCREEN_WIDTH, 0);
         }
@@ -171,6 +172,44 @@ public class Asteroid {
         }
         shapeRenderer.polygon(wrappedVertices);
     }
+
+    private void updatePolygonVertices() {
+        // Calculate the updated vertices positions based on the current position
+        float centerX = position.x;
+        float centerY = position.y;
+
+        float[] baseVertices = getBaseVerticesForAsteroidType(asteroidType);
+
+        for (int i = 0; i < baseVertices.length; i += 2) {
+            polygonVertices[i] = centerX + baseVertices[i] * asteroidMultiplier;
+            polygonVertices[i + 1] = centerY + baseVertices[i + 1] * asteroidMultiplier;
+        }
+    }
+
+    private float[] getBaseVerticesForAsteroidType(int type) {
+        switch (type) {
+            case 1:
+                return new float[] {
+                        -20, -7, -11, -11, -9, -20, 11, -20,
+                        12, -11, 20, -6, 20, 7, 13, 12,
+                        11, 20, -10, 19, -12, 13, -20, 11
+                };
+            case 2:
+                return new float[] {
+                        -20, -7, -10, -8, -11, -20, 11, -20,
+                        10, -8, 20, -7, 19, 9, 12, 20,
+                        -12, 20, -19, 9
+                };
+            case 3:
+                return new float[] {
+                        -20, -20, 0, -7, 20, -20, 20, 3,
+                        0, 20, -20, 4
+                };
+            default:
+                throw new IllegalArgumentException("Invalid asteroid type: " + type);
+        }
+    }
+
 
     public void assignTierParameters(int tier){
         switch(tier){
@@ -224,24 +263,7 @@ public class Asteroid {
             position.y = -asteroidRadius;
         }
     }
-    private void updatePolygonVertices() {
-        // Wrap vertices around the screen if they go out of bounds
-        for (int i = 0; i < polygonVertices.length; i += 2) {
-            // Update x-coordinate
-            if (polygonVertices[i] < 0) {
-                polygonVertices[i] += Gdx.graphics.getWidth();
-            } else if (polygonVertices[i] > Gdx.graphics.getWidth()) {
-                polygonVertices[i] -= Gdx.graphics.getWidth();
-            }
 
-            // Update y-coordinate
-            if (polygonVertices[i + 1] < 0) {
-                polygonVertices[i + 1] += Gdx.graphics.getHeight();
-            } else if (polygonVertices[i + 1] > Gdx.graphics.getHeight()) {
-                polygonVertices[i + 1] -= Gdx.graphics.getHeight();
-            }
-        }
-    }
 
     public void detectCollision(){
         List<Bullet> bullets = playerShip.getBullets();
