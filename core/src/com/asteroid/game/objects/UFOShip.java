@@ -60,19 +60,43 @@ public class UFOShip {
     }
 
     public void update(float delta) {
+
         if (!isDestroyed) {
+            checkOutOfBounds();
             //Update position of the UFO based on its velocity
             position.x += velocity.x * delta;
             position.y += velocity.y * delta;
 
             shootTimer += delta;
-            if (!playerShip.isPlayerDead()) {
+            if (!playerShip.isPlayerDead() && !isDestroyed) {
                 if (shootTimer >= SHOOT_INTERVAL) {
                     shoot();
                     bulletUFO.play();
                     shootTimer = 0;
                 }
             }
+        } else if (isWaitingToRespawn) {
+            // Respawn logic
+            respawnTimer += delta;
+            if (respawnTimer >= RESPAWN_DELAY) {
+                respawn();
+            }
+        }
+    }
+
+    private void respawn() {
+        isDestroyed = false;
+        isWaitingToRespawn = false;
+        respawnTimer = 0;
+
+        // Set new random position and velocity
+        position.set(MathUtils.random(Gdx.graphics.getWidth()), MathUtils.random(Gdx.graphics.getHeight()));
+        velocity.set(MathUtils.random(-speed, speed), MathUtils.random(-speed, speed));
+    }
+
+    public void checkOutOfBounds() {
+        if (position.x < 0 || position.x > Gdx.graphics.getWidth() || position.y < 0 || position.y > Gdx.graphics.getHeight()) {
+            setDestroyed(true);
         }
     }
 
@@ -124,10 +148,6 @@ public class UFOShip {
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             bullet.update(delta);
-            if (bullet.getPosition().x < 0 || bullet.getPosition().x > Gdx.graphics.getWidth() || bullet.getPosition().y < 0 || bullet.getPosition().y > Gdx.graphics.getHeight()) {
-                //remove bullets that go out of bounds
-                bullets.remove(i);
-            }
         }
     }
 
@@ -141,7 +161,7 @@ public class UFOShip {
         //Calculate direction towards player ship
         Vector2 direction = new Vector2(playerShip.getPosition()).sub(position).nor();
         // Create a new bullet
-        Bullet bullet = new Bullet(new Vector2(position), direction, Bullet.BULLET_SPEED, Bullet.BULLET_RADIUS, Color.RED);
+        Bullet bullet = new Bullet(new Vector2(position), direction, Bullet.BULLET_SPEED, Bullet.BULLET_RADIUS, Color.RED, false);
         bullets.add(bullet);
 
     }
@@ -150,20 +170,15 @@ public class UFOShip {
     public void destroy() {
         ufoExplosion.play();
         isDestroyed = true;
-
+        isWaitingToRespawn = true;
+        respawnTimer = 0;
     }
+
+
     public boolean isDestroyed() {
         return isDestroyed;
     }
     //Movement function
-
-
-
-
-
-
-
-
 
 
     //getters and setters
@@ -181,12 +196,6 @@ public class UFOShip {
         this.velocity = velocity;
     }
 
-    public float getRotation() {
-        return rotation;
-    }
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
-    }
 
     public List<Bullet> getBullets() {
         return bullets;

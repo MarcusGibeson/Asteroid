@@ -384,7 +384,7 @@ public class PlayerShip {
                 case RAPID_FIRE: //rapidly shooting bullets
                     //setting the shot cooldown to about 60% faster
                     setShotCooldown(0.1f);
-                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE, true));
                     shootingSound.play();
                     break;
                 case PULSE_SHOT: //shooting bullets in sets of three
@@ -395,7 +395,7 @@ public class PlayerShip {
                     setShotCooldown(waveCooldown);
                     for (int i = -5; i < 5; i++){
                         Vector2 newBulletDirection = new Vector2(MathUtils.cosDeg(rotation + i * 4), MathUtils.sinDeg(rotation + i * 4));
-                        bullets.add(new Bullet(new Vector2(position), newBulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                        bullets.add(new Bullet(new Vector2(position), newBulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE, true));
                         shootingSound.play();
                     }
                     break;
@@ -423,7 +423,8 @@ public class PlayerShip {
                             baseDirection, // Same direction for all bullets
                             BULLET_SPEED,
                             BULLET_RADIUS,
-                            Color.WHITE
+                            Color.WHITE,
+                            true
                     ));
 
                     // Create the left bullet with the calculated offset
@@ -432,7 +433,8 @@ public class PlayerShip {
                             baseDirection, // Same direction for all bullets
                             BULLET_SPEED,
                             BULLET_RADIUS,
-                            Color.WHITE
+                            Color.WHITE,
+                            true
                     ));
 
                     // Create the right bullet with the calculated offset
@@ -441,7 +443,8 @@ public class PlayerShip {
                             baseDirection, // Same direction for all bullets
                             BULLET_SPEED,
                             BULLET_RADIUS,
-                            Color.WHITE
+                            Color.WHITE,
+                            true
                     ));
                     shootingSound.play();
                     break;
@@ -449,7 +452,7 @@ public class PlayerShip {
                 default: //in case the bad juju happens //the invuln shield is hitting this as well
                     setShotCooldown(0.25f);
                     System.out.println("you shouldn't be seeing this message anyways but hey debug is a thing");
-                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE, true));
 
                     shootingSound.play();
                     break;
@@ -457,7 +460,7 @@ public class PlayerShip {
         } else {
             setShotCooldown(0.25f);
             Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
-            Bullet newBullet = new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE);
+            Bullet newBullet = new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE, true);
             bullets.add(newBullet);
 
             shootingSound.play();
@@ -490,7 +493,7 @@ public class PlayerShip {
                 // Perform action every 0.05 seconds
                 if(pulseCount < 3) {
                     Vector2 bulletDirection = new Vector2(MathUtils.cosDeg(rotation), MathUtils.sinDeg(rotation));
-                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE));
+                    bullets.add(new Bullet(new Vector2(position), bulletDirection, BULLET_SPEED, BULLET_RADIUS, Color.WHITE, true));
                     shootingSound.play();
                     System.out.println("Performing action " + (pulseCount + 1));
                     pulseCount++;

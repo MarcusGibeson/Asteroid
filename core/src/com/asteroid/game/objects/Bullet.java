@@ -20,13 +20,15 @@ public class Bullet {
     private float lifespanTimer;
 
     private Vector2 initialVelocity;
+    private boolean isPlayerBullet;
 
-    public Bullet(Vector2 position, Vector2 direction, float speed, float radius, Color color)  {
+    public Bullet(Vector2 position, Vector2 direction, float speed, float radius, Color color, boolean isPlayerBullet)  {
         this.position = new Vector2(position);
         this.velocity = new Vector2(direction.nor().scl(speed)); //Normalize direction and scale by speed
         this.radius = radius;
         this.color = color;
         this.lifespanTimer = BULLET_LIFESPAN;
+        this.isPlayerBullet = isPlayerBullet;
     }
 
     public Vector2 getPosition() {
@@ -44,7 +46,12 @@ public class Bullet {
         position.add(velocity.x * delta, velocity.y * delta); // Update position based on velocity
 
         lifespanTimer -= delta;
-        handleScreenWrapping();
+        if (isPlayerBullet) {
+            handleScreenWrapping();
+        } else {
+            checkOutOfBounds();
+        }
+
     }
 
     public void draw(ShapeRenderer shapeRenderer) {
@@ -64,6 +71,12 @@ public class Bullet {
             position.y = Gdx.graphics.getHeight();
         } else if (position.y > Gdx.graphics.getHeight()) {
             position.y = 0;
+        }
+    }
+
+    private void checkOutOfBounds() {
+        if (position.x < 0 || position.x > Gdx.graphics.getWidth() || position.y < 0 || position.y > Gdx.graphics.getHeight()) {
+            lifespanTimer = 0;
         }
     }
 
