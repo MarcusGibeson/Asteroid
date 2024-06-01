@@ -38,7 +38,6 @@ public class CollisionHandler {
                 }
             }
             asteroidHandler.removeMarkedAsteroids(asteroids);
-            //asdasd
         }
 
         //Boss asteroid getting shot by player ship bullet
