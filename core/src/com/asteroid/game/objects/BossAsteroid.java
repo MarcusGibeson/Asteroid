@@ -31,7 +31,7 @@ public class BossAsteroid extends Asteroid {
 
 
     public BossAsteroid(Vector2 position, int tierLevel, PlayerShip playerShip, int maxHealth) {
-        super(position, tierLevel, playerShip, 4);
+        super(position, tierLevel, playerShip, 3);
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.comets = new ArrayList<>();
