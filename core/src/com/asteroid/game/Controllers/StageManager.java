@@ -114,7 +114,7 @@ public class StageManager {
             return 3;
         } else if (stageIndex > 10) {
             return 2;
-        } else if (stageIndex > 0) {
+        } else if (stageIndex > 5) {
             return 1;
         } else {
             return 0;
