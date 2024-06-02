@@ -7,7 +7,9 @@ import static com.asteroid.game.objects.Comet.COMET_RADIUS;
 import com.asteroid.game.objects.*;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -435,14 +437,17 @@ public class CollisionHandler {
     }
 
     //check collision between Asteroids
+
     public static boolean checkAsteroidCollisionWithAnotherAsteroid(AsteroidHandler asteroidHandler) {
         List<Asteroid> asteroids = asteroidHandler.getAsteroids();
-        for (Asteroid asteroid1 : asteroids) {
-            for (Asteroid asteroid2 : asteroids) {
-                Circle asteroid1Circle = new Circle(asteroid1.getPosition(), asteroid1.getRadius());
-                Circle asteroid2Circle = new Circle(asteroid2.getPosition(), asteroid2.getRadius());
-                if (Intersector.overlaps(asteroid1Circle, asteroid2Circle)) {
-                    //collision detected
+        for (int i = 0; i < asteroids.size(); i++) {
+            Asteroid asteroid1 = asteroids.get(i);
+            Polygon asteroidPolygon1 = asteroid1.getPolygon();
+            for (int j = i + 1; j < asteroids.size(); j++) {
+                Asteroid asteroid2 = asteroids.get(j);
+                Polygon asteroidPolygon2 = asteroid2.getPolygon();
+                if (Intersector.overlapConvexPolygons(asteroidPolygon1, asteroidPolygon2)) {
+                    // collision detected
                     return true;
                 }
             }
@@ -471,13 +476,14 @@ public class CollisionHandler {
     //check collision between a kill aura circle and asteroids
     public static boolean checkKillAuraCollisionsWithAsteroids(PlayerShip playerShip, AsteroidHandler asteroidHandler){
         Circle killAuraCircle = playerShip.getKillAuraCircle();
-        List<Asteroid> asteroidList = asteroidHandler.getAsteroids();
+        List<Asteroid> asteroids = asteroidHandler.getAsteroids();
 
         if (playerShip.getCurrentPowerUpType() != null){
             if (playerShip.getCurrentPowerUpType() == PowerUp.Type.KILL_AURA){
-                for (Asteroid asteroid : asteroidList){
-                    Circle asteroidCircle = new Circle(asteroid.getPosition(), asteroid.getRadius());
-                    if(Intersector.overlaps(asteroidCircle, killAuraCircle)) {
+                for (int i = 0; i < asteroids.size(); i++) {
+                    Asteroid asteroid1 = asteroids.get(i);
+                    Polygon asteroidPolygon1 = asteroid1.getPolygon();
+                    if(overlapPolygonCricle(asteroidPolygon1, killAuraCircle)) {
                         //collision detected
                         return true;
                     }
@@ -505,4 +511,35 @@ public class CollisionHandler {
         return false;
     }
 
+
+    private static boolean overlapPolygonCricle(Polygon polygon, Circle circle) {
+        //Get vertices of polygon
+        float [] vertices = polygon.getTransformedVertices();
+        Vector2 center = new Vector2(circle.x, circle.y);
+        float squareRadius = circle.radius * circle.radius;
+
+        //Check if any of the vertices are inside the circle
+        for (int i = 0; i < vertices.length; i += 2) {
+            Vector2 vertex = new Vector2(vertices[i], vertices[i+1]);
+            if (vertex.dst2(center) < squareRadius) {
+                return true;
+            }
+        }
+
+        //Check if any of the edges are overlapping with the circle
+        for (int i = 0; i < vertices.length; i += 2) {
+            Vector2 start = new Vector2(vertices[i], vertices[i+1]);
+            Vector2 end = new Vector2(vertices[(i + 2) % vertices.length], vertices[(i + 3) % vertices.length]);
+            if (Intersector.intersectSegmentCircle(start, end, center, circle.radius * circle.radius)) {
+                return true;
+            }
+        }
+
+        //Check if the center of the circle is inside the polygon
+        if (polygon.contains(circle.x, circle.y)) {
+            return true;
+        }
+
+        return false;
+    }
 }
