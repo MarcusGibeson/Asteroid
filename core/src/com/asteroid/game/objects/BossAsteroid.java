@@ -5,6 +5,7 @@ import static com.asteroid.game.objects.Comet.COMET_SPEED;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -66,6 +67,16 @@ public class BossAsteroid extends Asteroid {
                 shootComet();
             }
         }
+    }
+
+
+    public Polygon getPolygon() {
+        Vector2 position = getPosition();
+        float[] vertices = getVerticesForType(asteroidType);
+        Polygon polygon = new Polygon(vertices);
+        polygon.setPosition(position.x, position.y);
+        polygon.setRotation(getRotation());
+        return polygon;
     }
 
     public int getCurrentHealth() {
@@ -198,6 +209,32 @@ public class BossAsteroid extends Asteroid {
 
         updatePolygonVertices();
     }
+
+
+    private float[] getVerticesForType(int type) {
+        switch (type) {
+            case 1:
+                return new float[] {
+                        -20, -7, -11, -11, -9, -20, 11, -20,
+                        12, -11, 20, -6, 20, 7, 13, 12,
+                        11, 20, -10, 19, -12, 13, -20, 11
+                };
+            case 2:
+                return new float[] {
+                        -20, -7, -10, -8, -11, -20, 11, -20,
+                        10, -8, 20, -7, 19, 9, 12, 20,
+                        -12, 20, -19, 9
+                };
+            case 3:
+                return new float[] {
+                        -20, -20, 0, -7, 20, -20, 20, 3,
+                        0, 20, -20, 4
+                };
+            default:
+                throw new IllegalArgumentException("Invalid asteroid type: " + type);
+        }
+    }
+
 
     private void updatePolygonVertices() {
         // Calculate the updated vertices positions based on the current position
