@@ -232,7 +232,7 @@ public class Asteroid {
                 width = 40;
                 setVelocity(new Vector2(randomNonZeroValue(-4, 4), randomNonZeroValue(-4,4)));
                 tierLevel = 1;
-//                asteroidRadius = SMALL_ASTER  OID_RADIUS;
+//                asteroidRadius = SMALL_ASTEROID_RADIUS;
                 asteroidMultiplier = 1;
                 rotationSpeed = MathUtils.random(-200f, 200f);
                 break;
@@ -251,7 +251,7 @@ public class Asteroid {
                 setVelocity(new Vector2(randomNonZeroValue(-1,1), randomNonZeroValue(-1,1)));
                 tierLevel = 3;
 //                asteroidRadius = LARGE_ASTEROID_RADIUS;
-                asteroidMultiplier = 8;
+                asteroidMultiplier = 6;
                 rotationSpeed = MathUtils.random(-50f, 50f);
                 break;
             default:

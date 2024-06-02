@@ -4,6 +4,7 @@ import static com.asteroid.game.objects.Comet.COMET_SPEED;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -29,6 +30,12 @@ public class BossAsteroid extends Asteroid {
     private int currentHealth;
     private boolean isDestroyed;
 
+    public float[] polygonVertices;
+    private float rotationAngle;
+    private float rotationSpeed;
+    private float asteroidMultiplier;
+    private int asteroidType;
+
 
     public BossAsteroid(Vector2 position, int tierLevel, PlayerShip playerShip, int maxHealth) {
         super(position, tierLevel, playerShip, 3);
@@ -37,11 +44,21 @@ public class BossAsteroid extends Asteroid {
         this.comets = new ArrayList<>();
         this.isDestroyed = false;
         toRemove = false;
+
+        this.rotationAngle = 0;
+        this.rotationSpeed = MathUtils.random(-50f, 50f);
+        this.asteroidMultiplier = 6;
+        this.asteroidType = MathUtils.random(1, 3);
+        assignBossPolygonVertices(asteroidType);
     }
 
     public void update(float delta) {
         if(!isDestroyed) {
             super.update(delta);
+            updatePolygonVertices();
+            rotationAngle += rotationSpeed * delta;
+
+
             //Update time since last comet
             timeSinceLastComet += delta;
             //Check if the boss should shoot a comet based on range and delay
@@ -127,11 +144,11 @@ public class BossAsteroid extends Asteroid {
             //Draw boss asteroid with glow effect
             shapeRenderer.setColor(Color.RED);
             shapeRenderer.set(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.circle(getPosition().x, getPosition().y, width / 2 + 5);
+            shapeRenderer.polygon(polygonVertices);
 
             //Draw boss asteroid
             shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.circle(getPosition().x, getPosition().y, width / 2);
+            shapeRenderer.polygon(polygonVertices);
 
             //Draw the health bar
             shapeRenderer.setColor(Color.GREEN);
@@ -144,6 +161,86 @@ public class BossAsteroid extends Asteroid {
     public void drawComets(ShapeRenderer shapeRenderer) {
         for (Comet comet : comets) {
             comet.draw(shapeRenderer);
+        }
+    }
+
+    // Assign polygon vertices based on the boss asteroid's shape
+    public void assignBossPolygonVertices(int asteroidType) {
+        switch (asteroidType) {
+            case 1:
+                polygonVertices = new float[] {
+                        -40, -14, -22, -22, -18, -40, 22, -40,
+                        24, -22, 40, -12, 40, 14, 26, 24,
+                        22, 40, -20, 38, -24, 26, -40, 22
+                };
+                break;
+            case 2:
+                polygonVertices = new float[] {
+                        -40, -14, -20, -16, -22, -40, 22, -40,
+                        20, -16, 40, -14, 38, 18, 24, 40,
+                        -24, 40, -38, 18
+                };
+                break;
+            case 3:
+                polygonVertices = new float[] {
+                        -40, -40, 0, -14, 40, -40, 40, 6,
+                        0, 40, -40, 8
+                };
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid asteroid type: " + asteroidType);
+        }
+
+        // Scale vertices
+        for (int i = 0; i < polygonVertices.length; i++) {
+            polygonVertices[i] *= asteroidMultiplier;
+        }
+
+        updatePolygonVertices();
+    }
+
+    private void updatePolygonVertices() {
+        // Calculate the updated vertices positions based on the current position
+        float centerX = position.x;
+        float centerY = position.y;
+
+        float[] baseVertices = getBaseVerticesForAsteroidType(asteroidType);
+
+        for (int i = 0; i < baseVertices.length; i += 2) {
+            float x = baseVertices[i] * asteroidMultiplier;
+            float y = baseVertices[i + 1] * asteroidMultiplier;
+
+            //Apply rotation transformation
+            float rotatedX = x * MathUtils.cosDeg(rotationAngle) - y * MathUtils.sinDeg(rotationAngle);
+            float rotatedY = x * MathUtils.sinDeg(rotationAngle) + y * MathUtils.cosDeg(rotationAngle);
+
+
+            polygonVertices[i] = centerX + rotatedX;
+            polygonVertices[i + 1] = centerY + rotatedY;
+        }
+    }
+
+    private float[] getBaseVerticesForAsteroidType(int type) {
+        switch (type) {
+            case 1:
+                return new float[] {
+                        -20, -7, -11, -11, -9, -20, 11, -20,
+                        12, -11, 20, -6, 20, 7, 13, 12,
+                        11, 20, -10, 19, -12, 13, -20, 11
+                };
+            case 2:
+                return new float[] {
+                        -20, -7, -10, -8, -11, -20, 11, -20,
+                        10, -8, 20, -7, 19, 9, 12, 20,
+                        -12, 20, -19, 9
+                };
+            case 3:
+                return new float[] {
+                        -20, -20, 0, -7, 20, -20, 20, 3,
+                        0, 20, -20, 4
+                };
+            default:
+                throw new IllegalArgumentException("Invalid asteroid type: " + type);
         }
     }
 

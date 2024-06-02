@@ -104,7 +104,7 @@ public class StageManager {
         } else if (stageIndex % 7 == 0) {
             return 1;
         } else {
-            return 0;
+            return 1;
         }
     }
     private int determineUFOCount(int stageIndex) {
