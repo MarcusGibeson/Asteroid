@@ -334,6 +334,11 @@ public class Asteroid {
         }
     }
 
+    public void collision() {
+        hitByBullet = true;
+
+    }
+
     private boolean intersects(Vector2 bulletPosition){
         // Calculate distance between bullet and asteroid center
         float distance = position.dst(bulletPosition);

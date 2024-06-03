@@ -42,6 +42,25 @@ public class CollisionHandler {
             asteroidHandler.removeMarkedAsteroids(asteroids);
         }
 
+        //Asteroid getting shot by player ship bullet **this is actually being handled in AsteroidHandler***
+        if(checkPlayerShipBulletBossAsteroidCollision(playerShip, asteroidHandler)) {
+            List<Bullet> playerShipBullets = playerShip.getBullets();
+            List<Asteroid> asteroids = asteroidHandler.getAsteroids();
+            for (int i = 0; i < asteroids.size(); i++) {
+                Asteroid asteroid  = asteroids.get(i);
+                Polygon asteroidPolygon = asteroid.getPolygon();
+                for (int j = 0; j < playerShipBullets.size(); j++) {
+                    Bullet playerBullet = playerShipBullets.get(j);
+                    Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+                    if (checkOverlapPolygonCricle(asteroidPolygon, playerBulletCircle)) {
+                        //asteroid collision result
+                    }
+                }
+            }
+            asteroidHandler.removeMarkedAsteroids(asteroids);
+        }
+
+
         //Boss asteroid getting shot by player ship bullet
         if(checkPlayerShipBulletBossAsteroidCollision(playerShip, asteroidHandler)) {
             List<Bullet> playerShipBullets = playerShip.getBullets();
@@ -52,7 +71,7 @@ public class CollisionHandler {
                 for (int j = 0; j < playerShipBullets.size(); j++) {
                     Bullet playerBullet = playerShipBullets.get(j);
                     Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
-                    if (overlapPolygonCricle(bossPolygon, playerBulletCircle)) {
+                    if (checkOverlapPolygonCricle(bossPolygon, playerBulletCircle)) {
                         boss.takeDamage(1);
                         if(boss.getCurrentHealth() <= 0) {
                             boss.setToRemove(true);
@@ -381,6 +400,26 @@ public class CollisionHandler {
         return false;
     }
 
+    //Method to check collision between player's bullet and asteroid
+    public static boolean checkPlayerShipBulletAsteroidCollision(PlayerShip playerShip, AsteroidHandler asteroidHandler) {
+        List<Asteroid> asteroids = asteroidHandler.getAsteroids();
+        List<Bullet> bullets = playerShip.getBullets();
+        for(Asteroid asteroid : asteroids) {
+            Polygon asteroidPolygon = asteroid.getPolygon();
+            for (Bullet bullet : bullets) {
+                Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
+                if(checkOverlapPolygonCricle(asteroidPolygon, bulletCircle)) {
+                    //collision detected
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+
     //Method to check collision between player's bullet and comet
     public static boolean checkPlayerShipBulletCometCollision(PlayerShip playerShip, AsteroidHandler asteroidHandler) {
         List<BossAsteroid> bossAsteroids = asteroidHandler.getBossAsteroids();
@@ -414,7 +453,7 @@ public class CollisionHandler {
             Polygon bossPolygon = boss.getPolygon();
             for(Bullet bullet : bullets) {
                 Circle bulletCircle = new Circle(bullet.getPosition(), BULLET_RADIUS);
-                if(overlapPolygonCricle(bossPolygon, bulletCircle)) {
+                if(checkOverlapPolygonCricle(bossPolygon, bulletCircle)) {
                     //collision detected
                     return true;
                 }
@@ -484,7 +523,7 @@ public class CollisionHandler {
                 for (int i = 0; i < asteroids.size(); i++) {
                     Asteroid asteroid1 = asteroids.get(i);
                     Polygon asteroidPolygon1 = asteroid1.getPolygon();
-                    if(overlapPolygonCricle(asteroidPolygon1, killAuraCircle)) {
+                    if(checkOverlapPolygonCricle(asteroidPolygon1, killAuraCircle)) {
                         //collision detected
                         return true;
                     }
@@ -505,7 +544,7 @@ public class CollisionHandler {
                 for (int i = 0; i < bossAsteroids.size(); i++) {
                     BossAsteroid boss = bossAsteroids.get(i);
                     Polygon bossPolygon = boss.getPolygon();
-                    if(overlapPolygonCricle(bossPolygon, killAuraCircle)) {
+                    if(checkOverlapPolygonCricle(bossPolygon, killAuraCircle)) {
                         //collision detected
                         return true;
                     }
@@ -557,7 +596,7 @@ public class CollisionHandler {
     }
 
 
-    private static boolean overlapPolygonCricle(Polygon polygon, Circle circle) {
+    private static boolean checkOverlapPolygonCricle(Polygon polygon, Circle circle) {
         //Get vertices of polygon
         float [] vertices = polygon.getTransformedVertices();
         Vector2 center = new Vector2(circle.x, circle.y);
