@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.asteroid.game.objects.Asteroid;
 import com.asteroid.game.objects.BossAsteroid;
+import com.asteroid.game.objects.Bullet;
 import com.asteroid.game.objects.PlayerShip;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -104,6 +105,7 @@ public class AsteroidHandler {
     private void detectCollision(Asteroid asteroid) {
         asteroid.detectCollision();
     }
+
 
     public void handleHitAsteroid(Asteroid asteroid, List<Asteroid> asteroidsToAdd) {
         if(asteroid.getTierLevel() > 1) {

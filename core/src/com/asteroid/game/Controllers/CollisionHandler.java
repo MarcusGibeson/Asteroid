@@ -43,7 +43,7 @@ public class CollisionHandler {
         }
 
         //Asteroid getting shot by player ship bullet **this is actually being handled in AsteroidHandler***
-        if(checkPlayerShipBulletBossAsteroidCollision(playerShip, asteroidHandler)) {
+        if(checkPlayerShipBulletAsteroidCollision(playerShip, asteroidHandler)) {
             List<Bullet> playerShipBullets = playerShip.getBullets();
             List<Asteroid> asteroids = asteroidHandler.getAsteroids();
             for (int i = 0; i < asteroids.size(); i++) {
@@ -54,6 +54,7 @@ public class CollisionHandler {
                     Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
                     if (checkOverlapPolygonCricle(asteroidPolygon, playerBulletCircle)) {
                         //asteroid collision result
+
                     }
                 }
             }
@@ -65,21 +66,24 @@ public class CollisionHandler {
         if(checkPlayerShipBulletBossAsteroidCollision(playerShip, asteroidHandler)) {
             List<Bullet> playerShipBullets = playerShip.getBullets();
             List<BossAsteroid> bossAsteroids = asteroidHandler.getBossAsteroids();
-            for (int i = 0; i < bossAsteroids.size(); i++) {
-                BossAsteroid boss = bossAsteroids.get(i);
+            List<Bullet> bulletsToRemove = new ArrayList<>();
+            List<BossAsteroid> bossesToRemove = new ArrayList<>();
+
+            for (BossAsteroid boss : bossAsteroids) {
                 Polygon bossPolygon = boss.getPolygon();
-                for (int j = 0; j < playerShipBullets.size(); j++) {
-                    Bullet playerBullet = playerShipBullets.get(j);
-                    Circle playerBulletCircle = new Circle(playerBullet.getPosition(), playerBullet.BULLET_RADIUS);
+                for (Bullet playerBullet : playerShipBullets) {
+                    Circle playerBulletCircle = new Circle(playerBullet.getPosition(), BULLET_RADIUS);
                     if (checkOverlapPolygonCricle(bossPolygon, playerBulletCircle)) {
                         boss.takeDamage(1);
-                        if(boss.getCurrentHealth() <= 0) {
-                            boss.setToRemove(true);
+                        bulletsToRemove.add(playerBullet);
+                        if (boss.getCurrentHealth() <= 0) {
+                            bossesToRemove.add(boss);
                         }
                     }
                 }
             }
-            asteroidHandler.removeMarkedBosses(bossAsteroids);
+            playerShipBullets.removeAll(bulletsToRemove);
+            bossAsteroids.removeAll(bossesToRemove);
         }
 
 
