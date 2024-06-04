@@ -21,6 +21,7 @@ public class Bullet {
 
     private Vector2 initialVelocity;
     private boolean isPlayerBullet;
+    private boolean toRemove;
 
     public Bullet(Vector2 position, Vector2 direction, float speed, float radius, Color color, boolean isPlayerBullet)  {
         this.position = new Vector2(position);
@@ -29,6 +30,7 @@ public class Bullet {
         this.color = color;
         this.lifespanTimer = BULLET_LIFESPAN;
         this.isPlayerBullet = isPlayerBullet;
+        this.toRemove = false;
     }
 
     public Vector2 getPosition() {
@@ -81,4 +83,11 @@ public class Bullet {
     }
 
 
+    public void setToRemove(boolean toRemove) {
+        this.toRemove = toRemove;
+    }
+
+    public boolean isToRemove() {
+        return toRemove;
+    }
 }

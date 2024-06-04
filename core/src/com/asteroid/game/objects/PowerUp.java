@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 public class PowerUp {
+
+
     public enum Type {
         RAPID_FIRE,
         PULSE_SHOT,
@@ -40,6 +42,7 @@ public class PowerUp {
     public void setTouchingShip(boolean touchingShip) {isTouchingShip = touchingShip;}
     public boolean isTouchingShip() {return isTouchingShip;}
     public float getSpawnCooldown() {return SPAWN_COOLDOWN;}
+
 
     public void setRandomType(){
         this.type = Type.values()[MathUtils.random(Type.values().length - 1)];
